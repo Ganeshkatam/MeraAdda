@@ -19,6 +19,10 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
     const savedTheme = localStorage.getItem('site-theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
@@ -76,7 +80,9 @@ export default function Navbar() {
             type="button"
             className="btn-icon-round btn-menu-mobile"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -84,7 +90,7 @@ export default function Navbar() {
       </header>
 
       {mobileMenuOpen && (
-        <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)}>
+        <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)} onKeyDown={e => { if (e.key === 'Escape') setMobileMenuOpen(false); }}>
           <div className="mobile-nav-drawer" onClick={e => e.stopPropagation()}>
             <div className="mobile-nav-header">
               <div>
@@ -100,7 +106,7 @@ export default function Navbar() {
                 <X size={18} />
               </button>
             </div>
-            <nav className="mobile-nav-links">
+            <nav id="mobile-navigation" className="mobile-nav-links" aria-label="Mobile navigation">
               {NAV_LINKS.map(link => {
                 const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
                 return (
