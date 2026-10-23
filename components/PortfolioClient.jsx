@@ -38,13 +38,6 @@ import {
 } from 'lucide-react';
 import { apiClient } from '../lib/api-client';
 
-const heroSpecialties = [
-  'Design & Clean Systems',
-  'Digital Book Libraries',
-  'Decoupled Render APIs',
-  'Real-Time Collaboration',
-  'High-Performance Web'
-];
 
 const defaultProjects = [
   {
@@ -202,30 +195,14 @@ export default function PortfolioClient({
   const [gbState, setGbState] = useState(null);
   const [gbPending, setGbPending] = useState(false);
 
-  const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
-  const [cardTilt, setCardTilt] = useState({ x: 0, y: 0 });
-  const [activeTelemetryTab, setActiveTelemetryTab] = useState(0);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [heroMouse, setHeroMouse] = useState({ x: '50%', y: '25%' });
 
-  useEffect(() => {
-    const roleTimer = setInterval(() => {
-      setCurrentRoleIndex(prev => (prev + 1) % heroSpecialties.length);
-    }, 3200);
-    return () => clearInterval(roleTimer);
-  }, []);
-
-  const handleCardMouseMove = (e) => {
-    const card = e.currentTarget.getBoundingClientRect();
-    const centerX = card.left + card.width / 2;
-    const centerY = card.top + card.height / 2;
-    const mouseX = e.clientX - centerX;
-    const mouseY = e.clientY - centerY;
-    const rotateX = (-mouseY / (card.height / 2)) * 9;
-    const rotateY = (mouseX / (card.width / 2)) * 9;
-    setCardTilt({ x: parseFloat(rotateX.toFixed(2)), y: parseFloat(rotateY.toFixed(2)) });
-  };
-
-  const handleCardMouseLeave = () => {
-    setCardTilt({ x: 0, y: 0 });
+  const handleHeroMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setHeroMouse({ x: `${x.toFixed(1)}%`, y: `${y.toFixed(1)}%` });
   };
 
   const handleContactSubmit = async (e) => {
@@ -306,7 +283,9 @@ export default function PortfolioClient({
 
   const copyEmail = () => {
     navigator.clipboard.writeText(profile.email);
+    setCopiedEmail(true);
     showToast(`Copied ${profile.email} to clipboard!`);
+    setTimeout(() => setCopiedEmail(false), 2200);
   };
 
   const categories = ['ALL', ...new Set(products.map(p => p.category))];
@@ -505,44 +484,79 @@ export default function PortfolioClient({
 
       <main id="top">
         {/* Hero Section */}
-        <section className="hero-section">
+        {/* Hero Section - Redesigned with Centered Architectural Harmony & Interactive Bento Grid */}
+        <section
+          className="hero-section"
+          onMouseMove={handleHeroMouseMove}
+          style={{
+            '--mouse-x': heroMouse.x,
+            '--mouse-y': heroMouse.y
+          }}
+        >
+          {/* Ambient Lighting & Interactive Cursor Spotlight */}
           <div className="hero-cosmic-glow" aria-hidden="true">
+            <div className="hero-cursor-spotlight" />
             <div className="cosmic-orb orb-1" />
             <div className="cosmic-orb orb-2" />
-            <div className="cosmic-orb orb-3" />
             <div className="hero-grid-mesh" />
           </div>
 
-          <div className="hero-container">
-            {/* Left Column: Headline, Role Rotator & Actions */}
-            <div className="hero-content">
-              <div className="badge-beacon hero-badge-anim">
-                <span className="beacon-dot" />
-                <span className="beacon-text">Decoupled Architecture · Render Backend + Vercel Edge</span>
-              </div>
+          <div className="hero-container-centered">
+            {/* Status Beacon */}
+            <div className="badge-beacon hero-fade-in-1">
+              <span className="beacon-dot" />
+              <span>Available for Full-Stack Engineering &amp; Collaborations</span>
+            </div>
 
-              <h1 className="hero-title hero-title-anim">
-                Crafting software at the intersection of{' '}
-                <span className="hero-gradient-text hero-shimmer-text">
-                  {heroSpecialties[currentRoleIndex]}
-                </span>
-              </h1>
+            {/* Headline */}
+            <h1 className="hero-title-centered hero-fade-in-2">
+              Crafting digital products at the intersection of{' '}
+              <span className="hero-gradient-text hero-shimmer-text">
+                systems, architecture &amp; craft.
+              </span>
+            </h1>
 
-              <p className="hero-description hero-desc-anim">
-                Hello, I am <strong>{profile.name}</strong>. I architect and engineer distributed digital products,
-                low-latency Render APIs, and modern reading sanctuaries like{' '}
-                <a href={`https://${profile.domain || 'tomesphere.in'}`} className="hero-inline-link">
-                  BookGarden
-                </a>.
-              </p>
+            {/* Subtitle / Bio */}
+            <p className="hero-description-centered hero-fade-in-3">
+              Hello, I am <strong>{profile.name}</strong>. Full-stack software engineer building distributed cloud backends,
+              real-time web applications, and reading sanctuaries like{' '}
+              <a
+                href={`https://${profile.domain || 'tomesphere.in'}`}
+                className="hero-inline-link"
+                target="_blank"
+                rel="noreferrer"
+              >
+                BookGarden <ArrowUpRight size={13} className="inline-arrow" />
+              </a>.
+            </p>
 
-              <div className="hero-cta-group hero-cta-anim">
-                <a href="#work" className="btn-primary-glow hero-btn-magnetic">
-                  Explore Selected Work <ArrowDown size={16} className="btn-icon-bounce" />
+            {/* Action Buttons */}
+            <div className="hero-cta-group-centered hero-fade-in-4">
+              <a href="#work" className="btn-primary-glow hero-btn-magnetic">
+                Explore Selected Work <ArrowDown size={16} className="btn-icon-bounce" />
+              </a>
+              <button onClick={copyEmail} className="btn-secondary-glass">
+                {copiedEmail ? (
+                  <>
+                    <Check size={15} className="icon-emerald" /> Copied to Clipboard!
+                  </>
+                ) : (
+                  <>
+                    <Copy size={15} /> Copy Contact Email
+                  </>
+                )}
+              </button>
+              {profile.socials?.github && (
+                <a
+                  href={`https://${profile.socials.github}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-secondary-glass"
+                >
+                  <Github size={15} /> GitHub <ArrowUpRight size={14} />
                 </a>
-                <button onClick={copyEmail} className="btn-secondary-glass">
-                  <Copy size={15} /> Copy Contact Email
-                </button>
+              )}
+              {profile.socials?.linkedin && (
                 <a
                   href={`https://${profile.socials.linkedin}`}
                   target="_blank"
@@ -551,156 +565,85 @@ export default function PortfolioClient({
                 >
                   <Linkedin size={15} /> LinkedIn <ArrowUpRight size={14} />
                 </a>
-              </div>
-
-              <div className="hero-mini-badges">
-                <div className="mini-badge-item">
-                  <Server size={13} className="mini-badge-icon icon-emerald" />
-                  <span>Render API</span>
-                </div>
-                <div className="mini-badge-divider" />
-                <div className="mini-badge-item">
-                  <ShieldCheck size={13} className="mini-badge-icon icon-purple" />
-                  <span>Supabase Authority</span>
-                </div>
-                <div className="mini-badge-divider" />
-                <div className="mini-badge-item">
-                  <Zap size={13} className="mini-badge-icon icon-cyan" />
-                  <span>Vercel Analytics</span>
-                </div>
-              </div>
+              )}
             </div>
 
-            {/* Right Column: 3D Holographic Telemetry Engine Card */}
-            <div className="hero-visual">
-              {/* Floating Satellite Badges */}
-              <div className="satellite-pill satellite-top-left">
-                <span className="sat-dot sat-emerald" />
-                <span>Render API: 99.98%</span>
-              </div>
-              <div className="satellite-pill satellite-bottom-right">
-                <span className="sat-dot sat-cyan" />
-                <span>Edge Ping: ~28ms</span>
-              </div>
-
-              <div
-                className="telemetry-card-3d"
-                onMouseMove={handleCardMouseMove}
-                onMouseLeave={handleCardMouseLeave}
-                style={{
-                  transform: `perspective(1000px) rotateX(${cardTilt.x}deg) rotateY(${cardTilt.y}deg)`
-                }}
+            {/* Hero Interactive Bento Showcase (100% Real Architecture & Catalog) */}
+            <div className="hero-bento-grid hero-fade-in-5">
+              {/* Card 1: Flagship Reading Sanctuary */}
+              <a
+                href="https://bookgarden.tomesphere.in"
+                target="_blank"
+                rel="noreferrer"
+                className="hero-bento-card bento-card-featured"
               >
-                <div className="card-glass-sheen" />
-
-                {/* Card Header */}
-                <div className="telemetry-card-header">
-                  <div className="telemetry-status-indicator">
-                    <span className="pulse-ring" />
-                    <span className="pulse-center" />
+                <div className="bento-card-header">
+                  <div className="bento-icon-box bento-icon-lavender">
+                    <BookOpen size={18} />
                   </div>
-                  <div className="telemetry-title-block">
-                    <span className="telemetry-system-name">TOMESPHERE SYSTEM MATRIX</span>
-                    <span className="telemetry-system-sub">v2.4.0 · Production Runtime</span>
-                  </div>
-                  <div className="telemetry-latency-pill">
-                    <Activity size={12} className="latency-pulse-icon" />
-                    <span>ACTIVE</span>
-                  </div>
+                  <span className="bento-badge-pill">Flagship Sanctuary</span>
                 </div>
-
-                {/* Real-Time Waveform Monitor */}
-                <div className="telemetry-waveform-box">
-                  <div className="waveform-header">
-                    <span>DATABASE PIPELINE LATENCY</span>
-                    <span className="waveform-val">28ms avg</span>
-                  </div>
-                  <svg className="waveform-svg" viewBox="0 0 320 60" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#6366f1" stopOpacity="0.8" />
-                        <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
-                      </linearGradient>
-                      <linearGradient id="fillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      className="waveform-fill"
-                      d="M0,45 Q40,15 80,38 T160,25 T240,42 T320,20 L320,60 L0,60 Z"
-                      fill="url(#fillGrad)"
-                    />
-                    <path
-                      className="waveform-path"
-                      d="M0,45 Q40,15 80,38 T160,25 T240,42 T320,20"
-                      fill="none"
-                      stroke="url(#waveGrad)"
-                      strokeWidth="2.5"
-                    />
-                  </svg>
+                <div className="bento-card-body">
+                  <h3 className="bento-card-title">BookGarden</h3>
+                  <div className="bento-card-sub">bookgarden.tomesphere.in</div>
+                  <p className="bento-card-desc">
+                    TomeSphere digital reading platform &amp; knowledge archive. Engineered with clean architecture, distraction-free reading, and personal bookshelves.
+                  </p>
                 </div>
-
-                {/* Live Route Telemetry Inspector */}
-                <div className="telemetry-console">
-                  <div className="console-tab-row">
-                    {['GET /projects', 'GET /profile', 'POST /guestbook'].map((tab, idx) => (
-                      <button
-                        key={tab}
-                        type="button"
-                        className={`console-tab-btn ${activeTelemetryTab === idx ? 'active' : ''}`}
-                        onClick={() => setActiveTelemetryTab(idx)}
-                      >
-                        {tab}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="console-body">
-                    {activeTelemetryTab === 0 && (
-                      <div className="console-line-group">
-                        <div className="console-line"><span className="c-dim">HOST:</span> <span className="c-cyan">api.tomesphere.in (Render)</span></div>
-                        <div className="console-line"><span className="c-dim">ROUTE:</span> <span className="c-purple">/api/v1/projects</span></div>
-                        <div className="console-line"><span className="c-dim">STATUS:</span> <span className="c-green">200 OK</span> <span className="c-dim">({products.length} live records)</span></div>
-                        <div className="console-line"><span className="c-dim">DATABASE:</span> <span className="c-yellow">Supabase Postgres [RLS Active]</span></div>
-                      </div>
-                    )}
-                    {activeTelemetryTab === 1 && (
-                      <div className="console-line-group">
-                        <div className="console-line"><span className="c-dim">IDENTITY:</span> <span className="c-cyan">{profile.name}</span></div>
-                        <div className="console-line"><span className="c-dim">TITLE:</span> <span className="c-purple">{profile.title}</span></div>
-                        <div className="console-line"><span className="c-dim">DOMAIN:</span> <span className="c-green">{profile.domain}</span></div>
-                        <div className="console-line"><span className="c-dim">LOCATION:</span> <span className="c-yellow">{profile.location}</span></div>
-                      </div>
-                    )}
-                    {activeTelemetryTab === 2 && (
-                      <div className="console-line-group">
-                        <div className="console-line"><span className="c-dim">ACTION:</span> <span className="c-cyan">Visitor Signature Protocol</span></div>
-                        <div className="console-line"><span className="c-dim">PIPELINE:</span> <span className="c-purple">Frontend -&gt; Render API -&gt; Supabase</span></div>
-                        <div className="console-line"><span className="c-dim">SECURITY:</span> <span className="c-green">Server-Only Authority</span></div>
-                        <div className="console-line"><span className="c-dim">PERSISTENCE:</span> <span className="c-yellow">Real-Time Database Insert</span></div>
-                      </div>
-                    )}
-                  </div>
+                <div className="bento-card-footer">
+                  <span className="bento-action-link">
+                    Visit Sanctuary <ArrowUpRight size={14} />
+                  </span>
                 </div>
+              </a>
 
-                {/* Card Footer Metric Grid */}
-                <div className="telemetry-card-footer">
-                  <div className="footer-metric">
-                    <span className="metric-label">Products</span>
-                    <span className="metric-num">{String(products.length).padStart(2, '0')}</span>
+              {/* Card 2: Production Cloud Architecture */}
+              <div className="hero-bento-card">
+                <div className="bento-card-header">
+                  <div className="bento-icon-box bento-icon-emerald">
+                    <Server size={18} />
                   </div>
-                  <div className="footer-metric">
-                    <span className="metric-label">Authority</span>
-                    <span className="metric-num">Render</span>
-                  </div>
-                  <div className="footer-metric">
-                    <span className="metric-label">Database</span>
-                    <span className="metric-num">PostgreSQL</span>
+                  <span className="bento-badge-pill bento-pill-live">
+                    <span className="sat-dot sat-emerald" /> Sole Authority
+                  </span>
+                </div>
+                <div className="bento-card-body">
+                  <h3 className="bento-card-title">Render API + Vercel Edge</h3>
+                  <div className="bento-card-sub">Decoupled Microservice</div>
+                  <p className="bento-card-desc">
+                    Standalone Express API server running on Render as sole database authority with Supabase PostgreSQL, row-level security, and zero client leaks.
+                  </p>
+                </div>
+                <div className="bento-card-footer">
+                  <div className="bento-tech-tags">
+                    <span className="bento-mini-tag">Render</span>
+                    <span className="bento-mini-tag">Supabase</span>
+                    <span className="bento-mini-tag">Vercel</span>
                   </div>
                 </div>
               </div>
+
+              {/* Card 3: Verified Portfolio Catalog */}
+              <a href="#work" className="hero-bento-card">
+                <div className="bento-card-header">
+                  <div className="bento-icon-box bento-icon-cyan">
+                    <Code2 size={18} />
+                  </div>
+                  <span className="bento-badge-pill">Verified Work</span>
+                </div>
+                <div className="bento-card-body">
+                  <h3 className="bento-card-title">{String(products.length).padStart(2, '0')} Live Applications</h3>
+                  <div className="bento-card-sub">Full-Stack Ecosystem</div>
+                  <p className="bento-card-desc">
+                    Production systems spanning WebSockets (CoWatch), 3D try-on (FitMirror), commercial engines (StreetCraft), housing, and developer tooling.
+                  </p>
+                </div>
+                <div className="bento-card-footer">
+                  <span className="bento-action-link">
+                    Explore Catalog <ArrowDown size={14} />
+                  </span>
+                </div>
+              </a>
             </div>
           </div>
         </section>
