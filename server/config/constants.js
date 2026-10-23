@@ -22,12 +22,11 @@ export const ALLOWED_STATUSES = ['Live', 'In progress', 'Draft', 'Archived'];
 
 export const DEFAULT_PROFILE = {
   name: 'Katam Ganesh Reddy',
-  title: 'Full-Stack Developer · Independent Builder',
+  title: 'Full-Stack Developer · Systems Builder',
   location: 'India',
   domain: DOMAIN_CONFIG.mainDomain,
-  libraryUrl: DOMAIN_CONFIG.libraryDomain,
   email: 'katamganesh61@gmail.com',
-  intro: 'Welcome to TomeSphere — the digital hub and product studio of Katam Ganesh Reddy. Here you can explore all software products, architecture, and BookGarden, my personal digital book library.',
+  intro: 'Welcome to TomeSphere — the digital product studio and engineering portfolio of Katam Ganesh Reddy. Explore full-stack systems, developer tooling, and distributed architecture.',
   socials: {
     github: 'github.com/Ganeshkatam',
     linkedin: 'linkedin.com/in/ganeshkatam'

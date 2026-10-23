@@ -5,7 +5,6 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  BookOpen,
   Check,
   Code2,
   Compass,
@@ -23,291 +22,29 @@ import {
   Search,
   Send,
   Server,
-  Sparkles,
   Sun,
   Terminal,
-  TrendingUp,
-  Video,
   X,
   Zap
 } from 'lucide-react';
 import { apiClient } from '../lib/api-client';
 
 
-const defaultProjects = [
-  {
-    id: 'proj_bookgarden',
-    name: 'BookGarden',
-    category: 'WEB APPS',
-    description: 'TomeSphere digital reading platform and knowledge archive. Engineered with clean architecture, domain-driven design, distraction-free reading, progress tracking, and personal bookshelves.',
-    url: 'bookgarden.tomesphere.in',
-    accent: 'lavender',
-    featured: true,
-    status: 'Live',
-    year: '2026',
-    tags: ['TypeScript', 'Next.js', 'Clean Architecture', 'Knowledge Archive']
-  },
-  {
-    id: 'proj_streetcraft',
-    name: 'StreetCraft',
-    category: 'DEVELOPER TOOLS',
-    description: 'Physical business growth engine turning commercial opportunities into everything customers need to see across Google, Instagram, WhatsApp, and counter print.',
-    url: 'streetcraft.tomesphere.in',
-    accent: 'peach',
-    featured: true,
-    status: 'Live',
-    year: '2026',
-    tags: ['TypeScript', 'React', 'Growth Engine', 'Multi-Channel']
-  },
-  {
-    id: 'proj_cowatch',
-    name: 'CoWatch',
-    category: 'WEB APPS',
-    description: 'Real-time synchronized watch party platform for movies, videos, and live streams with virtual browsers, WebSockets, interactive chat, and room orchestration.',
-    url: 'cowatch.tomesphere.in',
-    accent: 'blue',
-    featured: true,
-    status: 'Live',
-    year: '2026',
-    tags: ['TypeScript', 'WebRTC', 'WebSockets', 'Real-Time Sync', 'Streaming']
-  },
-  {
-    id: 'proj_fitmirror',
-    name: 'FitMirror Ecosystem',
-    category: 'WEB APPS',
-    description: 'Fashion eCommerce platform featuring an immersive 3D virtual try-on experience paired with the FitSeller merchant analytics and order fulfillment portal.',
-    url: 'fitmirror.tomesphere.in',
-    accent: 'mint',
-    featured: false,
-    status: 'Live',
-    year: '2025',
-    tags: ['TypeScript', '3D Virtual Try-On', 'FitSeller', 'Merchant Portal']
-  },
-  {
-    id: 'proj_mystays',
-    name: 'MyStays',
-    category: 'WEB APPS',
-    description: 'Long-term accommodation discovery and residential housing platform connecting seekers with PGs, private apartments, and verified shared rooms.',
-    url: 'mystays.tomesphere.in',
-    accent: 'yellow',
-    featured: false,
-    status: 'Live',
-    year: '2025',
-    tags: ['TypeScript', 'Housing Platform', 'Accommodation', 'Search']
-  },
-  {
-    id: 'proj_gk_cli',
-    name: 'gk-dev-cli',
-    category: 'DEVELOPER TOOLS',
-    description: 'Manifest-driven developer CLI for project discovery, task orchestration, workspace management, and plugin-powered workflow automation.',
-    url: 'tomesphere.in/gk-dev-cli',
-    accent: 'rose',
-    featured: false,
-    status: 'Live',
-    year: '2025',
-    tags: ['JavaScript', 'Node.js', 'CLI Tooling', 'Automation']
-  },
-  {
-    id: 'proj_calclens',
-    name: 'CalcLens',
-    category: 'OTHER',
-    description: 'Mobile visual calculation and OCR camera assistant designed for instantaneous mathematical recognition and equation resolution.',
-    url: 'tomesphere.in/calclens',
-    accent: 'lavender',
-    featured: false,
-    status: 'In progress',
-    year: '2025',
-    tags: ['Kotlin', 'Android', 'Computer Vision', 'Mobile App']
-  }
-];
-
-const defaultProfile = {
-  name: 'Katam Ganesh Reddy',
-  title: 'Full-Stack Developer · Independent Builder',
-  location: 'India',
-  domain: 'tomesphere.in',
-  libraryUrl: 'bookgarden.tomesphere.in',
-  email: 'katamganesh61@gmail.com',
-  intro: 'Welcome to TomeSphere — my digital hub to explore all my software products, technical architecture, and background. Check out BookGarden, my digital book library hosted at bookgarden.tomesphere.in.',
-  socials: {
-    github: 'github.com/Ganeshkatam',
-    linkedin: 'linkedin.com/in/ganeshkatam'
-  }
-};
-
-const initialGuestbook = [
-  {
-    id: 'gb_welcome',
-    author: 'Katam Ganesh Reddy',
-    message: 'Welcome to TomeSphere (tomesphere.in)! Explore my real products, architecture, or visit BookGarden at bookgarden.tomesphere.in. Leave a note below!',
-    timestamp: 'Oct 23, 2026'
-  }
-];
-
-const techStack = [
-  'Next.js 16',
-  'React 19',
-  'TypeScript',
-  'WebSockets',
-  'Node.js',
-  'PostgreSQL',
-  'Cloud Architecture',
-  'Tailwind CSS',
-  'Vite',
-  'Docker',
-  'REST & GraphQL',
-  'Git'
-];
-
-function ProjectCardVisual({ project }) {
-  const getProjectAccentGradient = (accent) => {
-    switch (accent) {
-      case 'lavender':
-        return 'linear-gradient(135deg, rgba(167, 139, 250, 0.22) 0%, rgba(99, 102, 241, 0.12) 100%)';
-      case 'peach':
-        return 'linear-gradient(135deg, rgba(251, 146, 60, 0.22) 0%, rgba(244, 63, 94, 0.12) 100%)';
-      case 'blue':
-        return 'linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.12) 100%)';
-      case 'mint':
-        return 'linear-gradient(135deg, rgba(52, 211, 153, 0.22) 0%, rgba(16, 185, 129, 0.12) 100%)';
-      case 'yellow':
-        return 'linear-gradient(135deg, rgba(251, 191, 36, 0.22) 0%, rgba(245, 158, 11, 0.12) 100%)';
-      case 'rose':
-        return 'linear-gradient(135deg, rgba(244, 63, 94, 0.22) 0%, rgba(225, 29, 72, 0.12) 100%)';
-      default:
-        return 'linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(139, 92, 246, 0.12) 100%)';
-    }
-  };
-
-  const renderVisualContent = () => {
-    switch (project.id) {
-      case 'proj_bookgarden':
-        return (
-          <div className="preview-stage-bookgarden">
-            <div className="preview-chip"><BookOpen size={13} /> TomeSphere Sanctuary</div>
-            <div className="preview-reading-title">Resilient Architecture Handbook</div>
-            <div className="preview-reading-bar">
-              <span style={{ width: '92%' }} />
-            </div>
-            <div className="preview-reading-stats">92% Finished &bull; Chapter 04</div>
-          </div>
-        );
-      case 'proj_streetcraft':
-        return (
-          <div className="preview-stage-streetcraft">
-            <div className="preview-chip"><TrendingUp size={13} /> Growth Engine</div>
-            <div className="preview-growth-stat">+148% Reach Velocity</div>
-            <div className="preview-growth-channels">
-              <span>Google Maps</span>
-              <span>Instagram</span>
-              <span>WhatsApp</span>
-            </div>
-          </div>
-        );
-      case 'proj_cowatch':
-        return (
-          <div className="preview-stage-cowatch">
-            <div className="preview-chip"><Video size={13} /> Real-Time Sync</div>
-            <div className="preview-wave-row">
-              <span className="wave-bar wb-1" />
-              <span className="wave-bar wb-2" />
-              <span className="wave-bar wb-3" />
-              <span className="wave-bar wb-4" />
-              <span className="wave-bar wb-5" />
-            </div>
-            <div className="preview-room-status">WebSockets &bull; Ultra-low Latency</div>
-          </div>
-        );
-      case 'proj_fitmirror':
-        return (
-          <div className="preview-stage-fitmirror">
-            <div className="preview-chip"><Layers size={13} /> 3D Virtual Try-On</div>
-            <div className="preview-3d-wireframe">
-              <div className="wireframe-box" />
-            </div>
-            <div className="preview-room-status">FitSeller Analytics &bull; WebGL</div>
-          </div>
-        );
-      case 'proj_mystays':
-        return (
-          <div className="preview-stage-mystays">
-            <div className="preview-chip"><Compass size={13} /> Residential Search</div>
-            <div className="preview-housing-grid">
-              <span className="house-pill">Private Flats</span>
-              <span className="house-pill">Verified PGs</span>
-              <span className="house-pill">Shared Stays</span>
-            </div>
-          </div>
-        );
-      case 'proj_gk_cli':
-        return (
-          <div className="preview-stage-cli">
-            <div className="preview-chip"><Terminal size={13} /> Developer CLI</div>
-            <div className="preview-terminal-line">$ gk run deploy --production</div>
-            <div className="preview-terminal-output">[ok] All manifests synced</div>
-          </div>
-        );
-      case 'proj_calclens':
-        return (
-          <div className="preview-stage-calclens">
-            <div className="preview-chip"><Cpu size={13} /> Vision OCR</div>
-            <div className="preview-formula">f(x) = &int; 2x dx = x&sup2; + C</div>
-            <div className="preview-room-status">Instant Equation Resolution</div>
-          </div>
-        );
-      default:
-        return (
-          <div className="preview-stage-generic">
-            <div className="preview-chip"><Code2 size={13} /> {project.category}</div>
-            <div className="preview-generic-title">{project.name}</div>
-            <div className="preview-generic-tags">
-              {(project.tags || []).slice(0, 3).map((t, idx) => (
-                <span key={idx}>{t}</span>
-              ))}
-            </div>
-          </div>
-        );
-    }
-  };
-
-  return (
-    <div
-      className="project-mockup-wrapper"
-      style={{ background: getProjectAccentGradient(project.accent) }}
-    >
-      <div className="mockup-header-bar">
-        <div className="mockup-dots">
-          <span className="m-dot dot-red" />
-          <span className="m-dot dot-yellow" />
-          <span className="m-dot dot-green" />
-        </div>
-        <div className="mockup-url-pill">
-          <Globe size={10} />
-          <span>{project.url}</span>
-        </div>
-      </div>
-      <div className="mockup-body-stage">
-        {renderVisualContent()}
-      </div>
-    </div>
-  );
-}
-
 export default function PortfolioClient({
-  initialProjects = defaultProjects,
-  initialProfile = defaultProfile,
-  initialGuestbook: initialGb = initialGuestbook,
-  initialSkills = techStack
+  initialProjects = [],
+  initialProfile = null,
+  initialGuestbook = [],
+  initialSkills = []
 }) {
   const [theme, setTheme] = useState('dark');
-  const [products] = useState(initialProjects && initialProjects.length > 0 ? initialProjects : defaultProjects);
-  const [profile] = useState(initialProfile || defaultProfile);
-  const [skillsList] = useState(initialSkills && initialSkills.length > 0 ? initialSkills : techStack);
+  const [products, setProducts] = useState(initialProjects || []);
+  const [profile, setProfile] = useState(initialProfile);
+  const [skillsList, setSkillsList] = useState(initialSkills || []);
+  const [guestbook, setGuestbook] = useState(initialGuestbook || []);
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [guestbook, setGuestbook] = useState(initialGb);
 
   const [contactState, setContactState] = useState(null);
   const [contactPending, setContactPending] = useState(false);
@@ -368,11 +105,26 @@ export default function PortfolioClient({
   };
 
   const [terminalHistory, setTerminalHistory] = useState([
-    { cmd: 'whoami', output: 'Katam Ganesh Reddy — Full-Stack Developer & Independent Builder' },
-    { cmd: 'hub', output: 'TomeSphere Digital Product Suite (tomesphere.in)' },
-    { cmd: 'domain', output: 'tomesphere.in' }
+    { cmd: 'help', output: 'Available commands: whoami, bio, skills, projects, contact, clear' }
   ]);
   const [terminalInput, setTerminalInput] = useState('');
+
+  useEffect(() => {
+    // If SSR did not populate data, hydrate from live API client
+    if (products.length === 0 || !profile || skillsList.length === 0) {
+      Promise.all([
+        apiClient.projects.list().catch(() => []),
+        apiClient.profile.get().catch(() => null),
+        apiClient.skills.list().catch(() => []),
+        apiClient.guestbook.list(20).catch(() => [])
+      ]).then(([p, prof, sk, gb]) => {
+        if (p && p.length > 0) setProducts(p);
+        if (prof) setProfile(prof);
+        if (sk && sk.length > 0) setSkillsList(sk.map(s => s.name || s));
+        if (gb && gb.length > 0) setGuestbook(gb);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('site-theme') || 'dark';
@@ -401,9 +153,10 @@ export default function PortfolioClient({
   };
 
   const copyEmail = () => {
-    navigator.clipboard.writeText(profile.email);
+    const emailToCopy = profile?.email || 'katamganesh61@gmail.com';
+    navigator.clipboard.writeText(emailToCopy);
     setCopiedEmail(true);
-    showToast(`Copied ${profile.email} to clipboard!`);
+    showToast(`Copied ${emailToCopy} to clipboard!`);
     setTimeout(() => setCopiedEmail(false), 2200);
   };
 
@@ -417,29 +170,21 @@ export default function PortfolioClient({
     return matchesFilter && matchesSearch;
   });
 
-  const flagshipProject = products.find(p => p.name === 'BookGarden') || products.find(p => p.name === 'TomeSphere') || products[0];
-
   const handleCommand = (cmdText) => {
     const clean = (cmdText || terminalInput).trim().toLowerCase();
     let res = '';
     if (clean === 'help') {
-      res = 'Available commands: whoami, bio, skills, projects, flagship, library, tomesphere, contact, clear';
+      res = 'Available commands: whoami, bio, skills, projects, contact, clear';
     } else if (clean === 'whoami') {
-      res = `${profile.name} (${profile.title}) based in ${profile.location}`;
+      res = `${profile?.name || 'Katam Ganesh Reddy'} (${profile?.title || 'Full-Stack Developer'}) based in ${profile?.location || 'India'}`;
     } else if (clean === 'bio') {
-      res = profile.intro;
-    } else if (clean === 'tomesphere') {
-      res = 'TomeSphere (tomesphere.in) — The digital product hub and engineering portfolio of Katam Ganesh Reddy.';
-    } else if (clean === 'library' || clean === 'bookgarden') {
-      res = 'BookGarden (bookgarden.tomesphere.in) — The digital book sanctuary and library companion.';
-    } else if (clean === 'flagship') {
-      res = `BookGarden -> https://${flagshipProject.url} : ${flagshipProject.description}`;
+      res = profile?.intro || profile?.bio || 'Full-stack software engineer and systems builder.';
     } else if (clean === 'skills') {
-      res = skillsList.join(' · ');
+      res = skillsList.length > 0 ? skillsList.join(' · ') : 'Loading verified skills...';
     } else if (clean === 'projects') {
-      res = products.map(p => `${p.name} [${p.status}] - ${p.category} (${p.url})`).join('\n');
+      res = products.length > 0 ? products.map(p => `${p.name} [${p.status}] - ${p.category} (${p.url})`).join('\n') : 'No projects loaded.';
     } else if (clean === 'contact') {
-      res = `Email: ${profile.email}\nLinkedIn: https://${profile.socials.linkedin}`;
+      res = `Email: ${profile?.email || 'katamganesh61@gmail.com'}\nLinkedIn: https://${profile?.socials?.linkedin || 'linkedin.com/in/ganeshkatam'}`;
     } else if (clean === 'clear') {
       setTerminalHistory([]);
       setTerminalInput('');
@@ -532,16 +277,7 @@ export default function PortfolioClient({
 
             {/* Subtitle / Bio */}
             <p className="hero-description-centered hero-fade-in-3">
-              Hello, I am <strong>{profile.name}</strong>. Software engineer and independent builder creating
-              modern web applications, real-time interactive platforms, and reading sanctuaries like{' '}
-              <a
-                href={`https://${profile.domain || 'tomesphere.in'}`}
-                className="hero-inline-link"
-                target="_blank"
-                rel="noreferrer"
-              >
-                BookGarden <ArrowUpRight size={13} className="inline-arrow" />
-              </a>.
+              Hello, I am <strong>{profile?.name || 'Katam Ganesh Reddy'}</strong>. {profile?.bio || profile?.intro || 'Software engineer and independent builder creating modern web applications, real-time interactive systems, developer tools, and distributed architecture.'}
             </p>
 
             {/* Action Buttons */}
@@ -582,82 +318,69 @@ export default function PortfolioClient({
               )}
             </div>
 
-            {/* Hero Interactive Bento Showcase (100% Real Architecture & Catalog) */}
+            {/* Hero Interactive Bento Showcase (Holistic Engineering Pillars) */}
             <div className="hero-bento-grid hero-fade-in-5">
-              {/* Card 1: Flagship Reading Sanctuary */}
-              <a
-                href="https://bookgarden.tomesphere.in"
-                target="_blank"
-                rel="noreferrer"
-                className="hero-bento-card bento-card-featured"
-              >
+              <a href="#terminal" className="hero-bento-card">
                 <div className="bento-card-header">
                   <div className="bento-icon-box bento-icon-lavender">
-                    <BookOpen size={18} />
+                    <Server size={18} />
                   </div>
-                  <span className="bento-badge-pill">Flagship Sanctuary</span>
+                  <span className="bento-badge-pill">System Design</span>
                 </div>
                 <div className="bento-card-body">
-                  <h3 className="bento-card-title">BookGarden</h3>
-                  <div className="bento-card-sub">bookgarden.tomesphere.in</div>
+                  <h3 className="bento-card-title">Production Architecture</h3>
+                  <div className="bento-card-sub">Clean Patterns · Resilient APIs</div>
                   <p className="bento-card-desc">
-                    TomeSphere digital reading platform &amp; knowledge archive. Engineered with clean architecture, distraction-free reading, and personal bookshelves.
+                    Specialized in building scalable full-stack applications, real-time protocols, and secure database-driven backend services.
                   </p>
                 </div>
                 <div className="bento-card-footer">
                   <span className="bento-action-link">
-                    Visit Sanctuary <ArrowUpRight size={14} />
+                    Inspect Dossier <ArrowDown size={14} />
                   </span>
                 </div>
               </a>
 
-              {/* Card 2: Synchronized Media Experience */}
-              <a
-                href="https://cowatch.tomesphere.in"
-                target="_blank"
-                rel="noreferrer"
-                className="hero-bento-card"
-              >
-                <div className="bento-card-header">
-                  <div className="bento-icon-box bento-icon-emerald">
-                    <Monitor size={18} />
-                  </div>
-                  <span className="bento-badge-pill bento-pill-live">
-                    <span className="sat-dot sat-emerald" /> Live Platform
-                  </span>
-                </div>
-                <div className="bento-card-body">
-                  <h3 className="bento-card-title">CoWatch</h3>
-                  <div className="bento-card-sub">cowatch.tomesphere.in</div>
-                  <p className="bento-card-desc">
-                    Synchronized watch party platform for movies, videos, and live streams with virtual browsers, interactive chat, and room orchestration.
-                  </p>
-                </div>
-                <div className="bento-card-footer">
-                  <span className="bento-action-link">
-                    Explore CoWatch <ArrowUpRight size={14} />
-                  </span>
-                </div>
-              </a>
-
-              {/* Card 3: Verified Portfolio Catalog */}
               <a href="#work" className="hero-bento-card">
                 <div className="bento-card-header">
-                  <div className="bento-icon-box bento-icon-cyan">
-                    <Code2 size={18} />
+                  <div className="bento-icon-box bento-icon-emerald">
+                    <Globe size={18} />
                   </div>
-                  <span className="bento-badge-pill">Verified Work</span>
+                  <span className="bento-badge-pill bento-pill-live">
+                    <span className="sat-dot sat-emerald" /> {String(products.length || 7).padStart(2, '0')} Systems
+                  </span>
                 </div>
                 <div className="bento-card-body">
-                  <h3 className="bento-card-title">{String(products.length).padStart(2, '0')} Live Applications</h3>
-                  <div className="bento-card-sub">Full-Stack Ecosystem</div>
+                  <h3 className="bento-card-title">Deployed Applications</h3>
+                  <div className="bento-card-sub">Web Apps, DevTools &amp; Platforms</div>
                   <p className="bento-card-desc">
-                    Production systems spanning WebSockets (CoWatch), 3D try-on (FitMirror), commercial engines (StreetCraft), housing, and developer tooling.
+                    Diverse product catalog spanning web apps, real-time collaboration platforms, mobile utilities, and developer CLIs.
                   </p>
                 </div>
                 <div className="bento-card-footer">
                   <span className="bento-action-link">
-                    Explore Catalog <ArrowDown size={14} />
+                    Explore Full Work <ArrowDown size={14} />
+                  </span>
+                </div>
+              </a>
+
+              <a href="#capabilities" className="hero-bento-card">
+                <div className="bento-card-header">
+                  <div className="bento-icon-box bento-icon-cyan">
+                    <Cpu size={18} />
+                  </div>
+                  <span className="bento-badge-pill">Live Stack</span>
+                </div>
+                <div className="bento-card-body">
+                  <h3 className="bento-card-title">{String(skillsList.length || 12).padStart(2, '0')} Verified Technologies</h3>
+                  <div className="bento-card-sub">Modern Engineering Stack</div>
+                  <p className="bento-card-desc">
+                    Engineered using Next.js 16, React 19, TypeScript, Node.js, PostgreSQL, Supabase, WebSockets, and Docker.
+                  </p>
+                </div>
+                <div className="bento-card-footer">
+                  <span className="bento-action-link">
+                    View Pillars <ArrowDown size={14} />
                   </span>
                 </div>
               </a>
@@ -666,126 +389,21 @@ export default function PortfolioClient({
         </section>
 
         {/* Tech Marquee */}
-        <section className="tech-marquee-wrapper">
-          <div className="tech-marquee-label">Full-Stack Tech Ecosystem</div>
-          <div className="tech-chips-grid">
-            {techStack.map(tech => (
-              <span key={tech} className="tech-chip">
-                <span className="chip-dot" />
-                {tech}
-              </span>
-            ))}
-          </div>
-        </section>
-
-        {/* Flagship Project: BookGarden Library */}
-        <section id="flagship" className="section-wrapper">
-          <div className="section-head">
-            <div>
-              <div className="section-eyebrow">Flagship Library Application</div>
-              <h2 className="section-title">BookGarden — The Digital Book Sanctuary</h2>
-              <p className="section-subtitle">
-                The reading companion and digital book sanctuary living at <strong>bookgarden.tomesphere.in</strong>.
-              </p>
+        {skillsList.length > 0 && (
+          <section className="tech-marquee-wrapper">
+            <div className="tech-marquee-label">Full-Stack Tech Ecosystem</div>
+            <div className="tech-chips-grid">
+              {skillsList.map(tech => (
+                <span key={tech} className="tech-chip">
+                  <span className="chip-dot" />
+                  {tech}
+                </span>
+              ))}
             </div>
-          </div>
+          </section>
+        )}
 
-          <div className="flagship-card">
-            <div className="flagship-glow-bg" />
-            <div>
-              <div className="flagship-badge">
-                <Sparkles size={12} /> FEATURED LIBRARY SANCTUARY
-              </div>
-              <h3 className="flagship-title">BookGarden</h3>
-              <div className="flagship-domain">
-                <Globe size={14} /> bookgarden.tomesphere.in
-              </div>
-              <p className="flagship-desc">{flagshipProject.description}</p>
-              <div className="flagship-tags">
-                {(flagshipProject.tags || ['Next.js', 'React', 'TypeScript', 'Digital Archive', 'EPUB/PDF']).map(t => (
-                  <span key={t} className="flagship-tag">
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <div className="flagship-actions">
-                <a
-                  href="https://bookgarden.tomesphere.in"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-primary-glow"
-                >
-                  Launch BookGarden Library <ArrowUpRight size={16} />
-                </a>
-                <a
-                  href="#work"
-                  className="btn-secondary-glass"
-                >
-                  Explore Catalog <ArrowRight size={15} />
-                </a>
-              </div>
-            </div>
 
-            <div className="flagship-visual">
-              <div className="flagship-browser-bar">
-                <div className="mockup-dots">
-                  <span className="m-dot dot-red" />
-                  <span className="m-dot dot-yellow" />
-                  <span className="m-dot dot-green" />
-                </div>
-                <div className="flagship-url-display">
-                  <Globe size={11} />
-                  <span>bookgarden.tomesphere.in</span>
-                </div>
-                <span className="flagship-live-indicator">LIVE APPLICATION</span>
-              </div>
-
-              <div className="flagship-sanctuary-canvas">
-                <div className="sanctuary-reader-card">
-                  <div className="sanctuary-badge">
-                    <BookOpen size={13} />
-                    <span>TomeSphere Digital Library</span>
-                  </div>
-                  <h4 className="sanctuary-reader-title">
-                    The Architecture of Autonomous Systems
-                  </h4>
-                  <p className="sanctuary-reader-excerpt">
-                    Domain-driven models, fault-isolated micro-engines, and real-time synchrony...
-                  </p>
-                  <div className="sanctuary-progress-block">
-                    <div className="sanctuary-progress-labels">
-                      <span>Reading Progress</span>
-                      <span>92% Complete</span>
-                    </div>
-                    <div className="sanctuary-progress-track">
-                      <div className="sanctuary-progress-fill" style={{ width: '92%' }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="sanctuary-shelf-sidebar">
-                  <div className="shelf-label">Digital Bookshelf</div>
-                  <div className="shelf-item shelf-purple">
-                    <BookOpen size={11} />
-                    <span>System Design</span>
-                  </div>
-                  <div className="shelf-item shelf-emerald">
-                    <BookOpen size={11} />
-                    <span>Distributed Systems</span>
-                  </div>
-                  <div className="shelf-item shelf-sky">
-                    <BookOpen size={11} />
-                    <span>TypeScript Internals</span>
-                  </div>
-                  <div className="shelf-item shelf-amber">
-                    <BookOpen size={11} />
-                    <span>Clean Architecture</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Selected Work Portfolio Grid */}
         <section id="work" className="section-wrapper">
@@ -828,21 +446,34 @@ export default function PortfolioClient({
           <div className="projects-masonry">
             {visibleProjects.map(project => (
               <article key={project.id} className="project-card-modern">
-                <div className="card-media-wrapper">
-                  <ProjectCardVisual project={project} />
-                  <span className={`card-overlay-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
-                    {project.status}
-                  </span>
+                <div className="project-card-header">
+                  <div className="project-badge-row">
+                    <span className={`card-status-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
+                      <span className="status-indicator-dot" />
+                      {project.status}
+                    </span>
+                    <span className="card-category-badge">{project.category}</span>
+                  </div>
+                  <span className="card-year-label">{project.year}</span>
                 </div>
 
                 <div className="card-content-area">
-                  <div className="card-meta-row">
-                    <span className="card-category">{project.category}</span>
-                    <span>{project.year}</span>
-                  </div>
-
                   <h3 className="card-title">{project.name}</h3>
+                  <div className="card-url-row">
+                    <Globe size={12} />
+                    <span>{project.url}</span>
+                  </div>
                   <p className="card-description">{project.description}</p>
+
+                  {project.tags && project.tags.length > 0 && (
+                    <div className="card-tags-list">
+                      {project.tags.map(t => (
+                        <span key={t} className="card-tag-item">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
                   <div className="card-footer-action">
                     <a
@@ -932,7 +563,7 @@ export default function PortfolioClient({
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', alignSelf: 'center', marginRight: '6px' }}>
                   Quick commands:
                 </span>
-                {['help', 'whoami', 'skills', 'projects', 'flagship', 'contact', 'clear'].map(cmd => (
+                {['help', 'whoami', 'skills', 'projects', 'contact', 'clear'].map(cmd => (
                   <button key={cmd} type="button" className="term-btn" onClick={() => handleCommand(cmd)}>
                     {cmd}
                   </button>
@@ -998,15 +629,22 @@ export default function PortfolioClient({
             </div>
 
             <div className="guestbook-feed">
-              {guestbook.map(entry => (
-                <div key={entry.id} className="guestbook-entry">
-                  <div className="guestbook-entry-header">
-                    <span className="guestbook-author">{entry.author}</span>
-                    <span>{entry.timestamp}</span>
-                  </div>
-                  <div className="guestbook-body">{entry.message}</div>
+              {guestbook.length === 0 ? (
+                <div style={{ padding: '36px 20px', textAlign: 'center', background: 'var(--bg-surface-glass)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
+                  <p style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>No guestbook entries yet</p>
+                  <p style={{ fontSize: '13px' }}>Be the first to sign and leave a note above.</p>
                 </div>
-              ))}
+              ) : (
+                guestbook.map(entry => (
+                  <div key={entry.id} className="guestbook-entry">
+                    <div className="guestbook-entry-header">
+                      <span className="guestbook-author">{entry.author}</span>
+                      <span>{entry.timestamp || (entry.created_at ? new Date(entry.created_at).toLocaleDateString() : '')}</span>
+                    </div>
+                    <div className="guestbook-body">{entry.message}</div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
@@ -1056,7 +694,7 @@ export default function PortfolioClient({
 
             <div className="capability-card">
               <div className="capability-icon-box">
-                <BookOpen size={24} />
+                <Compass size={24} />
               </div>
               <h3 className="capability-title">Product &amp; System Design</h3>
               <p className="capability-desc">
