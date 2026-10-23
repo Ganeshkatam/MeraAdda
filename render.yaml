@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: myportfolio-backend
+    name: tomesphere-backend
     runtime: node
     plan: free
     buildCommand: npm install --omit=dev

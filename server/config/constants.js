@@ -26,7 +26,7 @@ export const DEFAULT_PROFILE = {
   location: 'India',
   domain: DOMAIN_CONFIG.mainDomain,
   email: 'katamganesh61@gmail.com',
-  intro: 'Welcome to TomeSphere — the digital product studio and engineering portfolio of Katam Ganesh Reddy. Explore full-stack systems, developer tooling, and distributed architecture.',
+  intro: 'Welcome to TomeSphere — the digital product studio and engineering platform founded by Katam Ganesh Reddy. Explore full-stack systems, developer tooling, and distributed architecture.',
   socials: {
     github: 'github.com/Ganeshkatam',
     linkedin: 'linkedin.com/in/ganeshkatam'

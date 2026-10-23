@@ -128,8 +128,8 @@ export default async function AboutPage() {
 
       {/* Navigation CTA */}
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <Link href="/work" className="btn-primary-glow">
-          Explore Deployed Work <ArrowRight size={15} />
+        <Link href="/products" className="btn-primary-glow">
+          Explore Deployed Products <ArrowRight size={15} />
         </Link>
       </div>
     </div>

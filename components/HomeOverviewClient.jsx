@@ -73,8 +73,8 @@ export default function HomeOverviewClient({
           </p>
 
           <div className="hero-cta-group-centered hero-fade-in-4">
-            <Link href="/work" className="btn-primary-glow hero-btn-magnetic">
-              Explore Selected Work <ArrowRight size={16} />
+            <Link href="/products" className="btn-primary-glow hero-btn-magnetic">
+              Explore Products <ArrowRight size={16} />
             </Link>
             <button type="button" onClick={copyEmail} className="btn-secondary-glass">
               {copiedEmail ? (
@@ -132,7 +132,7 @@ export default function HomeOverviewClient({
               </div>
             </Link>
 
-            <Link href="/work" className="hero-bento-card">
+            <Link href="/products" className="hero-bento-card">
               <div className="bento-card-header">
                 <div className="bento-icon-box bento-icon-emerald">
                   <Globe size={18} />
@@ -199,11 +199,11 @@ export default function HomeOverviewClient({
         <div className="section-head">
           <div>
             <div className="section-eyebrow">Featured Systems</div>
-            <h2 className="section-title">Selected Production Work</h2>
-            <p className="section-subtitle">A glimpse into recent full-stack systems and tools.</p>
+            <h2 className="section-title">Production Systems &amp; Platforms</h2>
+            <p className="section-subtitle">Active full-stack web applications and developer tools.</p>
           </div>
-          <Link href="/work" className="btn-secondary-glass" style={{ alignSelf: 'flex-start' }}>
-            View All ({projects.length}) <ArrowRight size={14} />
+          <Link href="/products" className="btn-secondary-glass" style={{ alignSelf: 'flex-start' }}>
+            View All Products ({projects.length}) <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -255,8 +255,8 @@ export default function HomeOverviewClient({
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '40px' }}>
-          <Link href="/work" className="btn-primary-glow">
-            Explore All {projects.length} Applications <ArrowRight size={15} />
+          <Link href="/products" className="btn-primary-glow">
+            Explore All {projects.length} Products <ArrowRight size={15} />
           </Link>
         </div>
       </section>

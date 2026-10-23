@@ -7,8 +7,8 @@ import { Sun, Moon, Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { href: '/', label: 'Overview' },
-  { href: '/work', label: 'Work' },
-  { href: '/about', label: 'About' },
+  { href: '/products', label: 'Products' },
+  { href: '/about', label: 'Architecture' },
   { href: '/terminal', label: 'Terminal' },
   { href: '/guestbook', label: 'Guestbook' },
   { href: '/contact', label: 'Contact' }

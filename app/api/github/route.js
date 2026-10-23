@@ -4,7 +4,7 @@ export async function GET() {
   try {
     const res = await fetch('https://api.github.com/users/Ganeshkatam/repos?sort=updated&per_page=6', {
       headers: {
-        'User-Agent': 'TomeSphere-Portfolio-App'
+        'User-Agent': 'TomeSphere-Platform'
       },
       next: { revalidate: 1800 }
     });
