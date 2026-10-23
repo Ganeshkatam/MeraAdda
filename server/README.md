@@ -88,7 +88,7 @@ docker compose up -d
 
 ```bash
 npm install -g pm2
-pm2 start server/standalone.js --name tomesphere-backend
+pm2 start server/index.js --name tomesphere-backend
 pm2 save
 pm2 startup
 ```
@@ -99,7 +99,7 @@ pm2 startup
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/health` | Server uptime, machine hostname, and Supabase health |
+| `GET` | `/health` | Server process uptime and liveness probe |
 | `GET` | `/api/v1/projects` | List all real projects (supports `?category=`, `?status=`, `?q=`) |
 | `GET` | `/api/v1/projects/:id` | Get project by ID |
 | `POST` | `/api/v1/projects` | Create a new project in Supabase |
