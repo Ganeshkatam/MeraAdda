@@ -55,6 +55,10 @@ export default function HomeOverviewClient({
         </div>
 
         <div className="hero-container-centered">
+          <div className="hero-kicker hero-fade-in-1">
+            <span className="hero-kicker-dot" aria-hidden="true" />
+            INDEPENDENT DIGITAL PRODUCT STUDIO
+          </div>
           <h1 className="hero-title-centered hero-fade-in-1">
             Software products engineered for{' '}
             <span className="hero-gradient-text hero-shimmer-text">
@@ -75,23 +79,23 @@ export default function HomeOverviewClient({
             </Link>
           </div>
 
-          {/* Product Metrics Strip */}
-          <div className="product-metrics-strip hero-fade-in-4">
+          {/* Product focus strip — describe the portfolio, not unverified SLAs */}
+          <div className="product-metrics-strip hero-fade-in-4" aria-label="TomeSphere product focus">
             <div className="metric-item">
               <span className="metric-value">{String(projects.length || 7).padStart(2, '0')}</span>
-              <span className="metric-label">Production Products</span>
+              <span className="metric-label">Products in the catalog</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">99.9%</span>
-              <span className="metric-label">Platform Availability</span>
+              <span className="metric-value">Web apps</span>
+              <span className="metric-label">Purpose-built platforms</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">Global</span>
-              <span className="metric-label">Edge Network</span>
+              <span className="metric-value">Dev tools</span>
+              <span className="metric-label">Utilities for makers</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">&lt;100ms</span>
-              <span className="metric-label">Sub-Second Delivery</span>
+              <span className="metric-value">Real-time</span>
+              <span className="metric-label">Connected experiences</span>
             </div>
           </div>
 
