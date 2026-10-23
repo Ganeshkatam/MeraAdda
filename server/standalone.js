@@ -70,6 +70,24 @@ const healthHandler = async (req, res) => {
 app.get('/health', healthHandler);
 app.get('/api/health', healthHandler);
 
+// Root Service Identifier
+app.get('/', (req, res) => {
+  res.json({
+    service: 'TomeSphere REST API Server',
+    status: 'online',
+    version: '1.0.0',
+    owner: 'Katam Ganesh Reddy',
+    endpoints: {
+      health: '/health',
+      projects: '/api/v1/projects',
+      profile: '/api/v1/profile',
+      skills: '/api/v1/skills',
+      guestbook: '/api/v1/guestbook',
+      contact: '/api/v1/contact'
+    }
+  });
+});
+
 // Projects Endpoints
 app.get('/api/v1/projects', async (req, res, next) => {
   try {

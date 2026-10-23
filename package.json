@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node server/standalone.js",
+    "start:frontend": "next start",
     "server": "node server/standalone.js"
   },
   "dependencies": {
