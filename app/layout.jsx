@@ -1,6 +1,9 @@
 import './globals.css';
 import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { apiClient } from '../lib/api-client';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -49,7 +52,9 @@ export const viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const profile = await apiClient.profile.get().catch(() => null);
+
   return (
     <html
       lang="en"
@@ -63,7 +68,11 @@ export default function RootLayout({ children }) {
           <div className="ambient-orb orb-secondary" />
           <div className="ambient-orb orb-tertiary" />
         </div>
-        {children}
+        <div className="site-layout">
+          <Navbar profile={profile} />
+          {children}
+          <Footer profile={profile} />
+        </div>
         <Analytics />
       </body>
     </html>
