@@ -1,5 +1,6 @@
 import './globals.css';
 import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/react';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -63,6 +64,7 @@ export default function RootLayout({ children }) {
           <div className="ambient-orb orb-tertiary" />
         </div>
         {children}
+        <Analytics />
       </body>
     </html>
   );
