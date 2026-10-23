@@ -2,7 +2,6 @@
 
 import { contactService } from '@/server/services/contact.service';
 import { guestbookService } from '@/server/services/guestbook.service';
-import { githubService } from '@/server/services/github.service';
 import { projectService } from '@/server/services/project.service';
 
 export async function submitContactMessage(prevState, formData) {
@@ -42,10 +41,6 @@ export async function submitGuestbookEntry(prevState, formData) {
       error: error.message || 'Failed to post guestbook entry.'
     };
   }
-}
-
-export async function getLiveGitHubRepos() {
-  return githubService.getRecentRepositories(6);
 }
 
 export async function getInitialProjects() {

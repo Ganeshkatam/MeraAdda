@@ -1,5 +1,5 @@
 import PortfolioClient from '../components/PortfolioClient';
-import { getLiveGitHubRepos, getInitialProjects } from './actions';
+import { getInitialProjects } from './actions';
 import { profileService } from '@/server/services/profile.service';
 import { guestbookService } from '@/server/services/guestbook.service';
 import { skillService } from '@/server/services/skill.service';
@@ -7,8 +7,7 @@ import { skillService } from '@/server/services/skill.service';
 export const revalidate = 1800; // revalidate every 30 minutes
 
 export default async function Page() {
-  const [repos, projects, profile, guestbook, skills] = await Promise.all([
-    getLiveGitHubRepos(),
+  const [projects, profile, guestbook, skills] = await Promise.all([
     getInitialProjects(),
     profileService.getProfile(),
     guestbookService.getEntries({ limit: 20 }),
@@ -17,7 +16,6 @@ export default async function Page() {
 
   return (
     <PortfolioClient
-      initialRepos={repos}
       initialProjects={projects}
       initialProfile={profile}
       initialGuestbook={guestbook}
@@ -25,4 +23,3 @@ export default async function Page() {
     />
   );
 }
-

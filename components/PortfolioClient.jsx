@@ -42,7 +42,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'TomeSphere digital reading platform and knowledge archive. Engineered with clean architecture, domain-driven design, distraction-free reading, progress tracking, and personal bookshelves.',
     url: 'bookgarden.tomesphere.in',
-    github_url: 'https://github.com/Ganeshkatam/bookgarden',
     image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85',
     accent: 'lavender',
     featured: true,
@@ -56,7 +55,6 @@ const defaultProjects = [
     category: 'DEVELOPER TOOLS',
     description: 'Physical business growth engine turning commercial opportunities into everything customers need to see across Google, Instagram, WhatsApp, and counter print.',
     url: 'streetcraft.tomesphere.in',
-    github_url: 'https://github.com/Ganeshkatam/StreetCraft',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1100&q=85',
     accent: 'peach',
     featured: true,
@@ -70,7 +68,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'Real-time synchronized watch party platform for movies, videos, and live streams with virtual browsers, WebSockets, interactive chat, and room orchestration.',
     url: 'cowatch.tomesphere.in',
-    github_url: 'https://github.com/Ganeshkatam/CoWatch_watchparty',
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1100&q=85',
     accent: 'blue',
     featured: true,
@@ -84,7 +81,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'Fashion eCommerce platform featuring an immersive 3D virtual try-on experience paired with the FitSeller merchant analytics and order fulfillment portal.',
     url: 'fitmirror.tomesphere.in',
-    github_url: 'https://github.com/Ganeshkatam/FitMirror',
     image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1100&q=85',
     accent: 'mint',
     featured: false,
@@ -98,7 +94,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'Long-term accommodation discovery and residential housing platform connecting seekers with PGs, private apartments, and verified shared rooms.',
     url: 'mystays.tomesphere.in',
-    github_url: 'https://github.com/Ganeshkatam/mystays',
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1100&q=85',
     accent: 'yellow',
     featured: false,
@@ -112,7 +107,6 @@ const defaultProjects = [
     category: 'DEVELOPER TOOLS',
     description: 'Manifest-driven developer CLI for project discovery, task orchestration, workspace management, and plugin-powered workflow automation.',
     url: 'github.com/Ganeshkatam/gk-dev-cli',
-    github_url: 'https://github.com/Ganeshkatam/gk-dev-cli',
     image: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1100&q=85',
     accent: 'rose',
     featured: false,
@@ -126,7 +120,6 @@ const defaultProjects = [
     category: 'OTHER',
     description: 'Mobile visual calculation and OCR camera assistant designed for instantaneous mathematical recognition and equation resolution.',
     url: 'github.com/Ganeshkatam/CalcLens',
-    github_url: 'https://github.com/Ganeshkatam/CalcLens',
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1100&q=85',
     accent: 'lavender',
     featured: false,
@@ -175,7 +168,6 @@ const techStack = [
 ];
 
 export default function PortfolioClient({
-  initialRepos = [],
   initialProjects = defaultProjects,
   initialProfile = defaultProfile,
   initialGuestbook: initialGb = initialGuestbook,
@@ -251,7 +243,7 @@ export default function PortfolioClient({
     const clean = (cmdText || terminalInput).trim().toLowerCase();
     let res = '';
     if (clean === 'help') {
-      res = 'Available commands: whoami, bio, skills, projects, flagship, library, tomesphere, live, contact, clear';
+      res = 'Available commands: whoami, bio, skills, projects, flagship, library, tomesphere, contact, clear';
     } else if (clean === 'whoami') {
       res = `${profile.name} (${profile.title}) based in ${profile.location}`;
     } else if (clean === 'bio') {
@@ -266,10 +258,8 @@ export default function PortfolioClient({
       res = skillsList.join(' · ');
     } else if (clean === 'projects') {
       res = products.map(p => `${p.name} [${p.status}] - ${p.category} (${p.url})`).join('\n');
-    } else if (clean === 'live') {
-      res = `Live Repos: ${initialRepos.length} discovered on GitHub. Server status: Dynamic full-stack Next.js on Vercel.`;
     } else if (clean === 'contact') {
-      res = `Email: ${profile.email}\nGitHub: https://${profile.socials.github}\nLinkedIn: https://${profile.socials.linkedin}`;
+      res = `Email: ${profile.email}\nLinkedIn: https://${profile.socials.linkedin}`;
     } else if (clean === 'clear') {
       setTerminalHistory([]);
       setTerminalInput('');
@@ -396,7 +386,6 @@ export default function PortfolioClient({
         <nav className="nav-desktop">
           <a href="#work" className="nav-link">Work</a>
           <a href="#flagship" className="nav-link">TomeSphere</a>
-          <a href="#live-activity" className="nav-link">Live Repos</a>
           <a href="#terminal" className="nav-link">Terminal</a>
           <a href="#guestbook" className="nav-link">Guestbook</a>
           <a href="#contact" className="nav-link">Contact</a>
@@ -457,12 +446,12 @@ export default function PortfolioClient({
               <Copy size={15} /> Copy Contact Email
             </button>
             <a
-              href={`https://${profile.socials.github}`}
+              href={`https://${profile.socials.linkedin}`}
               target="_blank"
               rel="noreferrer"
               className="btn-secondary-glass"
             >
-              <Github size={15} /> GitHub <ArrowUpRight size={14} />
+              <Linkedin size={15} /> LinkedIn <ArrowUpRight size={14} />
             </a>
           </div>
 
@@ -544,12 +533,10 @@ export default function PortfolioClient({
                   Launch BookGarden Library <ArrowUpRight size={16} />
                 </a>
                 <a
-                  href={`https://${profile.socials.github}`}
-                  target="_blank"
-                  rel="noreferrer"
+                  href="#work"
                   className="btn-secondary-glass"
                 >
-                  <Github size={15} /> Source Code
+                  Explore Catalog <ArrowRight size={15} />
                 </a>
               </div>
             </div>
@@ -652,44 +639,7 @@ export default function PortfolioClient({
           )}
         </section>
 
-        {/* Live GitHub Activity Stream */}
-        <section id="live-activity" className="section-wrapper">
-          <div className="section-head">
-            <div>
-              <div className="section-eyebrow">Server-Side Dynamic Stream</div>
-              <h2 className="section-title">Live GitHub Repositories</h2>
-              <p className="section-subtitle">Real-time public code repositories fetched from GitHub API.</p>
-            </div>
-          </div>
 
-          <div className="github-repos-grid">
-            {initialRepos.length > 0 ? (
-              initialRepos.map(repo => (
-                <div key={repo.name} className="github-repo-card">
-                  <div className="github-repo-name">
-                    <Github size={16} /> {repo.name}
-                  </div>
-                  <div className="github-repo-desc">{repo.description}</div>
-                  <div className="github-repo-meta">
-                    <span>{repo.language}</span>
-                    <a
-                      href={repo.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: 'var(--accent-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}
-                    >
-                      View Code <ArrowUpRight size={12} />
-                    </a>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div style={{ color: 'var(--text-muted)', fontSize: '14px', gridColumn: '1 / -1' }}>
-                Connected to GitHub API for {profile.socials.github}. Repositories hydrate dynamically.
-              </div>
-            )}
-          </div>
-        </section>
 
         {/* Interactive Terminal Shell */}
         <section id="terminal" className="section-wrapper">
@@ -755,7 +705,7 @@ export default function PortfolioClient({
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', alignSelf: 'center', marginRight: '6px' }}>
                   Quick commands:
                 </span>
-                {['help', 'whoami', 'skills', 'flagship', 'live', 'contact', 'clear'].map(cmd => (
+                {['help', 'whoami', 'skills', 'projects', 'flagship', 'contact', 'clear'].map(cmd => (
                   <button key={cmd} type="button" className="term-btn" onClick={() => handleCommand(cmd)}>
                     {cmd}
                   </button>
@@ -999,9 +949,6 @@ export default function PortfolioClient({
         </div>
 
         <div className="footer-social-links">
-          <a href={`https://${profile.socials.github}`} target="_blank" rel="noreferrer">
-            <Github size={15} /> GitHub
-          </a>
           <a href={`https://${profile.socials.linkedin}`} target="_blank" rel="noreferrer">
             <Linkedin size={15} /> LinkedIn
           </a>
