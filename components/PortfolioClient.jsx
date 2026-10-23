@@ -33,6 +33,7 @@ import {
   X
 } from 'lucide-react';
 import { submitContactMessage, submitGuestbookEntry } from '../app/actions';
+import { apiClient } from '../lib/api-client';
 
 const defaultProjects = [
   {
@@ -159,10 +160,15 @@ const techStack = [
   'Git'
 ];
 
-export default function PortfolioClient({ initialRepos = [] }) {
+export default function PortfolioClient({
+  initialRepos = [],
+  initialProjects = defaultProjects,
+  initialProfile = defaultProfile,
+  initialGuestbook: initialGb = initialGuestbook
+}) {
   const [theme, setTheme] = useState('dark');
-  const [products, setProducts] = useState(defaultProjects);
-  const [profile, setProfile] = useState(defaultProfile);
+  const [products, setProducts] = useState(initialProjects);
+  const [profile, setProfile] = useState(initialProfile);
   const [view, setView] = useState('home');
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,7 +176,7 @@ export default function PortfolioClient({ initialRepos = [] }) {
   const [toastMessage, setToastMessage] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState('Overview');
-  const [guestbook, setGuestbook] = useState(initialGuestbook);
+  const [guestbook, setGuestbook] = useState(initialGb);
 
   const [contactState, contactAction, contactPending] = useActionState(submitContactMessage, null);
   const [gbState, gbAction, gbPending] = useActionState(submitGuestbookEntry, null);
@@ -186,21 +192,6 @@ export default function PortfolioClient({ initialRepos = [] }) {
     const savedTheme = localStorage.getItem('site-theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
-
-    try {
-      const savedProjs = localStorage.getItem('portfolio-projects');
-      if (savedProjs) {
-        const parsed = JSON.parse(savedProjs);
-        if (Array.isArray(parsed) && parsed.length > 0) setProducts(parsed);
-      }
-      const savedProf = localStorage.getItem('portfolio-profile');
-      if (savedProf) {
-        const parsed = JSON.parse(savedProf);
-        if (parsed.name && !parsed.name.includes('Arjun')) setProfile(parsed);
-      }
-    } catch (e) {
-      // Use defaults
-    }
   }, []);
 
   useEffect(() => {
@@ -301,22 +292,52 @@ export default function PortfolioClient({ initialRepos = [] }) {
     });
   };
 
-  const saveProduct = (item) => {
-    const updated = products.some(p => p.id === item.id)
-      ? products.map(p => (p.id === item.id ? item : p))
-      : [item, ...products];
-    setProducts(updated);
-    localStorage.setItem('portfolio-projects', JSON.stringify(updated));
-    setActiveModal(null);
-    showToast('Project saved successfully');
+  const saveProduct = async (item) => {
+    try {
+      const exists = products.some(p => String(p.id) === String(item.id));
+      let saved;
+      if (exists) {
+        saved = await apiClient.projects.update(item.id, item);
+      } else {
+        saved = await apiClient.projects.create(item);
+      }
+      const finalItem = saved || item;
+      const updated = exists
+        ? products.map(p => (String(p.id) === String(item.id) ? finalItem : p))
+        : [finalItem, ...products];
+      setProducts(updated);
+      setActiveModal(null);
+      showToast('Project saved to backend successfully');
+    } catch (err) {
+      const updated = products.some(p => String(p.id) === String(item.id))
+        ? products.map(p => (String(p.id) === String(item.id) ? item : p))
+        : [item, ...products];
+      setProducts(updated);
+      setActiveModal(null);
+      showToast(err.message || 'Saved locally');
+    }
   };
 
-  const removeProduct = (id) => {
+  const removeProduct = async (id) => {
     if (!window.confirm('Delete this project from your portfolio?')) return;
-    const updated = products.filter(p => p.id !== id);
-    setProducts(updated);
-    localStorage.setItem('portfolio-projects', JSON.stringify(updated));
-    showToast('Project removed');
+    try {
+      await apiClient.projects.delete(id);
+      setProducts(prev => prev.filter(p => String(p.id) !== String(id)));
+      showToast('Project removed from backend');
+    } catch (err) {
+      setProducts(prev => prev.filter(p => String(p.id) !== String(id)));
+      showToast(err.message || 'Project removed');
+    }
+  };
+
+  const handleProfileSave = async (updatedProfile) => {
+    try {
+      const res = await apiClient.profile.update(updatedProfile || profile);
+      if (res) setProfile(res);
+      showToast('Profile updated on backend successfully');
+    } catch (err) {
+      showToast(err.message || 'Profile saved');
+    }
   };
 
   if (view === 'admin') {
@@ -329,10 +350,15 @@ export default function PortfolioClient({ initialRepos = [] }) {
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         openEditor={openEditor}
+        activeModal={activeModal}
+        closeModal={() => setActiveModal(null)}
+        saveProduct={saveProduct}
         removeProduct={removeProduct}
         showToast={showToast}
+        toastMessage={toastMessage}
         theme={theme}
         toggleTheme={toggleTheme}
+        onSaveProfile={handleProfileSave}
       />
     );
   }
@@ -1006,10 +1032,15 @@ function StudioDashboard({
   activeNav,
   setActiveNav,
   openEditor,
+  activeModal,
+  closeModal,
+  saveProduct,
   removeProduct,
   showToast,
+  toastMessage,
   theme,
-  toggleTheme
+  toggleTheme,
+  onSaveProfile
 }) {
   const liveCount = products.filter(p => p.status === 'Live').length;
   const featuredCount = products.filter(p => p.featured).length;
@@ -1081,8 +1112,8 @@ function StudioDashboard({
               {activeNav === 'Overview'
                 ? `Welcome back, ${profile.name.split(' ')[0]}`
                 : activeNav === 'Projects'
-                ? 'Manage Portfolio Projects'
-                : 'Profile & Portfolio Settings'}
+                  ? 'Manage Portfolio Projects'
+                  : 'Profile & Portfolio Settings'}
             </h1>
           </div>
 
@@ -1279,8 +1310,11 @@ function StudioDashboard({
                 className="btn-primary-glow"
                 style={{ width: '100%', justifyContent: 'center', marginTop: '14px' }}
                 onClick={() => {
-                  localStorage.setItem('portfolio-profile', JSON.stringify(profile));
-                  showToast('Profile details updated and saved');
+                  if (onSaveProfile) {
+                    onSaveProfile(profile);
+                  } else {
+                    showToast('Profile details updated');
+                  }
                 }}
               >
                 <Check size={16} /> Save Changes
@@ -1289,6 +1323,21 @@ function StudioDashboard({
           </div>
         )}
       </main>
+
+      {/* Studio Modal & Toast */}
+      {activeModal && (
+        <ProductModal
+          item={activeModal.item}
+          onClose={closeModal}
+          onSave={saveProduct}
+        />
+      )}
+      {toastMessage && (
+        <div className="toast-container">
+          <Check size={16} style={{ color: 'var(--accent-emerald)' }} />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </div>
   );
 }
