@@ -27,3 +27,6 @@ export function handleApiError(error) {
     { status: 500 }
   );
 }
+
+export const formatErrorResponse = handleApiError;
+

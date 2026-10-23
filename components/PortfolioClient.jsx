@@ -178,11 +178,13 @@ export default function PortfolioClient({
   initialRepos = [],
   initialProjects = defaultProjects,
   initialProfile = defaultProfile,
-  initialGuestbook: initialGb = initialGuestbook
+  initialGuestbook: initialGb = initialGuestbook,
+  initialSkills = techStack
 }) {
   const [theme, setTheme] = useState('dark');
   const [products, setProducts] = useState(initialProjects);
   const [profile, setProfile] = useState(initialProfile);
+  const [skillsList] = useState(initialSkills && initialSkills.length > 0 ? initialSkills : techStack);
   const [view, setView] = useState('home');
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -261,7 +263,7 @@ export default function PortfolioClient({
     } else if (clean === 'flagship') {
       res = `BookGarden -> https://${flagshipProject.url} : ${flagshipProject.description}`;
     } else if (clean === 'skills') {
-      res = techStack.join(' · ');
+      res = skillsList.join(' · ');
     } else if (clean === 'projects') {
       res = products.map(p => `${p.name} [${p.status}] - ${p.category} (${p.url})`).join('\n');
     } else if (clean === 'live') {
