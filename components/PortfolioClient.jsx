@@ -77,7 +77,7 @@ const defaultProjects = [
     featured: true,
     status: 'Live',
     year: '2026',
-    tags: ['TypeScript', 'WebRTC', 'WebSockets', 'Supabase', 'Streaming']
+    tags: ['TypeScript', 'WebRTC', 'WebSockets', 'Real-Time Sync', 'Streaming']
   },
   {
     id: 'proj_fitmirror',
@@ -160,10 +160,10 @@ const techStack = [
   'Next.js 16',
   'React 19',
   'TypeScript',
-  'Server Actions',
+  'WebSockets',
   'Node.js',
   'PostgreSQL',
-  'Supabase',
+  'Cloud Architecture',
   'Tailwind CSS',
   'Vite',
   'Docker',
@@ -250,7 +250,7 @@ export default function PortfolioClient({
 
   const [terminalHistory, setTerminalHistory] = useState([
     { cmd: 'whoami', output: 'Katam Ganesh Reddy — Full-Stack Developer & Independent Builder' },
-    { cmd: 'server', output: 'Next.js App Router (Full-Stack Dynamic Engine) hosted on Vercel' },
+    { cmd: 'hub', output: 'TomeSphere Digital Product Suite (tomesphere.in)' },
     { cmd: 'domain', output: 'tomesphere.in' }
   ]);
   const [terminalInput, setTerminalInput] = useState('');
@@ -518,8 +518,8 @@ export default function PortfolioClient({
 
             {/* Subtitle / Bio */}
             <p className="hero-description-centered hero-fade-in-3">
-              Hello, I am <strong>{profile.name}</strong>. Full-stack software engineer building distributed cloud backends,
-              real-time web applications, and reading sanctuaries like{' '}
+              Hello, I am <strong>{profile.name}</strong>. Software engineer and independent builder creating
+              modern web applications, real-time interactive platforms, and reading sanctuaries like{' '}
               <a
                 href={`https://${profile.domain || 'tomesphere.in'}`}
                 className="hero-inline-link"
@@ -597,31 +597,34 @@ export default function PortfolioClient({
                 </div>
               </a>
 
-              {/* Card 2: Production Cloud Architecture */}
-              <div className="hero-bento-card">
+              {/* Card 2: Synchronized Media Experience */}
+              <a
+                href="https://cowatch.tomesphere.in"
+                target="_blank"
+                rel="noreferrer"
+                className="hero-bento-card"
+              >
                 <div className="bento-card-header">
                   <div className="bento-icon-box bento-icon-emerald">
-                    <Server size={18} />
+                    <Monitor size={18} />
                   </div>
                   <span className="bento-badge-pill bento-pill-live">
-                    <span className="sat-dot sat-emerald" /> Sole Authority
+                    <span className="sat-dot sat-emerald" /> Live Platform
                   </span>
                 </div>
                 <div className="bento-card-body">
-                  <h3 className="bento-card-title">Render API + Vercel Edge</h3>
-                  <div className="bento-card-sub">Decoupled Microservice</div>
+                  <h3 className="bento-card-title">CoWatch</h3>
+                  <div className="bento-card-sub">cowatch.tomesphere.in</div>
                   <p className="bento-card-desc">
-                    Standalone Express API server running on Render as sole database authority with Supabase PostgreSQL, row-level security, and zero client leaks.
+                    Synchronized watch party platform for movies, videos, and live streams with virtual browsers, interactive chat, and room orchestration.
                   </p>
                 </div>
                 <div className="bento-card-footer">
-                  <div className="bento-tech-tags">
-                    <span className="bento-mini-tag">Render</span>
-                    <span className="bento-mini-tag">Supabase</span>
-                    <span className="bento-mini-tag">Vercel</span>
-                  </div>
+                  <span className="bento-action-link">
+                    Explore CoWatch <ArrowUpRight size={14} />
+                  </span>
                 </div>
-              </div>
+              </a>
 
               {/* Card 3: Verified Portfolio Catalog */}
               <a href="#work" className="hero-bento-card">
@@ -685,7 +688,7 @@ export default function PortfolioClient({
               </div>
               <p className="flagship-desc">{flagshipProject.description}</p>
               <div className="flagship-tags">
-                {(flagshipProject.tags || ['Next.js', 'React', 'Supabase', 'TypeScript', 'EPUB/PDF']).map(t => (
+                {(flagshipProject.tags || ['Next.js', 'React', 'TypeScript', 'Digital Archive', 'EPUB/PDF']).map(t => (
                   <span key={t} className="flagship-tag">
                     {t}
                   </span>
@@ -983,15 +986,15 @@ export default function PortfolioClient({
               <div className="capability-icon-box">
                 <Cpu size={24} />
               </div>
-              <h3 className="capability-title">Backend &amp; Server Actions</h3>
+              <h3 className="capability-title">Backend &amp; API Architecture</h3>
               <p className="capability-desc">
-                Designing resilient schemas, Server Actions, RESTful &amp; GraphQL endpoints, database subscriptions, and low-latency APIs.
+                Designing resilient schemas, RESTful &amp; GraphQL endpoints, real-time event streams, and high-performance services.
               </p>
               <div className="capability-tags">
-                <span className="cap-tag">Server Actions</span>
-                <span className="cap-tag">PostgreSQL</span>
-                <span className="cap-tag">Supabase</span>
                 <span className="cap-tag">Node.js</span>
+                <span className="cap-tag">PostgreSQL</span>
+                <span className="cap-tag">WebSockets</span>
+                <span className="cap-tag">REST APIs</span>
               </div>
             </div>
 
@@ -1019,7 +1022,7 @@ export default function PortfolioClient({
                 Configuring modern CI/CD pipelines, custom DNS domains, edge delivery, and production optimization for rapid global access.
               </p>
               <div className="capability-tags">
-                <span className="cap-tag">Vercel</span>
+                <span className="cap-tag">CI/CD</span>
                 <span className="cap-tag">Edge Routing</span>
                 <span className="cap-tag">DNS/CNAME</span>
                 <span className="cap-tag">Docker</span>
