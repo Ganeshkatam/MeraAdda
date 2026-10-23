@@ -42,7 +42,7 @@ export default function Navbar() {
             <Link href="/" className="brand-name">
               TomeSphere
             </Link>
-            <div className="brand-tag">Product Place · tomesphere.in</div>
+            <div className="brand-tag">Independent digital studio · tomesphere.in</div>
           </div>
         </div>
 
