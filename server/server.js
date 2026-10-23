@@ -1,3 +1,12 @@
+// Load local .env file when executed as a standalone module
+if (typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile();
+  } catch {
+    // Environment variables are injected by container or host
+  }
+}
+
 import express from 'express';
 import cors from 'cors';
 import os from 'os';
