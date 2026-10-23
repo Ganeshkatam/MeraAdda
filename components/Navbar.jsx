@@ -76,7 +76,9 @@ export default function Navbar() {
             type="button"
             className="btn-icon-round btn-menu-mobile"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}\n            aria-expanded={mobileMenuOpen}\n            aria-controls="mobile-navigation"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
