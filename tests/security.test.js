@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { createClient } from '@supabase/supabase-js';
 import { validateProjectPayload } from '../server/validators/project.validator.js';
 import { validateContactPayload } from '../server/validators/contact.validator.js';
@@ -200,5 +203,34 @@ test('Security: Live Supabase RLS & Role Privileges', async (t) => {
 
     const deleteRes = await anonClient.from('guestbook').delete().eq('id', 'gb_test');
     assert.ok(deleteRes.error, 'Expected error when anonymous user attempts to delete guestbook');
+  });
+});
+
+test('Deployment Hygiene: Vercel Preview Deployment Prevention', async (t) => {
+  const vercelPath = resolve(process.cwd(), 'vercel.json');
+
+  await t.test('vercel.json configuration exists and parses cleanly', () => {
+    assert.ok(existsSync(vercelPath), 'vercel.json must be present in repository root');
+    const content = JSON.parse(readFileSync(vercelPath, 'utf-8'));
+    assert.ok(content.ignoreCommand, 'ignoreCommand must be defined in vercel.json');
+    assert.match(content.ignoreCommand, /VERCEL_ENV/, 'ignoreCommand must inspect VERCEL_ENV');
+  });
+
+  await t.test('ignoreCommand skips preview builds (exit 0) and proceeds on production (exit 1)', () => {
+    const content = JSON.parse(readFileSync(vercelPath, 'utf-8'));
+    const shell = process.platform === 'win32' ? 'bash' : 'sh';
+
+    const previewRun = spawnSync(shell, ['-c', content.ignoreCommand], {
+      env: { ...process.env, VERCEL_ENV: 'preview', WSLENV: 'VERCEL_ENV' }
+    });
+    if (previewRun.error && process.platform === 'win32') {
+      return;
+    }
+    assert.equal(previewRun.status, 0, 'Preview deployments must return exit code 0 to cancel build');
+
+    const prodRun = spawnSync(shell, ['-c', content.ignoreCommand], {
+      env: { ...process.env, VERCEL_ENV: 'production', WSLENV: 'VERCEL_ENV' }
+    });
+    assert.equal(prodRun.status, 1, 'Production deployments must return exit code 1 to proceed with build');
   });
 });
