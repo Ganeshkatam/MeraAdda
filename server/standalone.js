@@ -36,34 +36,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health Check Endpoints
-const healthHandler = async (req, res) => {
-  let dbStatus = 'connected';
-  let dbError = null;
-
-  try {
-    const { error } = await supabase.from('projects').select('id', { count: 'exact', head: true });
-    if (error) {
-      dbStatus = 'degraded';
-      dbError = error.message;
-    }
-  } catch (err) {
-    dbStatus = 'disconnected';
-    dbError = err.message;
-  }
-
-  res.status(dbStatus === 'connected' ? 200 : 503).json({
-    status: dbStatus === 'connected' ? 'ok' : 'error',
-    timestamp: new Date().toISOString(),
-    uptimeSeconds: Math.floor(process.uptime()),
-    hostname: os.hostname(),
-    platform: process.platform,
-    nodeVersion: process.version,
-    database: {
-      provider: 'Supabase PostgreSQL',
-      status: dbStatus,
-      ...(dbError ? { error: dbError } : {})
-    }
+// Server Health Check Endpoint (Liveness probe - independent of external services)
+const healthHandler = (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString()
   });
 };
 
