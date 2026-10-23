@@ -34,7 +34,7 @@ export default async function AboutPage() {
         <div className="section-head">
           <div>
             <div className="page-eyebrow">Authority &amp; Decoupling</div>
-            <h2 className="section-title">Day-1 Decoupled Architecture</h2>
+            <h2 className="section-title">Decoupled Architecture</h2>
             <p className="section-subtitle">
               Strict isolation between client interfaces and server-side database authority.
             </p>

@@ -12,7 +12,6 @@ The central digital hub and product platform accessible at [tomesphere.in](https
 - **`/` (Overview)**: Central overview hub featuring architectural highlights, systems bento portals, and real-time tech marquee.
 - **`/products` (Products & Systems)**: Interactive catalog of all 7 production applications with real-time category filtering and live search.
 - **`/about` (Architecture & Pillars)**: Engineering philosophy, system design disciplines, and verified technical competencies.
-- **`/terminal` (System Shell)**: Interactive developer console executing commands (`whoami`, `bio`, `skills`, `projects`, `contact`, `help`, `clear`).
 - **`/guestbook` (Community)**: Real-time visitor message board backed by Supabase.
 - **`/contact` (Direct Connection)**: Direct server message endpoint and communication channels.
 

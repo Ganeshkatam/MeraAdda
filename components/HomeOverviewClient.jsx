@@ -10,7 +10,6 @@ import {
   Github,
   Linkedin,
   Server,
-  Terminal,
   Layers,
   Code2,
   Sparkles,
@@ -55,36 +54,28 @@ export default function HomeOverviewClient({
         </div>
 
         <div className="hero-container-centered">
-          <div className="badge-beacon hero-fade-in-1">
-            <span className="beacon-dot" />
-            <span>TomeSphere Product Ecosystem · {projects.length || 7} Systems Active</span>
-          </div>
-
-          <h1 className="hero-title-centered hero-fade-in-2">
+          <h1 className="hero-title-centered hero-fade-in-1">
             Software products engineered for{' '}
             <span className="hero-gradient-text hero-shimmer-text">
               utility, performance &amp; craft.
             </span>
           </h1>
 
-          <p className="hero-description-centered hero-fade-in-3">
+          <p className="hero-description-centered hero-fade-in-2">
             Welcome to <strong>TomeSphere</strong> — an independent digital product place building production web platforms, business growth engines, real-time collaboration tools, and developer utilities.
           </p>
 
-          <div className="hero-cta-group-centered hero-fade-in-4">
+          <div className="hero-cta-group-centered hero-fade-in-3">
             <Link href="/products" className="btn-primary-glow hero-btn-magnetic">
               Explore All Products <ArrowRight size={16} />
             </Link>
             <Link href="/about" className="btn-secondary-glass">
               <Layers size={15} /> System Architecture
             </Link>
-            <Link href="/terminal" className="btn-secondary-glass">
-              <Terminal size={15} /> Live Terminal
-            </Link>
           </div>
 
           {/* Product Metrics Strip */}
-          <div className="product-metrics-strip hero-fade-in-5">
+          <div className="product-metrics-strip hero-fade-in-4">
             <div className="metric-item">
               <span className="metric-value">{String(projects.length || 7).padStart(2, '0')}</span>
               <span className="metric-label">Production Products</span>
@@ -149,23 +140,23 @@ export default function HomeOverviewClient({
               </div>
             </Link>
 
-            <Link href="/terminal" className="hero-bento-card">
+            <Link href="/guestbook" className="hero-bento-card">
               <div className="bento-card-header">
                 <div className="bento-icon-box bento-icon-cyan">
-                  <Terminal size={18} />
+                  <Sparkles size={18} />
                 </div>
-                <span className="bento-badge-pill">Live Shell</span>
+                <span className="bento-badge-pill">Supabase Live</span>
               </div>
               <div className="bento-card-body">
-                <h3 className="bento-card-title">Studio Console</h3>
-                <div className="bento-card-sub">Interactive Developer Shell</div>
+                <h3 className="bento-card-title">Community Feedback</h3>
+                <div className="bento-card-sub">Real-Time Notes &amp; Thoughts</div>
                 <p className="bento-card-desc">
-                  Query product states, inspect verified tech stacks, view system health, and test command execution in real-time.
+                  Leave feedback, product ideas, or greetings recorded live to the Supabase PostgreSQL database.
                 </p>
               </div>
               <div className="bento-card-footer">
                 <span className="bento-action-link">
-                  Launch Console <ArrowRight size={14} />
+                  Sign Feedback <ArrowRight size={14} />
                 </span>
               </div>
             </Link>

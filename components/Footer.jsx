@@ -23,7 +23,6 @@ export default function Footer({ profile }) {
       <div className="footer-links-row">
         <Link href="/products" className="footer-nav-link">Products</Link>
         <Link href="/about" className="footer-nav-link">Architecture</Link>
-        <Link href="/terminal" className="footer-nav-link">Terminal</Link>
         <Link href="/guestbook" className="footer-nav-link">Feedback</Link>
         <Link href="/contact" className="footer-nav-link">Contact</Link>
       </div>
