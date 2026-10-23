@@ -26,6 +26,18 @@ export class ValidationError extends ApiError {
   }
 }
 
+export class UnauthorizedError extends ApiError {
+  constructor(message = 'Authentication required') {
+    super(message, 401, 'UNAUTHORIZED');
+  }
+}
+
+export class ForbiddenError extends ApiError {
+  constructor(message = 'Administrative privileges required') {
+    super(message, 403, 'FORBIDDEN');
+  }
+}
+
 export class MethodNotAllowedError extends ApiError {
   constructor(method = '') {
     super(`HTTP Method ${method} not allowed`, 405, 'METHOD_NOT_ALLOWED');

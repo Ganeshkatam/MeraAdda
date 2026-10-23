@@ -8,6 +8,7 @@ import { contactService } from './services/contact.service.js';
 import { skillService } from './services/skill.service.js';
 import { ApiError } from './errors/api-error.js';
 import { supabase } from './config/supabase.js';
+import { requireAdminMiddleware } from './auth/admin-auth.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,7 +22,7 @@ const allowedOrigins = process.env.CORS_ORIGIN
 app.use(cors({
   origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-admin-key', 'x-admin-secret']
 }));
 
 app.use(express.json());
@@ -89,7 +90,7 @@ app.get('/api/v1/projects/:id', async (req, res, next) => {
   }
 });
 
-app.post('/api/v1/projects', async (req, res, next) => {
+app.post('/api/v1/projects', requireAdminMiddleware, async (req, res, next) => {
   try {
     const created = await projectService.createProject(req.body);
     res.status(201).json({ success: true, data: created });
@@ -98,7 +99,7 @@ app.post('/api/v1/projects', async (req, res, next) => {
   }
 });
 
-app.put('/api/v1/projects/:id', async (req, res, next) => {
+app.put('/api/v1/projects/:id', requireAdminMiddleware, async (req, res, next) => {
   try {
     const updated = await projectService.updateProject(req.params.id, req.body);
     res.json({ success: true, data: updated });
@@ -107,7 +108,7 @@ app.put('/api/v1/projects/:id', async (req, res, next) => {
   }
 });
 
-app.delete('/api/v1/projects/:id', async (req, res, next) => {
+app.delete('/api/v1/projects/:id', requireAdminMiddleware, async (req, res, next) => {
   try {
     await projectService.deleteProject(req.params.id);
     res.json({ success: true, message: `Project ${req.params.id} deleted successfully` });
@@ -126,7 +127,7 @@ app.get('/api/v1/profile', async (req, res, next) => {
   }
 });
 
-app.put('/api/v1/profile', async (req, res, next) => {
+app.put('/api/v1/profile', requireAdminMiddleware, async (req, res, next) => {
   try {
     const profile = await profileService.updateProfile(req.body);
     res.json({ success: true, data: profile });

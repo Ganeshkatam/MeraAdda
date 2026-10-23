@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Activity,
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
@@ -14,25 +13,17 @@ import {
   ExternalLink,
   Github,
   Globe,
-  Laptop,
-  LayoutDashboard,
   Linkedin,
-  LogOut,
   Mail,
   Menu,
   Monitor,
   Moon,
-  Pencil,
-  Plus,
   Search,
   Send,
   Server,
-  Settings,
-  ShieldCheck,
   Sparkles,
   Sun,
   Terminal,
-  Trash2,
   X,
   Zap
 } from 'lucide-react';
@@ -178,16 +169,13 @@ export default function PortfolioClient({
   initialSkills = techStack
 }) {
   const [theme, setTheme] = useState('dark');
-  const [products, setProducts] = useState(initialProjects && initialProjects.length > 0 ? initialProjects : defaultProjects);
-  const [profile, setProfile] = useState(initialProfile || defaultProfile);
+  const [products] = useState(initialProjects && initialProjects.length > 0 ? initialProjects : defaultProjects);
+  const [profile] = useState(initialProfile || defaultProfile);
   const [skillsList] = useState(initialSkills && initialSkills.length > 0 ? initialSkills : techStack);
-  const [view, setView] = useState('home');
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeModal, setActiveModal] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeNav, setActiveNav] = useState('Overview');
   const [guestbook, setGuestbook] = useState(initialGb);
 
   const [contactState, setContactState] = useState(null);
@@ -340,95 +328,6 @@ export default function PortfolioClient({
     .slice(0, 2)
     .toUpperCase();
 
-  const openEditor = (item) => {
-    setActiveModal({
-      type: 'product',
-      item: item || {
-        id: Date.now(),
-        name: '',
-        category: 'WEB APPS',
-        description: '',
-        url: '',
-        image: '',
-        accent: 'lavender',
-        featured: true,
-        status: 'Live',
-        year: '2026',
-        tags: ['React', 'TypeScript']
-      }
-    });
-  };
-
-  const saveProduct = async (item) => {
-    try {
-      const exists = products.some(p => String(p.id) === String(item.id));
-      let saved;
-      if (exists) {
-        saved = await apiClient.projects.update(item.id, item);
-      } else {
-        saved = await apiClient.projects.create(item);
-      }
-      const finalItem = saved || item;
-      const updated = exists
-        ? products.map(p => (String(p.id) === String(item.id) ? finalItem : p))
-        : [finalItem, ...products];
-      setProducts(updated);
-      setActiveModal(null);
-      showToast('Project saved to backend successfully');
-    } catch (err) {
-      const updated = products.some(p => String(p.id) === String(item.id))
-        ? products.map(p => (String(p.id) === String(item.id) ? item : p))
-        : [item, ...products];
-      setProducts(updated);
-      setActiveModal(null);
-      showToast(err.message || 'Saved locally');
-    }
-  };
-
-  const removeProduct = async (id) => {
-    if (!window.confirm('Delete this project from your portfolio?')) return;
-    try {
-      await apiClient.projects.delete(id);
-      setProducts(prev => prev.filter(p => String(p.id) !== String(id)));
-      showToast('Project removed from backend');
-    } catch (err) {
-      setProducts(prev => prev.filter(p => String(p.id) !== String(id)));
-      showToast(err.message || 'Project removed');
-    }
-  };
-
-  const handleProfileSave = async (updatedProfile) => {
-    try {
-      const res = await apiClient.profile.update(updatedProfile || profile);
-      if (res) setProfile(res);
-      showToast('Profile updated on backend successfully');
-    } catch (err) {
-      showToast(err.message || 'Profile saved');
-    }
-  };
-
-  if (view === 'admin') {
-    return (
-      <StudioDashboard
-        products={products}
-        profile={profile}
-        setProfile={setProfile}
-        setView={setView}
-        activeNav={activeNav}
-        setActiveNav={setActiveNav}
-        openEditor={openEditor}
-        activeModal={activeModal}
-        closeModal={() => setActiveModal(null)}
-        saveProduct={saveProduct}
-        removeProduct={removeProduct}
-        showToast={showToast}
-        toastMessage={toastMessage}
-        theme={theme}
-        toggleTheme={toggleTheme}
-        onSaveProfile={handleProfileSave}
-      />
-    );
-  }
 
   return (
     <div className="site-layout">
@@ -462,15 +361,6 @@ export default function PortfolioClient({
             {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>
 
-          <button
-            className="btn-pill-studio"
-            onClick={() => {
-              setView('admin');
-              window.scrollTo(0, 0);
-            }}
-          >
-            <LayoutDashboard size={14} /> Studio Control
-          </button>
 
           <button
             className="btn-icon-round btn-menu-mobile"
@@ -782,15 +672,6 @@ export default function PortfolioClient({
                     >
                       Visit Website <ArrowUpRight size={13} />
                     </a>
-
-                    <button
-                      className="btn-secondary-glass"
-                      style={{ padding: '6px 12px', fontSize: '11px' }}
-                      onClick={() => openEditor(project)}
-                      title="Edit in studio"
-                    >
-                      <Pencil size={12} /> Edit
-                    </button>
                   </div>
                 </div>
               </article>
@@ -1120,26 +1001,8 @@ export default function PortfolioClient({
           <a href={`mailto:${profile.email}`}>
             <Mail size={15} /> Email
           </a>
-          <button
-            onClick={() => {
-              setView('admin');
-              window.scrollTo(0, 0);
-            }}
-            style={{ color: 'var(--accent-primary)', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
-          >
-            <LayoutDashboard size={13} /> Studio
-          </button>
         </div>
       </footer>
-
-      {/* Modal */}
-      {activeModal && (
-        <ProductModal
-          item={activeModal.item}
-          onClose={() => setActiveModal(null)}
-          onSave={saveProduct}
-        />
-      )}
 
       {/* Toast */}
       {toastMessage && (
@@ -1152,439 +1015,6 @@ export default function PortfolioClient({
   );
 }
 
-function StudioDashboard({
-  products,
-  profile,
-  setProfile,
-  setView,
-  activeNav,
-  setActiveNav,
-  openEditor,
-  activeModal,
-  closeModal,
-  saveProduct,
-  removeProduct,
-  showToast,
-  toastMessage,
-  theme,
-  toggleTheme,
-  onSaveProfile
-}) {
-  const liveCount = products.filter(p => p.status === 'Live').length;
-  const featuredCount = products.filter(p => p.featured).length;
 
-  return (
-    <div className="studio-layout">
-      <aside className="studio-sidebar">
-        <div className="studio-sidebar-brand">
-          <div className="brand-monogram" style={{ width: '32px', height: '32px', fontSize: '14px' }}>
-            {profile.name.slice(0, 2).toUpperCase()}
-          </div>
-          <div>
-            <div style={{ fontSize: '13px', fontWeight: 700 }}>Studio Control</div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{profile.domain}</div>
-          </div>
-        </div>
 
-        <div style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '8px' }}>
-          NAVIGATION
-        </div>
 
-        <nav className="studio-nav-list">
-          <button
-            className={`studio-nav-item ${activeNav === 'Overview' ? 'active' : ''}`}
-            onClick={() => setActiveNav('Overview')}
-          >
-            <Monitor size={16} /> Overview
-          </button>
-          <button
-            className={`studio-nav-item ${activeNav === 'Projects' ? 'active' : ''}`}
-            onClick={() => setActiveNav('Projects')}
-          >
-            <Laptop size={16} /> Projects ({products.length})
-          </button>
-          <button
-            className={`studio-nav-item ${activeNav === 'Settings' ? 'active' : ''}`}
-            onClick={() => setActiveNav('Settings')}
-          >
-            <Settings size={16} /> Profile &amp; Domain
-          </button>
-        </nav>
-
-        <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button
-            className="btn-secondary-glass"
-            style={{ width: '100%', justifyContent: 'center', fontSize: '12px' }}
-            onClick={toggleTheme}
-          >
-            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />} {theme === 'dark' ? 'Light mode' : 'Dark mode'}
-          </button>
-
-          <button
-            className="btn-primary-glow"
-            style={{ width: '100%', justifyContent: 'center', fontSize: '12px', padding: '10px' }}
-            onClick={() => setView('home')}
-          >
-            <LogOut size={14} /> Back to Portfolio
-          </button>
-        </div>
-      </aside>
-
-      <main className="studio-main-panel">
-        <div className="studio-topbar">
-          <div>
-            <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', marginBottom: '4px' }}>
-              STUDIO &gt; {activeNav.toUpperCase()}
-            </div>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '26px', fontWeight: 700 }}>
-              {activeNav === 'Overview'
-                ? `Welcome back, ${profile.name.split(' ')[0]}`
-                : activeNav === 'Projects'
-                  ? 'Manage Portfolio Projects'
-                  : 'Profile & Portfolio Settings'}
-            </h1>
-          </div>
-
-          <button className="btn-primary-glow" onClick={() => openEditor(null)}>
-            <Plus size={16} /> Add New Project
-          </button>
-        </div>
-
-        {activeNav === 'Overview' && (
-          <>
-            <div className="studio-stats-grid">
-              <div className="studio-stat-box">
-                <div className="studio-stat-label">Total Projects</div>
-                <div className="studio-stat-num">{String(products.length).padStart(2, '0')}</div>
-                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Registered in catalog</div>
-              </div>
-              <div className="studio-stat-box">
-                <div className="studio-stat-label">Live on Web</div>
-                <div className="studio-stat-num">{String(liveCount).padStart(2, '0')}</div>
-                <div style={{ fontSize: '12px', color: 'var(--accent-emerald)' }}>Production ready</div>
-              </div>
-              <div className="studio-stat-box">
-                <div className="studio-stat-label">Featured Work</div>
-                <div className="studio-stat-num">{String(featuredCount).padStart(2, '0')}</div>
-                <div style={{ fontSize: '12px', color: 'var(--accent-secondary)' }}>Showcased on main page</div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700 }}>
-                Recent Portfolio Projects
-              </h2>
-              <button
-                style={{ fontSize: '12px', color: 'var(--accent-primary)', fontWeight: 600 }}
-                onClick={() => setActiveNav('Projects')}
-              >
-                View all projects ({products.length}) &rarr;
-              </button>
-            </div>
-
-            <div className="studio-table-card">
-              {products.slice(0, 5).map(p => (
-                <div key={p.id} className="studio-table-row">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <img
-                      src={p.image}
-                      alt={p.name}
-                      style={{ width: '42px', height: '42px', borderRadius: '6px', objectFit: 'cover' }}
-                    />
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '14px' }}>{p.name}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{p.category}</div>
-                    </div>
-                  </div>
-                  <div>
-                    <span className={`card-overlay-badge ${p.status === 'Live' ? 'badge-live' : 'badge-draft'}`} style={{ position: 'static' }}>
-                      {p.status}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{p.url}</div>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => openEditor(p)} className="btn-icon-round" style={{ width: '32px', height: '32px' }} title="Edit">
-                      <Pencil size={13} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {activeNav === 'Projects' && (
-          <div className="studio-table-card">
-            {products.map(p => (
-              <div key={p.id} className="studio-table-row">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    style={{ width: '48px', height: '48px', borderRadius: '6px', objectFit: 'cover' }}
-                  />
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '15px' }}>{p.name}</div>
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '340px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {p.description}
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <span className={`card-overlay-badge ${p.status === 'Live' ? 'badge-live' : 'badge-draft'}`} style={{ position: 'static' }}>
-                    {p.status}
-                  </span>
-                </div>
-                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{p.url}</div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => openEditor(p)} className="btn-icon-round" style={{ width: '32px', height: '32px' }} title="Edit">
-                    <Pencil size={13} />
-                  </button>
-                  <button onClick={() => removeProduct(p.id)} className="btn-icon-round" style={{ width: '32px', height: '32px' }} title="Delete">
-                    <Trash2 size={13} style={{ color: 'var(--accent-rose)' }} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeNav === 'Settings' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
-            <div className="studio-stat-box" style={{ padding: '28px' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, marginBottom: '20px' }}>
-                Profile Identity
-              </h3>
-              <div className="form-group">
-                <label className="form-label">Full Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={profile.name}
-                  onChange={e => setProfile(prev => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Professional Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={profile.title}
-                  onChange={e => setProfile(prev => ({ ...prev, title: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Domain Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={profile.domain || 'tomesphere.in'}
-                  onChange={e => setProfile(prev => ({ ...prev, domain: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Location</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={profile.location}
-                  onChange={e => setProfile(prev => ({ ...prev, location: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="studio-stat-box" style={{ padding: '28px' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, marginBottom: '20px' }}>
-                Contact &amp; Social Links
-              </h3>
-              <div className="form-group">
-                <label className="form-label">Contact Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={profile.email}
-                  onChange={e => setProfile(prev => ({ ...prev, email: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">GitHub URL</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={profile.socials.github}
-                  onChange={e =>
-                    setProfile(prev => ({
-                      ...prev,
-                      socials: { ...prev.socials, github: e.target.value }
-                    }))
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">LinkedIn URL</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={profile.socials.linkedin}
-                  onChange={e =>
-                    setProfile(prev => ({
-                      ...prev,
-                      socials: { ...prev.socials, linkedin: e.target.value }
-                    }))
-                  }
-                />
-              </div>
-              <button
-                className="btn-primary-glow"
-                style={{ width: '100%', justifyContent: 'center', marginTop: '14px' }}
-                onClick={() => {
-                  if (onSaveProfile) {
-                    onSaveProfile(profile);
-                  } else {
-                    showToast('Profile details updated');
-                  }
-                }}
-              >
-                <Check size={16} /> Save Changes
-              </button>
-            </div>
-          </div>
-        )}
-      </main>
-
-      {/* Studio Modal & Toast */}
-      {activeModal && (
-        <ProductModal
-          item={activeModal.item}
-          onClose={closeModal}
-          onSave={saveProduct}
-        />
-      )}
-      {toastMessage && (
-        <div className="toast-container">
-          <Check size={16} style={{ color: 'var(--accent-emerald)' }} />
-          <span>{toastMessage}</span>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ProductModal({ item, onClose, onSave }) {
-  const [form, setForm] = useState(item);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({
-      ...form,
-      name: form.name.trim(),
-      description: form.description.trim(),
-      url: form.url.trim(),
-      image: form.image.trim() || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85'
-    });
-  };
-
-  return (
-    <div
-      className="modal-overlay"
-      onMouseDown={e => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="modal-dialog">
-        <div className="modal-title-row">
-          <h2 className="modal-title">{item.name ? 'Edit Project' : 'Add New Project'}</h2>
-          <button className="btn-icon-round" onClick={onClose}>
-            <X size={18} />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label className="form-label">Project Name</label>
-            <input
-              type="text"
-              required
-              className="form-control"
-              value={form.name}
-              onChange={e => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. TomeSphere"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Website URL or Domain</label>
-            <input
-              type="text"
-              required
-              className="form-control"
-              value={form.url}
-              onChange={e => setForm({ ...form, url: e.target.value })}
-              placeholder="e.g. tomesphere.in"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Category</label>
-            <select
-              className="form-control"
-              value={form.category}
-              onChange={e => setForm({ ...form, category: e.target.value })}
-            >
-              <option value="WEB APPS">WEB APPS</option>
-              <option value="PRODUCTIVITY">PRODUCTIVITY</option>
-              <option value="DEVELOPER TOOLS">DEVELOPER TOOLS</option>
-              <option value="FINANCE">FINANCE</option>
-              <option value="COMMUNITY">COMMUNITY</option>
-              <option value="OTHER">OTHER</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Status</label>
-            <select
-              className="form-control"
-              value={form.status}
-              onChange={e => setForm({ ...form, status: e.target.value })}
-            >
-              <option value="Live">Live</option>
-              <option value="In progress">In progress</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Short Description</label>
-            <textarea
-              required
-              rows="3"
-              className="form-control"
-              value={form.description}
-              onChange={e => setForm({ ...form, description: e.target.value })}
-              placeholder="What makes this project compelling?"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Preview Image URL</label>
-            <input
-              type="text"
-              className="form-control"
-              value={form.image}
-              onChange={e => setForm({ ...form, image: e.target.value })}
-              placeholder="https://..."
-            />
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
-            <button type="button" className="btn-secondary-glass" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="btn-primary-glow">
-              <Check size={16} /> Save Project
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}

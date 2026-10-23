@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { projectService } from '@/server/services/project.service';
 import { handleApiError } from '@/server/errors/error-handler';
+import { requireAdminRequest } from '@/server/auth/admin-auth';
 
 export async function GET(request) {
   try {
@@ -19,6 +20,7 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    requireAdminRequest(request);
     const body = await request.json();
     const created = await projectService.createProject(body);
     return NextResponse.json({ data: created }, { status: 201 });
