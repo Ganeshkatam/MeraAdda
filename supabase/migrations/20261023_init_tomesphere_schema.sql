@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS public.guestbook (
   author TEXT NOT NULL,
   message TEXT NOT NULL,
   timestamp TEXT NOT NULL,
-  status TEXT DEFAULT 'pending',
+  status TEXT NOT NULL DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -169,7 +169,7 @@ BEGIN
       WITH CHECK (
         char_length(author) BETWEEN 2 AND 60
         AND char_length(message) BETWEEN 3 AND 500
-        AND (status IS NULL OR status = 'approved')
+        AND status = 'pending'
       );
   END IF;
 

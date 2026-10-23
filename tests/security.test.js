@@ -183,6 +183,17 @@ test('Security: Live Supabase RLS & Role Privileges', async (t) => {
     assert.ok(error, 'Expected policy check error when anonymous user attempts to set approved status');
   });
 
+  await t.test('anonymous client cannot insert null status into guestbook', async () => {
+    const { error } = await anonClient.from('guestbook').insert({
+      id: 'gb_null_test',
+      author: 'Tester',
+      message: 'Testing null status invariant',
+      timestamp: 'Today',
+      status: null
+    });
+    assert.ok(error, 'Expected error when inserting null status into guestbook');
+  });
+
   await t.test('anonymous client cannot update or delete guestbook entries', async () => {
     const updateRes = await anonClient.from('guestbook').update({ message: 'Defaced' }).eq('id', 'gb_test');
     assert.ok(updateRes.error, 'Expected error when anonymous user attempts to update guestbook');
