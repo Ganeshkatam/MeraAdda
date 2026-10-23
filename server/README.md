@@ -88,7 +88,7 @@ docker compose up -d
 
 ```bash
 npm install -g pm2
-pm2 start server/index.js --name tomesphere-backend
+pm2 start server/server.js --name tomesphere-backend
 pm2 save
 pm2 startup
 ```

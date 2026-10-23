@@ -76,7 +76,7 @@ All API error responses adhere to a stable structured contract:
 
 The application enforces strict separation of concerns and database access boundaries:
 
-- **Server (Sole Database Authority)**: The standalone Node.js server (`server/index.js`) is the sole authority for all database operations. It securely connects to Supabase PostgreSQL using server-only environment variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`).
+- **Server (Sole Database Authority)**: The standalone Node.js server (`server/server.js`) is the sole authority for all database operations. It securely connects to Supabase PostgreSQL using server-only environment variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`).
 - **Frontend (Server Calls Only)**: The frontend (browser / Vercel Next.js) has zero database access. It communicates exclusively with the backend server via HTTP endpoints (`NEXT_PUBLIC_API_URL` or `/api/v1/*`). No database credentials or client drivers exist in the frontend bundle.
 
 ### Server Environment (External Host / Machine)
