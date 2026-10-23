@@ -102,6 +102,39 @@ test('Security: Admin Authorization Guard', async (t) => {
   });
 });
 
+test('Security: Express Admin Middleware', async (t) => {
+  process.env.ADMIN_SECRET = 'ci-admin-secret-test';
+
+  const { requireAdminMiddleware } = await import('../server/auth/admin-auth.js');
+
+  await t.test('middleware passes error to next() on unauthenticated request', (t, done) => {
+    const req = { headers: {} };
+    const res = {};
+    requireAdminMiddleware(req, res, (err) => {
+      assert.ok(err instanceof ForbiddenError);
+      done();
+    });
+  });
+
+  await t.test('middleware passes error to next() on invalid credential', (t, done) => {
+    const req = { headers: { 'x-admin-key': 'bad-token' } };
+    const res = {};
+    requireAdminMiddleware(req, res, (err) => {
+      assert.ok(err instanceof ForbiddenError);
+      done();
+    });
+  });
+
+  await t.test('middleware succeeds with next() without error on valid credential', (t, done) => {
+    const req = { headers: { 'x-admin-key': 'ci-admin-secret-test' } };
+    const res = {};
+    requireAdminMiddleware(req, res, (err) => {
+      assert.equal(err, undefined);
+      done();
+    });
+  });
+});
+
 test('Security: Live Supabase RLS & Role Privileges', async (t) => {
   const supabaseUrl = process.env.SUPABASE_URL || 'https://ibuaiktnkhvqoqxrqnrz.supabase.co';
   const anonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlidWFpa3Rua2h2cW9xeHJxbnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3NjI1MTYsImV4cCI6MjEwODMzODUxNn0.KTfcNZ_uh693CDWo6QUoh7RY6EbKnOW-rPSbDHVlKjk';
@@ -137,5 +170,24 @@ test('Security: Live Supabase RLS & Role Privileges', async (t) => {
     for (const project of data) {
       assert.equal(project.status, 'Live');
     }
+  });
+
+  await t.test('anonymous client cannot insert pre-approved guestbook entries', async () => {
+    const { error } = await anonClient.from('guestbook').insert({
+      id: 'gb_hack_test',
+      author: 'Attacker',
+      message: 'Trying to bypass moderation boundary',
+      timestamp: 'Today',
+      status: 'approved'
+    });
+    assert.ok(error, 'Expected policy check error when anonymous user attempts to set approved status');
+  });
+
+  await t.test('anonymous client cannot update or delete guestbook entries', async () => {
+    const updateRes = await anonClient.from('guestbook').update({ message: 'Defaced' }).eq('id', 'gb_test');
+    assert.ok(updateRes.error, 'Expected error when anonymous user attempts to update guestbook');
+
+    const deleteRes = await anonClient.from('guestbook').delete().eq('id', 'gb_test');
+    assert.ok(deleteRes.error, 'Expected error when anonymous user attempts to delete guestbook');
   });
 });
