@@ -44,11 +44,11 @@ export class ProjectRepository {
   }
 
   async findById(id) {
-    const stringId = String(id);
+    const stringId = String(id).trim();
     const { data, error } = await supabase
       .from('projects')
       .select('id, slug, name, category, tagline, description, url, github_url, image, accent, featured, status, year, tags, display_order, metrics, created_at, updated_at')
-      .eq('id', stringId)
+      .or(`id.eq.${stringId},slug.eq.${stringId}`)
       .maybeSingle();
 
     if (error) {

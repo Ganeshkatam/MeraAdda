@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Globe, ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+import { Search, Globe, ArrowUpRight, ArrowRight } from 'lucide-react';
 
 export default function WorkCatalogClient({ initialProjects = [] }) {
   const [products] = useState(initialProjects || []);
@@ -56,50 +57,62 @@ export default function WorkCatalogClient({ initialProjects = [] }) {
       </p>
 
       <div className="projects-masonry">
-        {visibleProjects.map(project => (
-          <article key={project.id} className="project-card-modern">
-            <div className="project-card-header">
-              <div className="project-badge-row">
-                <span className={`card-status-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
-                  <span className="status-indicator-dot" />
-                  {project.status}
-                </span>
-                <span className="card-category-badge">{project.category}</span>
-              </div>
-              <span className="card-year-label">{project.year}</span>
-            </div>
+        {visibleProjects.map(project => {
+          const detailHref = `/products/${project.slug || project.id}`;
+          const launchHref = project.url.startsWith('http') ? project.url : `https://${project.url}`;
 
-            <div className="card-content-area">
-              <h3 className="card-title">{project.name}</h3>
-              <div className="card-url-row">
-                <Globe size={12} />
-                <span>{project.url}</span>
-              </div>
-              <p className="card-description">{project.description}</p>
-
-              {project.tags && project.tags.length > 0 && (
-                <div className="card-tags-list">
-                  {project.tags.map(t => (
-                    <span key={t} className="card-tag-item">
-                      {t}
-                    </span>
-                  ))}
+          return (
+            <article key={project.id} className="project-card-modern">
+              <div className="project-card-header">
+                <div className="project-badge-row">
+                  <span className={`card-status-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
+                    <span className="status-indicator-dot" />
+                    {project.status}
+                  </span>
+                  <span className="card-category-badge">{project.category}</span>
                 </div>
-              )}
-
-              <div className="card-footer-action">
-                <a
-                  href={project.url.startsWith('http') ? project.url : `https://${project.url}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="card-link-preview"
-                >
-                  Launch Product <ArrowUpRight size={13} />
-                </a>
+                <span className="card-year-label">{project.year}</span>
               </div>
-            </div>
-          </article>
-        ))}
+
+              <div className="card-content-area">
+                <h3 className="card-title">
+                  <Link href={detailHref} className="card-title-link">
+                    {project.name}
+                  </Link>
+                </h3>
+                <div className="card-url-row">
+                  <Globe size={12} />
+                  <span>{project.url}</span>
+                </div>
+                <p className="card-description">{project.description}</p>
+
+                {project.tags && project.tags.length > 0 && (
+                  <div className="card-tags-list">
+                    {project.tags.map(t => (
+                      <span key={t} className="card-tag-item">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="card-dual-actions">
+                  <Link href={detailHref} className="btn-detail-link">
+                    View Details <ArrowRight size={13} />
+                  </Link>
+                  <a
+                    href={launchHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-launch-link"
+                  >
+                    Launch <ArrowUpRight size={13} />
+                  </a>
+                </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       {visibleProjects.length === 0 && (

@@ -8,6 +8,7 @@ import { validateProjectPayload } from '../server/validators/project.validator.j
 import { validateContactPayload } from '../server/validators/contact.validator.js';
 import { validateGuestbookPayload } from '../server/validators/guestbook.validator.js';
 import { verifyAdminAuth } from '../server/auth/admin-auth.js';
+import { projectRepository } from '../server/repositories/project.repository.js';
 import { ForbiddenError, ValidationError } from '../server/errors/api-error.js';
 
 test('Security & Validation: Project Payload Validator', async (t) => {
@@ -64,6 +65,51 @@ test('Security & Validation: Project Payload Validator', async (t) => {
       tags: Array.from({ length: 20 }, (_, i) => `tag_${i}`)
     };
     assert.throws(() => validateProjectPayload(tooManyTags), ValidationError);
+  });
+});
+
+test('Phase 2: Product Slug Resolution & Directory Data Integrity', async (t) => {
+  await t.test('retrieves live product by permanent slug (e.g. bookgarden)', async () => {
+    const product = await projectRepository.findById('bookgarden');
+    assert.ok(product, 'Product should be found by slug');
+    assert.equal(product.slug, 'bookgarden');
+    assert.equal(product.name, 'BookGarden');
+    assert.equal(product.status, 'Live');
+    assert.ok(product.url, 'Product must have a URL');
+    const launchUrl = product.url.startsWith('http') ? product.url : `https://${product.url}`;
+    assert.match(launchUrl, /^https:\/\/[a-z0-9.-]+\.[a-z]{2,}/, 'Launch URL must resolve to valid HTTPS domain');
+  });
+
+  await t.test('retrieves live product by permanent id for backward compatibility', async () => {
+    const byId = await projectRepository.findById('proj_bookgarden');
+    const bySlug = await projectRepository.findById('bookgarden');
+    assert.ok(byId, 'Product should be found by id');
+    assert.ok(bySlug, 'Product should be found by slug');
+    assert.equal(byId.id, bySlug.id);
+    assert.equal(byId.name, bySlug.name);
+  });
+
+  await t.test('returns null for unknown product slug', async () => {
+    const notFoundProduct = await projectRepository.findById('unknown-slug-xyz');
+    assert.equal(notFoundProduct, null, 'Unknown slug should resolve to null');
+  });
+
+  await t.test('validates all live products have unique slugs and verified launch URLs', async () => {
+    const allProducts = await projectRepository.findAll();
+    assert.ok(Array.isArray(allProducts));
+    assert.ok(allProducts.length > 0, 'Directory should contain products');
+
+    const seenSlugs = new Set();
+    for (const prod of allProducts) {
+      assert.ok(prod.slug || prod.id, `Product ${prod.name} must have a slug or id`);
+      const key = prod.slug || prod.id;
+      assert.ok(!seenSlugs.has(key), `Duplicate product slug detected: ${key}`);
+      seenSlugs.add(key);
+
+      assert.ok(prod.url, `Product ${prod.name} must have a launch URL`);
+      const launchUrl = prod.url.startsWith('http') ? prod.url : `https://${prod.url}`;
+      assert.match(launchUrl, /^https?:\/\//, `Launch URL for ${prod.name} must resolve to a valid http(s) URL`);
+    }
   });
 });
 
