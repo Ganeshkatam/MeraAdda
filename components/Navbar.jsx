@@ -3,18 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, Layers } from 'lucide-react';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Overview' },
+  { href: '/', label: 'Home' },
   { href: '/products', label: 'Products' },
   { href: '/about', label: 'Architecture' },
   { href: '/terminal', label: 'Terminal' },
-  { href: '/guestbook', label: 'Guestbook' },
+  { href: '/guestbook', label: 'Feedback' },
   { href: '/contact', label: 'Contact' }
 ];
 
-export default function Navbar({ profile }) {
+export default function Navbar() {
   const pathname = usePathname();
   const [theme, setTheme] = useState('dark');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -32,28 +32,18 @@ export default function Navbar({ profile }) {
     localStorage.setItem('site-theme', nextTheme);
   };
 
-  const name = profile?.name || 'Katam Ganesh Reddy';
-  const domain = profile?.domain || 'tomesphere.in';
-  const monogram = name
-    .split(' ')
-    .filter(Boolean)
-    .map(w => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-
   return (
     <>
       <header className="site-header">
         <div className="brand-wrapper">
-          <Link href="/" className="brand-monogram" aria-label="Go to homepage">
-            {monogram}
+          <Link href="/" className="brand-monogram" aria-label="TomeSphere Homepage">
+            TS
           </Link>
           <div>
             <Link href="/" className="brand-name">
-              {name}
+              TomeSphere
             </Link>
-            <div className="brand-tag">{domain}</div>
+            <div className="brand-tag">Product Place · tomesphere.in</div>
           </div>
         </div>
 
@@ -98,7 +88,10 @@ export default function Navbar({ profile }) {
         <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)}>
           <div className="mobile-nav-drawer" onClick={e => e.stopPropagation()}>
             <div className="mobile-nav-header">
-              <span className="brand-name">{name}</span>
+              <div>
+                <span className="brand-name">TomeSphere</span>
+                <div className="brand-tag">Product Place</div>
+              </div>
               <button
                 type="button"
                 className="btn-icon-round"

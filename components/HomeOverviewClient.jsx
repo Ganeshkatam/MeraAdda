@@ -3,19 +3,20 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  Check,
-  Copy,
   Cpu,
   Globe,
   Github,
   Linkedin,
   Server,
   Terminal,
+  Layers,
   Code2,
-  Compass
+  Sparkles,
+  ExternalLink,
+  ShieldCheck,
+  Zap
 } from 'lucide-react';
 
 export default function HomeOverviewClient({
@@ -23,7 +24,6 @@ export default function HomeOverviewClient({
   projects = [],
   skills = []
 }) {
-  const [copiedEmail, setCopiedEmail] = useState(false);
   const [heroMouse, setHeroMouse] = useState({ x: '50%', y: '25%' });
 
   const handleHeroMouseMove = (e) => {
@@ -33,14 +33,8 @@ export default function HomeOverviewClient({
     setHeroMouse({ x: `${x.toFixed(1)}%`, y: `${y.toFixed(1)}%` });
   };
 
-  const email = profile?.email || 'katamganesh61@gmail.com';
-  const copyEmail = () => {
-    navigator.clipboard.writeText(email);
-    setCopiedEmail(true);
-    setTimeout(() => setCopiedEmail(false), 2200);
-  };
-
-  const previewProjects = projects.slice(0, 3);
+  const previewProjects = projects.slice(0, 4);
+  const founderName = profile?.name || 'Katam Ganesh Reddy';
 
   return (
     <div>
@@ -61,91 +55,70 @@ export default function HomeOverviewClient({
         </div>
 
         <div className="hero-container-centered">
-          <h1 className="hero-title-centered hero-fade-in-1">
-            Crafting digital products at the intersection of{' '}
+          <div className="badge-beacon hero-fade-in-1">
+            <span className="beacon-dot" />
+            <span>TomeSphere Product Ecosystem · {projects.length || 7} Systems Active</span>
+          </div>
+
+          <h1 className="hero-title-centered hero-fade-in-2">
+            Software products engineered for{' '}
             <span className="hero-gradient-text hero-shimmer-text">
-              systems, architecture &amp; craft.
+              utility, performance &amp; craft.
             </span>
           </h1>
 
           <p className="hero-description-centered hero-fade-in-3">
-            Hello, I am <strong>{profile?.name || 'Katam Ganesh Reddy'}</strong>. {profile?.bio || profile?.intro || 'Software engineer and independent builder creating modern web applications, real-time interactive systems, developer tools, and distributed architecture.'}
+            Welcome to <strong>TomeSphere</strong> — an independent digital product place building production web platforms, business growth engines, real-time collaboration tools, and developer utilities.
           </p>
 
           <div className="hero-cta-group-centered hero-fade-in-4">
             <Link href="/products" className="btn-primary-glow hero-btn-magnetic">
-              Explore Products <ArrowRight size={16} />
+              Explore All Products <ArrowRight size={16} />
             </Link>
-            <button type="button" onClick={copyEmail} className="btn-secondary-glass">
-              {copiedEmail ? (
-                <>
-                  <Check size={15} className="icon-emerald" /> Copied to Clipboard!
-                </>
-              ) : (
-                <>
-                  <Copy size={15} /> Copy Contact Email
-                </>
-              )}
-            </button>
-            {profile?.socials?.github && (
-              <a
-                href={`https://${profile.socials.github}`}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-secondary-glass"
-              >
-                <Github size={15} /> GitHub <ArrowUpRight size={14} />
-              </a>
-            )}
-            {profile?.socials?.linkedin && (
-              <a
-                href={`https://${profile.socials.linkedin}`}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-secondary-glass"
-              >
-                <Linkedin size={15} /> LinkedIn <ArrowUpRight size={14} />
-              </a>
-            )}
+            <Link href="/about" className="btn-secondary-glass">
+              <Layers size={15} /> System Architecture
+            </Link>
+            <Link href="/terminal" className="btn-secondary-glass">
+              <Terminal size={15} /> Live Terminal
+            </Link>
           </div>
 
-          {/* Hero Interactive Bento Showcase (MPA Portals) */}
-          <div className="hero-bento-grid hero-fade-in-5">
-            <Link href="/about" className="hero-bento-card">
-              <div className="bento-card-header">
-                <div className="bento-icon-box bento-icon-lavender">
-                  <Server size={18} />
-                </div>
-                <span className="bento-badge-pill">Architecture</span>
-              </div>
-              <div className="bento-card-body">
-                <h3 className="bento-card-title">Production Architecture</h3>
-                <div className="bento-card-sub">Clean Patterns · Resilient APIs</div>
-                <p className="bento-card-desc">
-                  Specialized in building scalable full-stack applications, real-time protocols, and secure database-driven backend services.
-                </p>
-              </div>
-              <div className="bento-card-footer">
-                <span className="bento-action-link">
-                  Learn About Pillars <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
+          {/* Product Metrics Strip */}
+          <div className="product-metrics-strip hero-fade-in-5">
+            <div className="metric-item">
+              <span className="metric-value">{String(projects.length || 7).padStart(2, '0')}</span>
+              <span className="metric-label">Production Products</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-value">100%</span>
+              <span className="metric-label">REST Decoupled</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-value">Supabase</span>
+              <span className="metric-label">PostgreSQL Backend</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-value">Next.js 16</span>
+              <span className="metric-label">Turbopack Engine</span>
+            </div>
+          </div>
 
+          {/* Bento Portals to Core Sections */}
+          <div className="hero-bento-grid hero-fade-in-5">
             <Link href="/products" className="hero-bento-card">
               <div className="bento-card-header">
                 <div className="bento-icon-box bento-icon-emerald">
                   <Globe size={18} />
                 </div>
                 <span className="bento-badge-pill bento-pill-live">
-                  <span className="sat-dot sat-emerald" /> {String(projects.length || 7).padStart(2, '0')} Systems
+                  <span className="sat-dot sat-emerald" /> {String(projects.length || 7).padStart(2, '0')} Deployed
                 </span>
               </div>
               <div className="bento-card-body">
-                <h3 className="bento-card-title">Deployed Applications</h3>
+                <h3 className="bento-card-title">Product Catalog</h3>
                 <div className="bento-card-sub">Web Apps, DevTools &amp; Platforms</div>
                 <p className="bento-card-desc">
-                  Explore the full catalog of production systems across SaaS, collaborative platforms, and developer tooling.
+                  Browse all active digital products with live domain links, status tracking, category filters, and tech stacks.
                 </p>
               </div>
               <div className="bento-card-footer">
@@ -155,23 +128,44 @@ export default function HomeOverviewClient({
               </div>
             </Link>
 
+            <Link href="/about" className="hero-bento-card">
+              <div className="bento-card-header">
+                <div className="bento-icon-box bento-icon-lavender">
+                  <Server size={18} />
+                </div>
+                <span className="bento-badge-pill">Decoupled</span>
+              </div>
+              <div className="bento-card-body">
+                <h3 className="bento-card-title">Product Architecture</h3>
+                <div className="bento-card-sub">Clean Architecture · Zero Client DB</div>
+                <p className="bento-card-desc">
+                  Explore how TomeSphere products are engineered with dedicated Express REST micro-services and PostgreSQL schemas.
+                </p>
+              </div>
+              <div className="bento-card-footer">
+                <span className="bento-action-link">
+                  Inspect Architecture <ArrowRight size={14} />
+                </span>
+              </div>
+            </Link>
+
             <Link href="/terminal" className="hero-bento-card">
               <div className="bento-card-header">
                 <div className="bento-icon-box bento-icon-cyan">
                   <Terminal size={18} />
                 </div>
-                <span className="bento-badge-pill">Interactive</span>
+                <span className="bento-badge-pill">Live Shell</span>
               </div>
               <div className="bento-card-body">
-                <h3 className="bento-card-title">Developer Dossier</h3>
-                <div className="bento-card-sub">Terminal Shell &amp; Specs</div>
+                <h3 className="bento-card-title">Studio Console</h3>
+                <div className="bento-card-sub">Interactive Developer Shell</div>
                 <p className="bento-card-desc">
-                  Query technical competencies, runtime metrics, background notes, and endpoints via interactive command shell.
+                  Query product states, inspect verified tech stacks, view system health, and test command execution in real-time.
                 </p>
               </div>
               <div className="bento-card-footer">
                 <span className="bento-action-link">
-                  Launch Shell <ArrowRight size={14} />
+                  Launch Console <ArrowRight size={14} />
                 </span>
               </div>
             </Link>
@@ -179,10 +173,10 @@ export default function HomeOverviewClient({
         </div>
       </section>
 
-      {/* Tech Marquee */}
+      {/* Tech Ecosystem Marquee */}
       {skills.length > 0 && (
         <section className="tech-marquee-wrapper">
-          <div className="tech-marquee-label">Full-Stack Tech Ecosystem</div>
+          <div className="tech-marquee-label">TomeSphere Engineering Stack</div>
           <div className="tech-chips-grid">
             {skills.map(tech => (
               <span key={tech} className="tech-chip">
@@ -194,16 +188,16 @@ export default function HomeOverviewClient({
         </section>
       )}
 
-      {/* Selected Work Preview */}
+      {/* Featured Products Grid */}
       <section className="section-wrapper">
         <div className="section-head">
           <div>
-            <div className="section-eyebrow">Featured Systems</div>
-            <h2 className="section-title">Production Systems &amp; Platforms</h2>
-            <p className="section-subtitle">Active full-stack web applications and developer tools.</p>
+            <div className="page-eyebrow">Digital Products &amp; Platforms</div>
+            <h2 className="section-title">Production Systems Showcase</h2>
+            <p className="section-subtitle">Active software products built and maintained under the TomeSphere umbrella.</p>
           </div>
           <Link href="/products" className="btn-secondary-glass" style={{ alignSelf: 'flex-start' }}>
-            View All Products ({projects.length}) <ArrowRight size={14} />
+            View All ({projects.length}) <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -246,7 +240,7 @@ export default function HomeOverviewClient({
                     rel="noreferrer"
                     className="card-link-preview"
                   >
-                    Visit Website <ArrowUpRight size={13} />
+                    Launch Product <ArrowUpRight size={13} />
                   </a>
                 </div>
               </div>
@@ -261,24 +255,32 @@ export default function HomeOverviewClient({
         </div>
       </section>
 
-      {/* Quick Connect CTA */}
+      {/* Founder & Engineering Credit Card */}
       <section className="section-wrapper" style={{ paddingBottom: '80px' }}>
-        <div className="guestbook-form-card" style={{ textAlign: 'center', padding: '48px 24px', background: 'linear-gradient(135deg, rgba(14, 17, 26, 0.8) 0%, rgba(20, 24, 36, 0.9) 100%)' }}>
-          <div className="section-eyebrow" style={{ color: 'var(--accent-primary)', marginBottom: '8px' }}>
-            Collaboration
+        <div className="studio-founder-card">
+          <div className="founder-info">
+            <div className="founder-avatar">
+              TS
+            </div>
+            <div>
+              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+                Studio Leadership &amp; Engineering
+              </div>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '4px 0' }}>
+                {founderName}
+              </h3>
+              <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', maxWidth: '580px' }}>
+                Systems architect and independent software builder designing and developing the complete TomeSphere product suite, database schemas, and microservices.
+              </p>
+            </div>
           </div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 800, marginBottom: '12px' }}>
-            Ready to build scalable digital systems?
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', maxWidth: '520px', margin: '0 auto 24px', fontSize: '15px' }}>
-            Available for software engineering contracts, distributed system design, and product development.
-          </p>
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
+
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
             <Link href="/contact" className="btn-primary-glow">
-              Get in Touch <ArrowRight size={15} />
+              Connect With Studio <ArrowRight size={14} />
             </Link>
-            <Link href="/guestbook" className="btn-secondary-glass">
-              Sign Guestbook
+            <Link href="/about" className="btn-secondary-glass">
+              Read Architecture
             </Link>
           </div>
         </div>

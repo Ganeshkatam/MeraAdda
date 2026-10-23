@@ -88,7 +88,7 @@ export default function WorkCatalogClient({ initialProjects = [] }) {
                   rel="noreferrer"
                   className="card-link-preview"
                 >
-                  Visit Website <ArrowUpRight size={13} />
+                  Launch Product <ArrowUpRight size={13} />
                 </a>
               </div>
             </div>
