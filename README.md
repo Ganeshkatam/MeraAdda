@@ -1,6 +1,6 @@
-# Arjun Mehta — portfolio & studio
+# Ganesh Katam — portfolio & studio
 
-A responsive personal portfolio for showcasing websites, with a lightweight studio dashboard for managing projects and profile details.
+A responsive personal portfolio and product studio for showcasing websites and applications, accessible at [tomesphere.in](https://tomesphere.in). Includes a lightweight studio dashboard for managing projects and profile details.
 
 ## Run locally
 
