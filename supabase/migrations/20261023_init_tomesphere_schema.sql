@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS public.guestbook (
   author TEXT NOT NULL,
   message TEXT NOT NULL,
   timestamp TEXT NOT NULL,
-  status TEXT DEFAULT 'approved',
+  status TEXT DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
