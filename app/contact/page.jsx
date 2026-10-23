@@ -5,8 +5,8 @@ import { apiClient } from '../../lib/api-client';
 export const revalidate = 1800;
 
 export const metadata = {
-  title: 'Contact & Collaboration — Katam Ganesh Reddy',
-  description: 'Reach out to Katam Ganesh Reddy for engineering projects, architecture inquiries, or collaboration.'
+  title: 'Contact Studio — TomeSphere',
+  description: 'Reach out to the TomeSphere product studio team for collaborations, product inquiries, or partnerships.'
 };
 
 export default async function ContactPage() {
@@ -18,7 +18,7 @@ export default async function ContactPage() {
         <div className="page-eyebrow">Connect</div>
         <h1 className="page-title">Direct Connection</h1>
         <p className="page-subtitle">
-          Have an architectural challenge, distributed system, or application in mind? Reach out below.
+          Have a product question, partnership idea, or inquiry? Reach out below.
         </p>
       </div>
 

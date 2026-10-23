@@ -15,7 +15,8 @@ import {
   Sparkles,
   ExternalLink,
   ShieldCheck,
-  Zap
+  Zap,
+  Compass
 } from 'lucide-react';
 
 export default function HomeOverviewClient({
@@ -70,7 +71,7 @@ export default function HomeOverviewClient({
               Explore All Products <ArrowRight size={16} />
             </Link>
             <Link href="/about" className="btn-secondary-glass">
-              <Layers size={15} /> System Architecture
+              <Compass size={15} /> About Studio
             </Link>
           </div>
 
@@ -81,16 +82,16 @@ export default function HomeOverviewClient({
               <span className="metric-label">Production Products</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">100%</span>
-              <span className="metric-label">REST Decoupled</span>
+              <span className="metric-value">99.9%</span>
+              <span className="metric-label">Platform Availability</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">Supabase</span>
-              <span className="metric-label">PostgreSQL Backend</span>
+              <span className="metric-value">Global</span>
+              <span className="metric-label">Edge Network</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">Next.js 16</span>
-              <span className="metric-label">Turbopack Engine</span>
+              <span className="metric-value">&lt;100ms</span>
+              <span className="metric-label">Sub-Second Delivery</span>
             </div>
           </div>
 
@@ -109,7 +110,7 @@ export default function HomeOverviewClient({
                 <h3 className="bento-card-title">Product Catalog</h3>
                 <div className="bento-card-sub">Web Apps, DevTools &amp; Platforms</div>
                 <p className="bento-card-desc">
-                  Browse all active digital products with live domain links, status tracking, category filters, and tech stacks.
+                  Browse all active digital products with live links, release updates, and capability guides.
                 </p>
               </div>
               <div className="bento-card-footer">
@@ -122,20 +123,20 @@ export default function HomeOverviewClient({
             <Link href="/about" className="hero-bento-card">
               <div className="bento-card-header">
                 <div className="bento-icon-box bento-icon-lavender">
-                  <Server size={18} />
+                  <Compass size={18} />
                 </div>
-                <span className="bento-badge-pill">Decoupled</span>
+                <span className="bento-badge-pill">Studio</span>
               </div>
               <div className="bento-card-body">
-                <h3 className="bento-card-title">Product Architecture</h3>
-                <div className="bento-card-sub">Clean Architecture · Zero Client DB</div>
+                <h3 className="bento-card-title">About TomeSphere</h3>
+                <div className="bento-card-sub">Product Craft &amp; Philosophy</div>
                 <p className="bento-card-desc">
-                  Explore how TomeSphere products are engineered with dedicated Express REST micro-services and PostgreSQL schemas.
+                  Learn how TomeSphere conceptualizes, refines, and ships purposeful digital platforms and tools.
                 </p>
               </div>
               <div className="bento-card-footer">
                 <span className="bento-action-link">
-                  Inspect Architecture <ArrowRight size={14} />
+                  About Studio <ArrowRight size={14} />
                 </span>
               </div>
             </Link>
@@ -145,18 +146,18 @@ export default function HomeOverviewClient({
                 <div className="bento-icon-box bento-icon-cyan">
                   <Sparkles size={18} />
                 </div>
-                <span className="bento-badge-pill">Supabase Live</span>
+                <span className="bento-badge-pill">Community</span>
               </div>
               <div className="bento-card-body">
                 <h3 className="bento-card-title">Community Feedback</h3>
                 <div className="bento-card-sub">Real-Time Notes &amp; Thoughts</div>
                 <p className="bento-card-desc">
-                  Leave feedback, product ideas, or greetings recorded live to the Supabase PostgreSQL database.
+                  Share product suggestions, ask questions, or leave a greeting for the TomeSphere team.
                 </p>
               </div>
               <div className="bento-card-footer">
                 <span className="bento-action-link">
-                  Sign Feedback <ArrowRight size={14} />
+                  Sign Guestbook <ArrowRight size={14} />
                 </span>
               </div>
             </Link>
@@ -261,7 +262,7 @@ export default function HomeOverviewClient({
                 {founderName}
               </h3>
               <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', maxWidth: '580px' }}>
-                Systems architect and independent software builder designing and developing the complete TomeSphere product suite, database schemas, and microservices.
+                Founder and product lead designing and developing modern web platforms, creator utilities, and digital software under the TomeSphere brand.
               </p>
             </div>
           </div>
@@ -271,7 +272,7 @@ export default function HomeOverviewClient({
               Connect With Studio <ArrowRight size={14} />
             </Link>
             <Link href="/about" className="btn-secondary-glass">
-              Read Architecture
+              About Studio
             </Link>
           </div>
         </div>

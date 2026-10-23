@@ -41,7 +41,7 @@ export default function GuestbookClient({ initialEntries = [] }) {
         {gbState?.error && <div className="form-alert-error">{gbState.error}</div>}
         {gbState?.success && (
           <div className="form-alert-success">
-            <Check size={14} /> Entry posted dynamically to database!
+            <Check size={14} /> Thank you! Your note has been submitted successfully.
           </div>
         )}
 

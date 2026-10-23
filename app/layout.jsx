@@ -29,12 +29,12 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata = {
   title: 'TomeSphere — Digital Product Studio & Platform',
   description:
-    'TomeSphere is a digital product studio and software platform by Katam Ganesh Reddy. Explore full-stack web applications, real-time interactive systems, developer tools, and distributed architecture.',
+    'TomeSphere is a digital product studio and software platform by Katam Ganesh Reddy. Explore purposeful web platforms, creator utilities, and high-performance digital products.',
   metadataBase: new URL('https://tomesphere.in'),
   openGraph: {
     title: 'TomeSphere — Digital Product Studio & Platform',
     description:
-      'Explore production web applications, technical architecture, and developer tools at tomesphere.in.',
+      'Explore digital software products, creator tools, and modern web applications at tomesphere.in.',
     url: 'https://tomesphere.in',
     siteName: 'TomeSphere',
     locale: 'en_US',

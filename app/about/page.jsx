@@ -1,42 +1,37 @@
 import React from 'react';
 import Link from 'next/link';
-import { Code2, Cpu, Compass, Globe, ArrowRight, ShieldCheck, Server, Database } from 'lucide-react';
+import { Compass, Sparkles, Shield, Zap, ArrowRight, Layers, Eye } from 'lucide-react';
 import { apiClient } from '../../lib/api-client';
 
 export const revalidate = 1800;
 
 export const metadata = {
-  title: 'Product Architecture & Systems Design — TomeSphere',
-  description: 'Decoupled backend architecture, database authority boundaries, and engineering disciplines of the TomeSphere product ecosystem.'
+  title: 'About Studio — TomeSphere',
+  description: 'The philosophy, design craft, and product standards behind the TomeSphere digital ecosystem.'
 };
 
 export default async function AboutPage() {
-  const [profile, skills] = await Promise.all([
-    apiClient.profile.get().catch(() => null),
-    apiClient.skills.list().catch(() => [])
-  ]);
-
-  const skillsList = Array.isArray(skills) ? skills.map(s => s.name || s) : [];
+  const profile = await apiClient.profile.get().catch(() => null);
   const founderName = profile?.name || 'Katam Ganesh Reddy';
 
   return (
     <div className="page-wrapper">
       <div className="page-head">
-        <div className="page-eyebrow">Studio Infrastructure</div>
-        <h1 className="page-title">Product Architecture &amp; Design</h1>
+        <div className="page-eyebrow">Studio &amp; Philosophy</div>
+        <h1 className="page-title">About TomeSphere</h1>
         <p className="page-subtitle">
-          How TomeSphere products are designed, decoupled, and deployed for high resilience, zero-leak database boundaries, and lightning-fast client execution.
+          An independent digital product studio focused on building purposeful software, creator tools, and dependable web platforms.
         </p>
       </div>
 
-      {/* Architectural Boundaries */}
+      {/* Core Studio Pillars */}
       <section className="section-wrapper" style={{ padding: '0 0 60px' }}>
         <div className="section-head">
           <div>
-            <div className="page-eyebrow">Authority &amp; Decoupling</div>
-            <h2 className="section-title">Decoupled Architecture</h2>
+            <div className="page-eyebrow">Pillars</div>
+            <h2 className="section-title">Our Product Philosophy</h2>
             <p className="section-subtitle">
-              Strict isolation between client interfaces and server-side database authority.
+              Every system we create is guided by four foundational principles.
             </p>
           </div>
         </div>
@@ -44,91 +39,89 @@ export default async function AboutPage() {
         <div className="capabilities-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
           <div className="capability-card">
             <div className="capability-icon-box" style={{ background: 'rgba(99, 102, 241, 0.12)', color: '#818cf8', borderColor: 'rgba(99, 102, 241, 0.3)' }}>
-              <Server size={24} />
+              <Eye size={24} />
             </div>
-            <h3 className="capability-title">Standalone REST Server</h3>
+            <h3 className="capability-title">Distraction-Free Craft</h3>
             <p className="capability-desc">
-              All data operations are exclusively managed by the standalone Express engine (<code>api.tomesphere.in</code>). It holds all database credentials, enforces input validation schemas, and exposes typed REST endpoints.
+              We design software that gets out of the way. Clean typographic hierarchies, intuitive workflows, and thoughtful design systems create tools people love using every day.
             </p>
             <div className="capability-tags">
-              <span className="cap-tag">Express 5</span>
-              <span className="cap-tag">Node.js</span>
-              <span className="cap-tag">REST API</span>
+              <span className="cap-tag">Design Systems</span>
+              <span className="cap-tag">Ergonomics</span>
+              <span className="cap-tag">Human-Centered</span>
             </div>
           </div>
 
           <div className="capability-card">
             <div className="capability-icon-box" style={{ background: 'rgba(16, 185, 129, 0.12)', color: 'var(--accent-emerald)', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
-              <ShieldCheck size={24} />
+              <Shield size={24} />
             </div>
-            <h3 className="capability-title">Zero Client Database Leaks</h3>
+            <h3 className="capability-title">Security &amp; Privacy First</h3>
             <p className="capability-desc">
-              The frontend web application contains zero Supabase drivers, zero database connection strings, and zero secret keys. All requests flow through secure server boundaries and typed API clients.
+              Privacy and data integrity are non-negotiable. Our products are engineered with robust boundaries, strict access controls, and zero compromise on user confidentiality.
             </p>
             <div className="capability-tags">
-              <span className="cap-tag">Zero Secrets</span>
-              <span className="cap-tag">HTTP-Only Auth</span>
-              <span className="cap-tag">Safe Boundaries</span>
+              <span className="cap-tag">Data Integrity</span>
+              <span className="cap-tag">Least Privilege</span>
+              <span className="cap-tag">Resilient</span>
             </div>
           </div>
 
           <div className="capability-card">
             <div className="capability-icon-box" style={{ background: 'rgba(6, 182, 212, 0.12)', color: 'var(--accent-cyan)', borderColor: 'rgba(6, 182, 212, 0.3)' }}>
-              <Database size={24} />
+              <Zap size={24} />
             </div>
-            <h3 className="capability-title">Relational Supabase Core</h3>
+            <h3 className="capability-title">High-Velocity Performance</h3>
             <p className="capability-desc">
-              Relational data models in Supabase PostgreSQL enforce referential integrity, indexed querying, automated triggers, and transactional persistence across all TomeSphere products.
+              Speed is a core feature. From initial page load to real-time interactions, our applications execute with sub-second responsiveness and edge delivery worldwide.
             </p>
             <div className="capability-tags">
-              <span className="cap-tag">PostgreSQL</span>
-              <span className="cap-tag">Supabase</span>
-              <span className="cap-tag">Triggers &amp; RLS</span>
+              <span className="cap-tag">Edge Global</span>
+              <span className="cap-tag">Low Latency</span>
+              <span className="cap-tag">Fluid UI</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Core Engineering Disciplines */}
+      {/* What We Build */}
       <section className="section-wrapper" style={{ padding: '0 0 60px' }}>
         <div className="section-head">
           <div>
-            <div className="page-eyebrow">Disciplines</div>
-            <h2 className="section-title">Core Engineering Pillars</h2>
-            <p className="section-subtitle">Disciplines and technical crafts honed through shipping real production systems.</p>
+            <div className="page-eyebrow">Offerings</div>
+            <h2 className="section-title">What We Build</h2>
+            <p className="section-subtitle">Diverse software solutions crafted for specific real-world needs.</p>
           </div>
         </div>
 
         <div className="capabilities-grid">
           <div className="capability-card">
             <div className="capability-icon-box">
-              <Code2 size={24} />
+              <Layers size={24} />
             </div>
-            <h3 className="capability-title">Frontend Engineering</h3>
+            <h3 className="capability-title">Digital Platforms &amp; Web Apps</h3>
             <p className="capability-desc">
-              Building reactive web applications with Next.js 16, React 19, TypeScript, fluid CSS animations, and deep attention to accessibility.
+              Full-featured web software engineered for scalability, reliability, and smooth cross-device accessibility.
             </p>
             <div className="capability-tags">
-              <span className="cap-tag">Next.js 16</span>
-              <span className="cap-tag">React 19</span>
-              <span className="cap-tag">TypeScript</span>
-              <span className="cap-tag">Vanilla CSS</span>
+              <span className="cap-tag">Web Platforms</span>
+              <span className="cap-tag">Responsive</span>
+              <span className="cap-tag">Accessible</span>
             </div>
           </div>
 
           <div className="capability-card">
             <div className="capability-icon-box">
-              <Cpu size={24} />
+              <Sparkles size={24} />
             </div>
-            <h3 className="capability-title">Backend &amp; API Architecture</h3>
+            <h3 className="capability-title">Productivity &amp; Knowledge Tools</h3>
             <p className="capability-desc">
-              Designing resilient schemas, RESTful endpoints, real-time event streams, and high-performance standalone server modules.
+              Focused utilities, reading companions, and workflow engines that empower focused work and learning.
             </p>
             <div className="capability-tags">
-              <span className="cap-tag">Node.js</span>
-              <span className="cap-tag">PostgreSQL</span>
-              <span className="cap-tag">WebSockets</span>
-              <span className="cap-tag">REST APIs</span>
+              <span className="cap-tag">Productivity</span>
+              <span className="cap-tag">Workflow</span>
+              <span className="cap-tag">Knowledge</span>
             </div>
           </div>
 
@@ -136,58 +129,20 @@ export default async function AboutPage() {
             <div className="capability-icon-box">
               <Compass size={24} />
             </div>
-            <h3 className="capability-title">Product &amp; System Design</h3>
+            <h3 className="capability-title">Interactive Experiences</h3>
             <p className="capability-desc">
-              Transforming conceptual visions into functional web products with intentional design systems, polished micro-copy, and intuitive UX flows.
+              Modern digital spaces featuring real-time feedback, collaborative interfaces, and polished user journeys.
             </p>
             <div className="capability-tags">
-              <span className="cap-tag">Design Systems</span>
-              <span className="cap-tag">UI/UX Craft</span>
-              <span className="cap-tag">Micro-interactions</span>
-            </div>
-          </div>
-
-          <div className="capability-card">
-            <div className="capability-icon-box">
-              <Globe size={24} />
-            </div>
-            <h3 className="capability-title">Deployment &amp; Edge Cloud</h3>
-            <p className="capability-desc">
-              Configuring modern CI/CD pipelines, custom DNS domains, edge delivery, and production optimization for rapid global access.
-            </p>
-            <div className="capability-tags">
-              <span className="cap-tag">CI/CD</span>
-              <span className="cap-tag">Edge Routing</span>
-              <span className="cap-tag">DNS/CNAME</span>
-              <span className="cap-tag">Docker</span>
+              <span className="cap-tag">Interactive</span>
+              <span className="cap-tag">Community</span>
+              <span className="cap-tag">Real-Time</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Verified Skills from Database */}
-      {skillsList.length > 0 && (
-        <section className="section-wrapper" style={{ padding: '0 0 60px' }}>
-          <div className="section-head">
-            <div>
-              <div className="page-eyebrow">Verified Tech Ecosystem</div>
-              <h2 className="section-title">Technical Competencies ({skillsList.length})</h2>
-              <p className="section-subtitle">Verified frameworks, languages, and protocols powering active TomeSphere products.</p>
-            </div>
-          </div>
-
-          <div className="tech-chips-grid">
-            {skillsList.map(skill => (
-              <span key={skill} className="tech-chip">
-                <span className="chip-dot" />
-                {skill}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Founder & Engineering Credit */}
+      {/* Leadership & Studio Background */}
       <section className="section-wrapper" style={{ paddingBottom: '40px' }}>
         <div className="studio-founder-card">
           <div className="founder-info">
@@ -196,13 +151,13 @@ export default async function AboutPage() {
             </div>
             <div>
               <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                Studio Leadership &amp; Engineering
+                Studio Leadership &amp; Direction
               </div>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '4px 0' }}>
                 {founderName}
               </h3>
               <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', maxWidth: '580px' }}>
-                Founder and systems architect responsible for the architecture, implementation, and maintenance of all TomeSphere digital products and APIs.
+                Founder and product lead overseeing the design, development, and long-term vision of all digital products in the TomeSphere ecosystem.
               </p>
             </div>
           </div>

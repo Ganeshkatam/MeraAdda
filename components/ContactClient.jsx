@@ -47,7 +47,7 @@ export default function ContactClient({ profile }) {
         </div>
         <h2 className="contact-cta-title">Have an ambitious system or product in mind?</h2>
         <p className="contact-cta-subtitle" style={{ marginBottom: '24px' }}>
-          Send a direct message through this live server endpoint or reach out directly by email.
+          Send a direct message using the form below or reach out directly by email.
         </p>
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -102,7 +102,7 @@ export default function ContactClient({ profile }) {
                 rows="4"
                 required
                 className="form-control"
-                placeholder="Tell me about your project, architecture, or inquiry..."
+                placeholder="Tell us about your project, idea, or inquiry..."
               />
             </div>
             <button
