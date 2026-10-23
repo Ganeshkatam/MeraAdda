@@ -1,25 +1,22 @@
-# Katam Ganesh Reddy — Full-Stack Portfolio & Studio
+# TomeSphere — Katam Ganesh Reddy Product Studio & Portfolio
 
-A dynamic, full-stack web application built with **Next.js 16 (App Router)**, **React 19**, and **Server Actions**, deployed at [tomesphere.in](https://tomesphere.in).
+The central digital hub and product showcase for **Katam Ganesh Reddy**, accessible at [tomesphere.in](https://tomesphere.in).
 
-## Features
+## Ecosystem Architecture
 
-- **Dynamic Full-Stack Architecture**: Built with Next.js App Router, Server Components, and Server Actions.
-- **Flagship Spotlight**: Features [TomeSphere](https://tomesphere.in), a digital book sanctuary and reader application.
-- **Live GitHub Stream**: Dynamically fetches public repositories from GitHub API via server caching and route handlers (`/api/github`).
-- **Real-Time Visitor Guestbook**: Powered by Next.js Server Actions with server-side validation.
+- **`tomesphere.in`**: The main platform where visitors can explore Ganesh's software products, systems, and background.
+- **`bookgarden.tomesphere.in`**: The dedicated digital book library and reading sanctuary application (BookGarden).
+
+## Key Features
+
+- **Full-Stack Next.js 16 (App Router)**: Dynamic server-rendered architecture with React 19.
+- **Flagship Spotlight (BookGarden)**: Featured reading companion and digital book library at [bookgarden.tomesphere.in](https://bookgarden.tomesphere.in).
+- **Live GitHub Activity Stream**: Dynamic API integration hydrating public repositories directly from GitHub.
+- **Real-Time Visitor Guestbook**: Interactive message board signed dynamically using Next.js Server Actions.
 - **Direct Server Messaging**: Dynamic contact form processed server-side with input validation.
-- **Developer Dossier Terminal**: Interactive shell executing commands (`whoami`, `skills`, `projects`, `flagship`, `live`, `contact`).
-- **Studio Control Room**: Built-in dashboard for managing projects, metadata, and portfolio settings.
-- **Modern Design System**: Obsidian dark theme with glassmorphism, glowing ambient aura, and one-click light mode toggle.
-
-## Tech Stack
-
-- **Framework**: Next.js 16 (Turbopack, App Router)
-- **Frontend**: React 19, Lucide React
-- **Styling**: Vanilla CSS custom properties with responsive breakpoints
-- **Backend / API**: Server Actions, Dynamic Route Handlers (`/api/health`, `/api/github`)
-- **Hosting**: Vercel with custom domain `tomesphere.in`
+- **Developer Dossier Terminal**: Interactive shell executing commands (`whoami`, `bio`, `skills`, `projects`, `flagship`, `library`, `tomesphere`, `live`, `contact`).
+- **Studio Control Room**: Built-in dashboard for cataloging projects and profile details.
+- **High-End Design System**: Obsidian dark palette with glassmorphism, ambient lighting orbs, and light mode switch.
 
 ## Run Locally
 

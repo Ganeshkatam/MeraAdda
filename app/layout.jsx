@@ -25,14 +25,14 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata = {
   title: 'Katam Ganesh Reddy — Full-Stack Developer & Independent Builder',
   description:
-    'Portfolio and dynamic web studio of Katam Ganesh Reddy. Creator of TomeSphere (bookgarden.tomesphere.in) and modern full-stack web applications.',
+    'TomeSphere — The product hub and developer portfolio of Katam Ganesh Reddy. Explore software products and BookGarden (bookgarden.tomesphere.in), the digital book library.',
   metadataBase: new URL('https://tomesphere.in'),
   openGraph: {
-    title: 'Katam Ganesh Reddy — Full-Stack Developer & Independent Builder',
+    title: 'Katam Ganesh Reddy — TomeSphere & Products',
     description:
-      'Portfolio and digital sanctuary at tomesphere.in. Crafting digital experiences at the intersection of design, code & systems.',
+      'Explore products, technical architecture, and BookGarden book library by Katam Ganesh Reddy at tomesphere.in.',
     url: 'https://tomesphere.in',
-    siteName: 'Katam Ganesh Reddy Portfolio',
+    siteName: 'TomeSphere — Katam Ganesh Reddy',
     locale: 'en_US',
     type: 'website',
   },

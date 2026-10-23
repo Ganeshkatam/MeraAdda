@@ -37,16 +37,16 @@ import { submitContactMessage, submitGuestbookEntry } from '../app/actions';
 const defaultProjects = [
   {
     id: 1,
-    name: 'TomeSphere',
+    name: 'BookGarden',
     category: 'WEB APPS',
-    description: 'An elegant digital book sanctuary and library companion for passionate readers. Features distraction-free reading, progress analytics, and smart bookshelves.',
-    url: 'tomesphere.in',
+    description: 'An elegant digital book sanctuary and reading library companion. Features distraction-free reading, progress tracking, and personal bookshelves living on the TomeSphere network.',
+    url: 'bookgarden.tomesphere.in',
     image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85',
     accent: 'lavender',
     featured: true,
     status: 'Live',
     year: '2026',
-    tags: ['Next.js', 'React', 'Supabase', 'TypeScript', 'Tailwind']
+    tags: ['Next.js', 'React', 'Supabase', 'TypeScript', 'EPUB/PDF']
   },
   {
     id: 2,
@@ -120,8 +120,9 @@ const defaultProfile = {
   title: 'Full-Stack Developer · Independent Builder',
   location: 'India',
   domain: 'tomesphere.in',
+  libraryUrl: 'bookgarden.tomesphere.in',
   email: 'katamganesh61@gmail.com',
-  intro: 'I engineer robust web applications and intuitive digital systems. Passionate about crafting thoughtful user experiences, modern frontend architecture, and resilient full-stack systems.',
+  intro: 'Welcome to TomeSphere — my digital hub to explore all my software products, technical architecture, and background. Check out BookGarden, my digital book library hosted at bookgarden.tomesphere.in.',
   socials: {
     github: 'github.com/Ganeshkatam',
     linkedin: 'linkedin.com/in/ganeshkatam'
@@ -237,23 +238,27 @@ export default function PortfolioClient({ initialRepos = [] }) {
     return matchesFilter && matchesSearch;
   });
 
-  const flagshipProject = products.find(p => p.name === 'TomeSphere') || products[0];
+  const flagshipProject = products.find(p => p.name === 'BookGarden') || products.find(p => p.name === 'TomeSphere') || products[0];
 
   const handleCommand = (cmdText) => {
     const clean = (cmdText || terminalInput).trim().toLowerCase();
     let res = '';
     if (clean === 'help') {
-      res = 'Available commands: whoami, bio, skills, projects, flagship, live, contact, clear';
+      res = 'Available commands: whoami, bio, skills, projects, flagship, library, tomesphere, live, contact, clear';
     } else if (clean === 'whoami') {
       res = `${profile.name} (${profile.title}) based in ${profile.location}`;
     } else if (clean === 'bio') {
       res = profile.intro;
+    } else if (clean === 'tomesphere') {
+      res = 'TomeSphere (tomesphere.in) — The digital product hub and engineering portfolio of Katam Ganesh Reddy.';
+    } else if (clean === 'library' || clean === 'bookgarden') {
+      res = 'BookGarden (bookgarden.tomesphere.in) — The digital book sanctuary and library companion.';
+    } else if (clean === 'flagship') {
+      res = `BookGarden -> https://${flagshipProject.url} : ${flagshipProject.description}`;
     } else if (clean === 'skills') {
       res = techStack.join(' · ');
     } else if (clean === 'projects') {
-      res = products.map(p => `${p.name} [${p.status}] - ${p.category}`).join('\n');
-    } else if (clean === 'flagship') {
-      res = `TomeSphere -> ${flagshipProject.url} : ${flagshipProject.description}`;
+      res = products.map(p => `${p.name} [${p.status}] - ${p.category} (${p.url})`).join('\n');
     } else if (clean === 'live') {
       res = `Live Repos: ${initialRepos.length} discovered on GitHub. Server status: Dynamic full-stack Next.js on Vercel.`;
     } else if (clean === 'contact') {
@@ -457,14 +462,14 @@ export default function PortfolioClient({ initialRepos = [] }) {
           </div>
         </section>
 
-        {/* Flagship Project: TomeSphere */}
+        {/* Flagship Project: BookGarden Library */}
         <section id="flagship" className="section-wrapper">
           <div className="section-head">
             <div>
-              <div className="section-eyebrow">Flagship Application</div>
-              <h2 className="section-title">TomeSphere — The Digital Sanctuary</h2>
+              <div className="section-eyebrow">Flagship Library Application</div>
+              <h2 className="section-title">BookGarden — The Digital Book Sanctuary</h2>
               <p className="section-subtitle">
-                The flagship reading sanctuary living at <strong>{profile.domain}</strong>.
+                The reading companion and digital book sanctuary living at <strong>bookgarden.tomesphere.in</strong>.
               </p>
             </div>
           </div>
@@ -473,15 +478,15 @@ export default function PortfolioClient({ initialRepos = [] }) {
             <div className="flagship-glow-bg" />
             <div>
               <div className="flagship-badge">
-                <Sparkles size={12} /> FEATURED APPLICATION
+                <Sparkles size={12} /> FEATURED LIBRARY SANCTUARY
               </div>
-              <h3 className="flagship-title">TomeSphere</h3>
+              <h3 className="flagship-title">BookGarden</h3>
               <div className="flagship-domain">
-                <Globe size={14} /> {profile.domain}
+                <Globe size={14} /> bookgarden.tomesphere.in
               </div>
               <p className="flagship-desc">{flagshipProject.description}</p>
               <div className="flagship-tags">
-                {(flagshipProject.tags || ['Next.js', 'React', 'Supabase', 'TypeScript']).map(t => (
+                {(flagshipProject.tags || ['Next.js', 'React', 'Supabase', 'TypeScript', 'EPUB/PDF']).map(t => (
                   <span key={t} className="flagship-tag">
                     {t}
                   </span>
@@ -489,12 +494,12 @@ export default function PortfolioClient({ initialRepos = [] }) {
               </div>
               <div className="flagship-actions">
                 <a
-                  href={`https://${profile.domain}`}
+                  href="https://bookgarden.tomesphere.in"
                   target="_blank"
                   rel="noreferrer"
                   className="btn-primary-glow"
                 >
-                  Launch TomeSphere <ArrowUpRight size={16} />
+                  Launch BookGarden Library <ArrowUpRight size={16} />
                 </a>
                 <a
                   href={`https://${profile.socials.github}`}
@@ -510,7 +515,7 @@ export default function PortfolioClient({ initialRepos = [] }) {
             <div className="flagship-visual">
               <img
                 src={flagshipProject.image || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85'}
-                alt="TomeSphere Digital Sanctuary"
+                alt="BookGarden Digital Sanctuary"
                 loading="lazy"
               />
             </div>
