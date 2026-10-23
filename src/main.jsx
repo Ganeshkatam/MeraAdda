@@ -1,68 +1,1243 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, ChevronDown, ChevronLeft, ChevronRight, ExternalLink, Github, Globe2, Heart, LayoutDashboard, LogOut, Mail, Menu, Monitor, MoreHorizontal, Pencil, Plus, Search, Settings, Sparkles, Trash2, X } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  ChevronRight,
+  Code2,
+  Copy,
+  Cpu,
+  ExternalLink,
+  Github,
+  Globe,
+  Heart,
+  Laptop,
+  LayoutDashboard,
+  Linkedin,
+  LogOut,
+  Mail,
+  Menu,
+  Monitor,
+  Moon,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Search,
+  Settings,
+  Sparkles,
+  Sun,
+  Terminal,
+  Trash2,
+  X
+} from 'lucide-react';
 import './style.css';
 
-const seed = [
-  { id: 1, name: 'Focusmate', category: 'PRODUCTIVITY', description: 'A quieter way to get your best work done. Build a more thoughtful focus habit with sessions that keep you moving.', url: 'focusmate.app', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1100&q=85', accent: 'lavender', featured: true, status: 'Live', year: '2025' },
-  { id: 2, name: 'Goodkind', category: 'E-COMMERCE', description: 'Little things, made with intention. An independent marketplace for the pieces you’ll keep coming back to.', url: 'goodkind.store', image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1100&q=85', accent: 'peach', featured: true, status: 'Live', year: '2025' },
-  { id: 3, name: 'Sonder Journal', category: 'LIFESTYLE', description: 'A place for thoughts that deserve a little more room. Notes, stories, and the things we notice along the way.', url: 'sonderjournal.com', image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1100&q=85', accent: 'mint', featured: true, status: 'Live', year: '2024' },
-  { id: 4, name: 'Morrow', category: 'FINANCE', description: 'A clearer picture of your money, at every stage. Personal finance that makes planning feel a little more human.', url: 'morrow.money', image: 'https://images.unsplash.com/photo-1461773518188-b3e86f98242f?auto=format&fit=crop&w=1100&q=85', accent: 'blue', featured: false, status: 'Live', year: '2024' },
-  { id: 5, name: 'Interval', category: 'DEVELOPER TOOLS', description: 'Everything in its right place. A lightweight home for the tasks, notes, and ideas you work with every day.', url: 'interval.work', image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1100&q=85', accent: 'yellow', featured: false, status: 'Live', year: '2024' },
-  { id: 6, name: 'Sunday Table', category: 'COMMUNITY', description: 'Good food, good people, no special occasion needed. A neighborhood guide to eating, sharing, and staying awhile.', url: 'sundaytable.co', image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1100&q=85', accent: 'rose', featured: false, status: 'In progress', year: '2025' }
+const defaultProjects = [
+  {
+    id: 1,
+    name: 'TomeSphere',
+    category: 'WEB APPS',
+    description: 'An elegant digital book sanctuary and library companion for passionate readers. Features distraction-free reading, progress analytics, and smart bookshelves.',
+    url: 'tomesphere.in',
+    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85',
+    accent: 'lavender',
+    featured: true,
+    status: 'Live',
+    year: '2026',
+    tags: ['Next.js', 'React', 'Supabase', 'TypeScript', 'Tailwind']
+  },
+  {
+    id: 2,
+    name: 'Focusmate Hub',
+    category: 'PRODUCTIVITY',
+    description: 'A quieter, mindful workspace designed to build intentional flow states with structured pomodoro cadence and ambient soundscapes.',
+    url: 'focusmate.app',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1100&q=85',
+    accent: 'peach',
+    featured: true,
+    status: 'Live',
+    year: '2025',
+    tags: ['React', 'TypeScript', 'Web Audio API']
+  },
+  {
+    id: 3,
+    name: 'HyperSync Engine',
+    category: 'DEVELOPER TOOLS',
+    description: 'High-performance real-time data synchronization pipeline and developer toolkit for low-latency state hydration across distributed clients.',
+    url: 'hypersync.dev',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1100&q=85',
+    accent: 'blue',
+    featured: true,
+    status: 'Live',
+    year: '2025',
+    tags: ['Node.js', 'WebSockets', 'PostgreSQL', 'Redis']
+  },
+  {
+    id: 4,
+    name: 'Zenith Finance',
+    category: 'FINANCE',
+    description: 'A transparent, human-centered wealth visualization dashboard with multi-currency tracking, real-time charts, and financial milestone forecasting.',
+    url: 'zenith.money',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1100&q=85',
+    accent: 'mint',
+    featured: false,
+    status: 'Live',
+    year: '2024',
+    tags: ['React', 'Vite', 'ChartJS', 'Finance API']
+  },
+  {
+    id: 5,
+    name: 'Aether Component System',
+    category: 'DEVELOPER TOOLS',
+    description: 'An accessible, production-ready component library built with modern CSS custom properties, accessible ARIA primitives, and fluid micro-interactions.',
+    url: 'aether.ui',
+    image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1100&q=85',
+    accent: 'yellow',
+    featured: false,
+    status: 'In progress',
+    year: '2025',
+    tags: ['Design System', 'Accessibility', 'CSS3']
+  },
+  {
+    id: 6,
+    name: 'Sunday Table',
+    category: 'COMMUNITY',
+    description: 'A neighborhood culinary collective connecting home chefs and food enthusiasts to organize intimate communal dining pop-ups.',
+    url: 'sundaytable.co',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1100&q=85',
+    accent: 'rose',
+    featured: false,
+    status: 'In progress',
+    year: '2025',
+    tags: ['React', 'Maps API', 'Community']
+  }
 ];
-const initialData = { name: 'Ganesh Katam', title: 'Software Developer · Independent Builder', location: 'Based in India', email: 'katamganesh61@gmail.com', intro: 'I’m a software developer and independent builder who loves crafting clean, useful web applications and digital tools. Welcome to my corner of the internet.', socials: { github: 'github.com/Ganeshkatam', linkedin: 'linkedin.com/in/ganeshkatam' } };
 
-function read(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } }
+const defaultProfile = {
+  name: 'Katam Ganesh Reddy',
+  title: 'Software Developer · Independent Builder',
+  location: 'India',
+  domain: 'tomesphere.in',
+  email: 'katamganesh61@gmail.com',
+  intro: 'I engineer robust web applications and intuitive digital systems. Passionate about crafting thoughtful user experiences, modern frontend architecture, and resilient full-stack systems.',
+  socials: {
+    github: 'github.com/Ganeshkatam',
+    linkedin: 'linkedin.com/in/ganeshkatam'
+  }
+};
+
+const techStack = [
+  'Next.js',
+  'React 19',
+  'TypeScript',
+  'Node.js',
+  'PostgreSQL',
+  'Supabase',
+  'Tailwind CSS',
+  'Vite',
+  'REST & GraphQL',
+  'Docker',
+  'Python',
+  'Git'
+];
+
+function readStorage(key, fallback) {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 function getInitialProfile() {
-  const saved = read('portfolio-profile', read('am-profile', null));
-  if (!saved || saved.name === 'Arjun Mehta') return initialData;
+  const saved = readStorage('portfolio-profile', readStorage('am-profile', null));
+  if (!saved || saved.name === 'Arjun Mehta' || !saved.name.includes('Ganesh')) {
+    return defaultProfile;
+  }
   return saved;
 }
+
+function getInitialProjects() {
+  const saved = readStorage('portfolio-projects', readStorage('am-products', null));
+  if (!saved || !saved.some(p => p.name === 'TomeSphere')) {
+    return defaultProjects;
+  }
+  return saved;
+}
+
 function App() {
-  const [products, setProducts] = useState(() => read('am-products', seed));
+  const [theme, setTheme] = useState(() => localStorage.getItem('site-theme') || 'dark');
+  const [products, setProducts] = useState(getInitialProjects);
   const [profile, setProfile] = useState(getInitialProfile);
   const [view, setView] = useState('home');
-  const [filter, setFilter] = useState('ALL PROJECTS');
-  const [query, setQuery] = useState('');
-  const [modal, setModal] = useState(null);
-  const [toast, setToast] = useState('');
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeModal, setActiveModal] = useState(null);
+  const [toastMessage, setToastMessage] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState('Overview');
-  const [tab, setTab] = useState('All projects');
-  useEffect(() => localStorage.setItem('am-products', JSON.stringify(products)), [products]);
+  const [terminalHistory, setTerminalHistory] = useState([
+    { cmd: 'whoami', output: `${profile.name} — ${profile.title}` },
+    { cmd: 'domain', output: `${profile.domain} (Active Portfolio & Flagship Sanctuary)` }
+  ]);
+  const [terminalInput, setTerminalInput] = useState('');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('site-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('portfolio-projects', JSON.stringify(products));
+    localStorage.setItem('am-products', JSON.stringify(products));
+  }, [products]);
+
   useEffect(() => {
     localStorage.setItem('portfolio-profile', JSON.stringify(profile));
     localStorage.setItem('am-profile', JSON.stringify(profile));
   }, [profile]);
-  const notify = (s) => { setToast(s); window.setTimeout(() => setToast(''), 2600); };
-  const cats = ['ALL PROJECTS', ...new Set(products.map(p => p.category))];
-  const visible = products.filter(p => (filter === 'ALL PROJECTS' || p.category === filter) && (`${p.name} ${p.category} ${p.description}`.toLowerCase().includes(query.toLowerCase())));
-  const goHome = (section) => { setView('home'); setMenuOpen(false); if (section) window.setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' }), 80); else window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  const openEditor = (product) => setModal({ type: 'product', item: product || { id: Date.now(), name: '', category: 'PRODUCTIVITY', description: '', url: '', image: '', accent: 'lavender', featured: true, status: 'Live', year: '2025' } });
-  const saveProduct = (item) => { setProducts(old => old.some(p => p.id === item.id) ? old.map(p => p.id === item.id ? item : p) : [item, ...old]); setModal(null); notify('Your changes are saved'); };
-  const removeProduct = (id) => { if (!window.confirm('Remove this website from your portfolio?')) return; setProducts(p => p.filter(x => x.id !== id)); notify('Website removed'); };
-  const monogram = profile.name.split(' ').filter(Boolean).map(s => s[0]).join('').toLowerCase();
-  if (view === 'admin') return <Admin {...{ products, profile, setProfile, setView, activeNav, setActiveNav, tab, setTab, query, setQuery, openEditor, removeProduct, notify, monogram }} />;
-  return <div className="site-shell">
-    <header className="topbar"><a className="wordmark" href="#top" onClick={e => {e.preventDefault();goHome();}}><span className="monogram">{monogram}<span>.</span></span><span className="wordmark-name">{profile.name}</span></a><nav className={menuOpen ? 'nav-links open' : 'nav-links'}><a href="#work" onClick={e => {e.preventDefault();goHome('work');}}>Work</a><a href="#about" onClick={e => {e.preventDefault();goHome('about');}}>About</a><a href={`mailto:${profile.email}`}>Contact</a><button className="nav-admin" onClick={() => {setView('admin');setActiveNav('Overview');window.scrollTo(0,0);}}><LayoutDashboard size={15}/> Dashboard</button></nav><button className="mobile-menu" aria-label="Toggle navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen?<X size={20}/>:<Menu size={20}/>}</button></header>
-    <main id="top"><section className="hero"><div className="hero-label"><span className="status-dot"/> SOFTWARE STUDENT &amp; INDEPENDENT BUILDER</div><h1>Building for the<br/><span>curious internet.</span></h1><div className="hero-bottom"><p>I’m {profile.name.split(' ')[0]}, a software engineering student making useful, thoughtful websites. Here’s a little of what I’ve been building.</p><a className="round-link" href="#work" onClick={e=>{e.preventDefault();goHome('work');}} aria-label="See my work"><ArrowDown size={19}/></a></div><div className="hero-note"><span className="note-line"/><span>{profile.location}</span></div></section>
-    <section id="work" className="work-section"><div className="section-heading"><div><div className="eyebrow">A FEW THINGS I’VE MADE</div><h2>Selected work<span className="heading-count">({String(products.length).padStart(2,'0')})</span></h2></div><span className="section-side-note">Websites, ideas &amp; happy accidents<br/>2024 — 2025</span></div><div className="filters"><div className="filter-tabs">{cats.map((c,i)=><button key={c} className={filter===c?'selected':''} onClick={()=>setFilter(c)}>{i===0?'All projects':c.toLowerCase().replace(/\b\w/g,x=>x.toUpperCase())}<span>{i===0?products.length:products.filter(p=>p.category===c).length}</span></button>)}</div><label className="search-box"><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a project"/></label></div><div className="project-grid">{visible.map((p,i)=><article className={`project-card ${i===0?'card-large':''}`} key={p.id}><button className={`project-image ${p.accent}`} onClick={()=>window.open(/^https?:\/\//.test(p.url)?p.url:`https://${p.url}`,'_blank','noopener')} aria-label={`Open ${p.name} website`}><img src={p.image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1100&q=85'} alt={`${p.name} website`} loading="lazy"/><span className="image-overlay"><span>VIEW WEBSITE <ArrowUpRight size={15}/></span></span><span className="image-index">0{i+1} / 0{visible.length}</span></button><div className="project-meta"><div><span className="project-category">{p.category}</span><h3>{p.name}</h3></div><span className="project-year">{p.year}</span></div><p className="project-description">{p.description}</p><a className="project-url" href={/^https?:\/\//.test(p.url)?p.url:`https://${p.url}`} target="_blank" rel="noreferrer">{p.url}<ArrowUpRight size={14}/></a></article>)}</div>{visible.length===0&&<div className="empty-state">No projects match that search. Try a different name or category.</div>}<div className="project-footnote"><span><span className="little-spark">✳</span> Made with curiosity and a slightly unreasonable number of browser tabs.</span><button onClick={()=>{setView('admin');setActiveNav('Projects');}}>Manage projects <ArrowRight size={15}/></button></div></section>
-    <section id="about" className="about-section"><div className="about-left"><div className="eyebrow">A LITTLE ABOUT ME</div><h2>Student by day.<br/><span>Builder whenever.</span></h2><div className="availability"><span className="status-dot"/> OPEN TO INTERESTING THINGS</div></div><div className="about-copy"><p>{profile.intro}</p><p>Currently studying software engineering and learning a little more with every project. I like clean interfaces, useful products, and ideas that make someone’s day a bit easier.</p><div className="about-links"><a href={`https://${profile.socials.github}`} target="_blank" rel="noreferrer"><Github size={15}/> GitHub <ArrowUpRight size={13}/></a><a href={`https://${profile.socials.linkedin}`} target="_blank" rel="noreferrer"><Globe2 size={15}/> LinkedIn <ArrowUpRight size={13}/></a><a href={`mailto:${profile.email}`}><Mail size={15}/> Say hello <ArrowUpRight size={13}/></a></div></div><div className="about-index">01 — 02</div></section>
-    <section className="contact-band"><div><div className="eyebrow">HAVE A GOOD ONE IN MIND?</div><h2>Let’s make it<br/><span>real.</span></h2></div><a className="contact-link" href={`mailto:${profile.email}`}>{profile.email}<span><ArrowUpRight size={19}/></span></a><div className="contact-decoration">✳</div></section></main><footer className="footer"><a className="footer-logo" href="#top" onClick={e=>{e.preventDefault();goHome();}}>{monogram}<span>.</span></a><span>Made with care &amp; a lot of coffee</span><span>© {new Date().getFullYear()} {profile.name}</span><button onClick={()=>{setView('admin');setActiveNav('Overview');}}>Admin <ArrowUpRight size={13}/></button></footer>
-    {modal&&<ProductModal item={modal.item} onClose={()=>setModal(null)} onSave={saveProduct}/>}{toast&&<div className="toast"><Check size={16}/>{toast}</div>}
-  </div>;
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    window.setTimeout(() => setToastMessage(''), 2800);
+  };
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(profile.email);
+    showToast(`Copied ${profile.email} to clipboard!`);
+  };
+
+  const categories = ['ALL', ...new Set(products.map(p => p.category))];
+
+  const visibleProjects = products.filter(p => {
+    const matchesFilter = activeFilter === 'ALL' || p.category === activeFilter;
+    const matchesSearch = `${p.name} ${p.category} ${p.description} ${(p.tags || []).join(' ')}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const flagshipProject = products.find(p => p.name === 'TomeSphere') || products[0];
+
+  const handleCommand = (cmdText) => {
+    const clean = (cmdText || terminalInput).trim().toLowerCase();
+    let res = '';
+    if (clean === 'help') {
+      res = 'Available commands: whoami, bio, skills, projects, flagship, contact, clear';
+    } else if (clean === 'whoami') {
+      res = `${profile.name} (${profile.title}) based in ${profile.location}`;
+    } else if (clean === 'bio') {
+      res = profile.intro;
+    } else if (clean === 'skills') {
+      res = techStack.join(' · ');
+    } else if (clean === 'projects') {
+      res = products.map(p => `${p.name} [${p.status}] - ${p.category}`).join('\n');
+    } else if (clean === 'flagship') {
+      res = `TomeSphere -> ${flagshipProject.url} : ${flagshipProject.description}`;
+    } else if (clean === 'contact') {
+      res = `Email: ${profile.email}\nGitHub: https://${profile.socials.github}\nLinkedIn: https://${profile.socials.linkedin}`;
+    } else if (clean === 'clear') {
+      setTerminalHistory([]);
+      setTerminalInput('');
+      return;
+    } else {
+      res = `Command not recognized: "${clean}". Type 'help' for available commands.`;
+    }
+    setTerminalHistory(prev => [...prev, { cmd: clean, output: res }]);
+    setTerminalInput('');
+  };
+
+  const monogram = profile.name
+    .split(' ')
+    .filter(Boolean)
+    .map(w => w[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
+  const openEditor = (item) => {
+    setActiveModal({
+      type: 'product',
+      item: item || {
+        id: Date.now(),
+        name: '',
+        category: 'WEB APPS',
+        description: '',
+        url: '',
+        image: '',
+        accent: 'lavender',
+        featured: true,
+        status: 'Live',
+        year: '2026',
+        tags: ['React', 'TypeScript']
+      }
+    });
+  };
+
+  const saveProduct = (item) => {
+    setProducts(old => (old.some(p => p.id === item.id) ? old.map(p => (p.id === item.id ? item : p)) : [item, ...old]));
+    setActiveModal(null);
+    showToast('Project saved successfully');
+  };
+
+  const removeProduct = (id) => {
+    if (!window.confirm('Delete this project from your portfolio?')) return;
+    setProducts(old => old.filter(p => p.id !== id));
+    showToast('Project removed');
+  };
+
+  if (view === 'admin') {
+    return (
+      <StudioDashboard
+        products={products}
+        profile={profile}
+        setProfile={setProfile}
+        setView={setView}
+        activeNav={activeNav}
+        setActiveNav={setActiveNav}
+        openEditor={openEditor}
+        removeProduct={removeProduct}
+        showToast={showToast}
+        theme={theme}
+        toggleTheme={toggleTheme}
+      />
+    );
+  }
+
+  return (
+    <>
+      {/* Background Ambient Aura */}
+      <div className="ambient-wrapper" aria-hidden="true">
+        <div className="ambient-grid" />
+        <div className="ambient-orb orb-primary" />
+        <div className="ambient-orb orb-secondary" />
+        <div className="ambient-orb orb-tertiary" />
+      </div>
+
+      <div className="site-layout">
+        {/* Floating Glass Navigation */}
+        <header className="site-header">
+          <div className="brand-wrapper">
+            <a href="#top" className="brand-monogram">
+              {monogram}
+            </a>
+            <div>
+              <div className="brand-name">{profile.name}</div>
+              <div className="brand-tag">{profile.domain}</div>
+            </div>
+          </div>
+
+          <nav className="nav-desktop">
+            <a href="#work" className="nav-link">
+              Work
+            </a>
+            <a href="#flagship" className="nav-link">
+              TomeSphere
+            </a>
+            <a href="#capabilities" className="nav-link">
+              Capabilities
+            </a>
+            <a href="#terminal" className="nav-link">
+              Terminal
+            </a>
+            <a href="#contact" className="nav-link">
+              Contact
+            </a>
+          </nav>
+
+          <div className="nav-actions">
+            <button
+              className="btn-icon-round"
+              onClick={toggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            >
+              {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
+
+            <button
+              className="btn-pill-studio"
+              onClick={() => {
+                setView('admin');
+                window.scrollTo(0, 0);
+              }}
+            >
+              <LayoutDashboard size={14} />
+              Studio Control
+            </button>
+
+            <button
+              className="btn-icon-round btn-menu-mobile"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
+        </header>
+
+        <main id="top">
+          {/* Hero Section */}
+          <section className="hero-section">
+            <div className="badge-beacon">
+              <span className="beacon-dot" />
+              <span>Available for engineering &amp; independent building</span>
+            </div>
+
+            <h1 className="hero-title">
+              Crafting digital products at the intersection of <span className="hero-gradient-text">design &amp; systems.</span>
+            </h1>
+
+            <p className="hero-description">
+              Hello, I’m <strong>{profile.name}</strong>. I design and engineer modern web applications, distributed digital systems, and
+              delightful interfaces that live on the open web.
+            </p>
+
+            <div className="hero-cta-group">
+              <a href="#work" className="btn-primary-glow">
+                Explore Selected Work <ArrowDown size={16} />
+              </a>
+              <button onClick={copyEmail} className="btn-secondary-glass">
+                <Copy size={15} /> Copy Contact Email
+              </button>
+              <a
+                href={`https://${profile.socials.github}`}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-secondary-glass"
+              >
+                <Github size={15} /> GitHub <ArrowUpRight size={14} />
+              </a>
+            </div>
+
+            <div className="hero-stats-banner">
+              <div className="hero-stat-card">
+                <div className="stat-header">
+                  <Laptop size={13} /> Active Projects
+                </div>
+                <div className="stat-value">{String(products.length).padStart(2, '0')}</div>
+                <div className="stat-subtext">Websites &amp; systems built</div>
+              </div>
+              <div className="hero-stat-card">
+                <div className="stat-header">
+                  <Globe size={13} /> Live Deployment
+                </div>
+                <div className="stat-value">{profile.domain}</div>
+                <div className="stat-subtext">Verified custom domain</div>
+              </div>
+              <div className="hero-stat-card">
+                <div className="stat-header">
+                  <Cpu size={13} /> Core Architecture
+                </div>
+                <div className="stat-value">Full Stack</div>
+                <div className="stat-subtext">React · Next.js · Node · SQL</div>
+              </div>
+            </div>
+          </section>
+
+          {/* Tech Ecosystem Marquee */}
+          <section className="tech-marquee-wrapper">
+            <div className="tech-marquee-label">Technologies &amp; Architecture Tools</div>
+            <div className="tech-chips-grid">
+              {techStack.map(tech => (
+                <span key={tech} className="tech-chip">
+                  <span className="chip-dot" />
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          {/* Flagship Project Spotlight: TomeSphere */}
+          <section id="flagship" className="section-wrapper">
+            <div className="section-head">
+              <div>
+                <div className="section-eyebrow">Flagship Spotlight</div>
+                <h2 className="section-title">TomeSphere — The Digital Book Sanctuary</h2>
+                <p className="section-subtitle">
+                  The primary web application living at <strong>{profile.domain}</strong>.
+                </p>
+              </div>
+            </div>
+
+            <div className="flagship-card">
+              <div className="flagship-glow-bg" />
+              <div>
+                <div className="flagship-badge">
+                  <Sparkles size={12} /> FEATURED FLAGSHIP APPLICATION
+                </div>
+                <h3 className="flagship-title">TomeSphere</h3>
+                <div className="flagship-domain">
+                  <Globe size={14} /> {profile.domain}
+                </div>
+                <p className="flagship-desc">{flagshipProject.description}</p>
+                <div className="flagship-tags">
+                  {(flagshipProject.tags || ['Next.js', 'React', 'Supabase', 'TypeScript']).map(t => (
+                    <span key={t} className="flagship-tag">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <div className="flagship-actions">
+                  <a
+                    href={`https://${profile.domain}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-primary-glow"
+                  >
+                    Launch TomeSphere <ArrowUpRight size={16} />
+                  </a>
+                  <a
+                    href={`https://${profile.socials.github}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-secondary-glass"
+                  >
+                    <Github size={15} /> Source
+                  </a>
+                </div>
+              </div>
+
+              <div className="flagship-visual">
+                <img
+                  src={flagshipProject.image || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85'}
+                  alt="TomeSphere Sanctuary"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Selected Work Portfolio Grid */}
+          <section id="work" className="section-wrapper">
+            <div className="section-head">
+              <div>
+                <div className="section-eyebrow">Showcase &amp; Products</div>
+                <h2 className="section-title">Selected Work ({products.length})</h2>
+                <p className="section-subtitle">A collection of web apps, systems, and open projects.</p>
+              </div>
+            </div>
+
+            <div className="projects-filter-bar">
+              <div className="filter-pills">
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    className={`filter-pill ${activeFilter === cat ? 'active' : ''}`}
+                    onClick={() => setActiveFilter(cat)}
+                  >
+                    <span>{cat}</span>
+                    <span className="pill-count">
+                      {cat === 'ALL' ? products.length : products.filter(p => p.category === cat).length}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="search-input-wrapper">
+                <Search size={14} />
+                <input
+                  type="text"
+                  className="search-field"
+                  placeholder="Search projects or tags..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="projects-masonry">
+              {visibleProjects.map(project => (
+                <article key={project.id} className="project-card-modern">
+                  <div className="card-media-wrapper">
+                    <img src={project.image} alt={project.name} loading="lazy" />
+                    <span className={`card-overlay-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
+                      {project.status}
+                    </span>
+                  </div>
+
+                  <div className="card-content-area">
+                    <div className="card-meta-row">
+                      <span className="card-category">{project.category}</span>
+                      <span>{project.year}</span>
+                    </div>
+
+                    <h3 className="card-title">{project.name}</h3>
+                    <p className="card-description">{project.description}</p>
+
+                    <div className="card-footer-action">
+                      <a
+                        href={project.url.startsWith('http') ? project.url : `https://${project.url}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="card-link-preview"
+                      >
+                        Visit Website <ArrowUpRight size={13} />
+                      </a>
+
+                      <button
+                        className="btn-secondary-glass"
+                        style={{ padding: '6px 12px', fontSize: '11px' }}
+                        onClick={() => openEditor(project)}
+                        title="Edit in studio"
+                      >
+                        <Pencil size={12} /> Edit
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {visibleProjects.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
+                No projects found matching that filter or search term.
+              </div>
+            )}
+          </section>
+
+          {/* Interactive Terminal Dossier */}
+          <section id="terminal" className="section-wrapper">
+            <div className="section-head">
+              <div>
+                <div className="section-eyebrow">Interactive Shell</div>
+                <h2 className="section-title">Developer Dossier</h2>
+                <p className="section-subtitle">Run commands directly to inspect builder background, skills, and vision.</p>
+              </div>
+            </div>
+
+            <div className="terminal-window">
+              <div className="terminal-header">
+                <div className="terminal-dots">
+                  <span className="terminal-dot dot-red" />
+                  <span className="terminal-dot dot-yellow" />
+                  <span className="terminal-dot dot-green" />
+                </div>
+                <div className="terminal-title">guest@tomesphere: ~</div>
+                <Terminal size={14} style={{ color: 'var(--text-muted)' }} />
+              </div>
+
+              <div className="terminal-body">
+                {terminalHistory.map((item, index) => (
+                  <div key={index} style={{ marginBottom: '12px' }}>
+                    <div className="term-line">
+                      <span className="term-prompt">visitor@tomesphere:~$</span>
+                      <span className="term-cmd">{item.cmd}</span>
+                    </div>
+                    <div className="term-output" style={{ whiteSpace: 'pre-wrap' }}>
+                      {item.output}
+                    </div>
+                  </div>
+                ))}
+
+                <form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    if (terminalInput.trim()) handleCommand(terminalInput);
+                  }}
+                  className="term-line"
+                  style={{ marginTop: '12px' }}
+                >
+                  <span className="term-prompt">visitor@tomesphere:~$</span>
+                  <input
+                    type="text"
+                    value={terminalInput}
+                    onChange={e => setTerminalInput(e.target.value)}
+                    placeholder="Type 'help', 'skills', 'whoami', 'projects'..."
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      outline: 'none',
+                      color: '#ffffff',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '13px',
+                      flex: 1
+                    }}
+                  />
+                </form>
+
+                <div className="term-quick-btns">
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', alignSelf: 'center', marginRight: '6px' }}>
+                    Quick commands:
+                  </span>
+                  {['help', 'whoami', 'skills', 'flagship', 'contact', 'clear'].map(cmd => (
+                    <button key={cmd} type="button" className="term-btn" onClick={() => handleCommand(cmd)}>
+                      {cmd}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Capabilities & Core Architecture */}
+          <section id="capabilities" className="section-wrapper">
+            <div className="section-head">
+              <div>
+                <div className="section-eyebrow">Engineering Pillars</div>
+                <h2 className="section-title">Core Capabilities</h2>
+                <p className="section-subtitle">Disciplines and technical crafts honed through building.</p>
+              </div>
+            </div>
+
+            <div className="capabilities-grid">
+              <div className="capability-card">
+                <div className="capability-icon-box">
+                  <Code2 size={24} />
+                </div>
+                <h3 className="capability-title">Frontend Engineering</h3>
+                <p className="capability-desc">
+                  Building reactive, responsive web apps with Next.js, React, TypeScript, fluid CSS animations, and deep attention to accessibility.
+                </p>
+                <div className="capability-tags">
+                  <span className="cap-tag">React 19</span>
+                  <span className="cap-tag">Next.js</span>
+                  <span className="cap-tag">TypeScript</span>
+                  <span className="cap-tag">Tailwind</span>
+                </div>
+              </div>
+
+              <div className="capability-card">
+                <div className="capability-icon-box">
+                  <Cpu size={24} />
+                </div>
+                <h3 className="capability-title">Backend &amp; Databases</h3>
+                <p className="capability-desc">
+                  Designing resilient schemas, RESTful &amp; GraphQL endpoints, real-time database subscriptions, and low-latency APIs.
+                </p>
+                <div className="capability-tags">
+                  <span className="cap-tag">PostgreSQL</span>
+                  <span className="cap-tag">Supabase</span>
+                  <span className="cap-tag">Node.js</span>
+                  <span className="cap-tag">REST APIs</span>
+                </div>
+              </div>
+
+              <div className="capability-card">
+                <div className="capability-icon-box">
+                  <BookOpen size={24} />
+                </div>
+                <h3 className="capability-title">Product &amp; System Design</h3>
+                <p className="capability-desc">
+                  Transforming conceptual visions into functional web products with intentional design systems, polished micro-copy, and intuitive UX flows.
+                </p>
+                <div className="capability-tags">
+                  <span className="cap-tag">Design Systems</span>
+                  <span className="cap-tag">UI/UX Craft</span>
+                  <span className="cap-tag">Micro-interactions</span>
+                </div>
+              </div>
+
+              <div className="capability-card">
+                <div className="capability-icon-box">
+                  <Globe size={24} />
+                </div>
+                <h3 className="capability-title">Deployment &amp; Cloud</h3>
+                <p className="capability-desc">
+                  Configuring modern CI/CD pipelines, custom DNS domains, edge delivery, and production optimization for rapid global access.
+                </p>
+                <div className="capability-tags">
+                  <span className="cap-tag">Vite</span>
+                  <span className="cap-tag">Vercel/Pages</span>
+                  <span className="cap-tag">DNS/CNAME</span>
+                  <span className="cap-tag">Docker</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Contact Band */}
+          <section id="contact" className="contact-cta-section">
+            <div>
+              <div className="section-eyebrow" style={{ color: 'var(--accent-primary)' }}>
+                Let&apos;s Connect
+              </div>
+              <h2 className="contact-cta-title">Have an ambitious project in mind?</h2>
+              <p className="contact-cta-subtitle">
+                I am always excited to discuss software engineering opportunities, product collaborations, or technical challenges.
+              </p>
+            </div>
+
+            <div className="contact-actions-row">
+              <button onClick={copyEmail} className="btn-copy-email">
+                <Copy size={16} /> {profile.email}
+              </button>
+              <a href={`mailto:${profile.email}`} className="btn-primary-glow">
+                Send Direct Message <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </section>
+        </main>
+
+        {/* Footer */}
+        <footer className="site-footer">
+          <div className="footer-brand">
+            <span className="brand-monogram" style={{ width: '28px', height: '28px', fontSize: '13px' }}>
+              {monogram}
+            </span>
+            <span>{profile.name} — {profile.domain}</span>
+          </div>
+
+          <div className="footer-social-links">
+            <a href={`https://${profile.socials.github}`} target="_blank" rel="noreferrer">
+              <Github size={15} /> GitHub
+            </a>
+            <a href={`https://${profile.socials.linkedin}`} target="_blank" rel="noreferrer">
+              <Linkedin size={15} /> LinkedIn
+            </a>
+            <a href={`mailto:${profile.email}`}>
+              <Mail size={15} /> Email
+            </a>
+            <button
+              onClick={() => {
+                setView('admin');
+                window.scrollTo(0, 0);
+              }}
+              style={{ color: 'var(--accent-primary)', fontSize: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+            >
+              <LayoutDashboard size={13} /> Studio
+            </button>
+          </div>
+        </footer>
+      </div>
+
+      {/* Product Edit / Add Modal */}
+      {activeModal && (
+        <ProductModal
+          item={activeModal.item}
+          onClose={() => setActiveModal(null)}
+          onSave={saveProduct}
+        />
+      )}
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="toast-container">
+          <Check size={16} style={{ color: 'var(--accent-emerald)' }} />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+    </>
+  );
 }
 
-function Admin({ products, profile, setProfile, setView, activeNav, setActiveNav, tab, setTab, query, setQuery, openEditor, removeProduct, notify, monogram }) {
- const [date] = useState(new Intl.DateTimeFormat('en-US',{weekday:'long',month:'long',day:'numeric'}).format(new Date()));
- const filtered=products.filter(p=>(tab==='All projects'||p.status===tab)&&(`${p.name} ${p.category}`.toLowerCase().includes(query.toLowerCase())));
- return <div className="admin-layout"><aside className="sidebar"><div className="sidebar-brand"><a className="monogram" onClick={()=>setView('home')}>{monogram || 'gk'}<span>.</span></a><span>STUDIO<br/><strong>CONTROL ROOM</strong></span></div><div className="sidebar-profile"><div className="avatar">{profile.name.split(' ').map(s=>s[0]).join('')}</div><div><strong>{profile.name}</strong><small>Student · Builder</small></div><MoreHorizontal size={17}/></div><div className="sidebar-label">WORKSPACE</div><nav className="side-nav">{[['Overview',LayoutDashboard],['Projects',Monitor],['Settings',Settings]].map(([n,I])=><button className={activeNav===n?'active':''} key={n} onClick={()=>setActiveNav(n)}><I size={17}/>{n}{n==='Projects'&&<span>{products.length}</span>}</button>)}</nav><div className="sidebar-bottom"><div className="side-help"><div className="help-icon"><Sparkles size={15}/></div><strong>Small steps add up.</strong><p>Keep making things you care about.</p></div><button className="back-site" onClick={()=>setView('home')}><LogOut size={16}/> Back to portfolio</button></div></aside><main className="admin-main"><header className="admin-topbar"><div className="breadcrumb">STUDIO <ChevronRight size={13}/> {activeNav.toUpperCase()}</div><div className="admin-top-right"><span className="admin-date">{date}</span><button className="avatar small">{profile.name.split(' ').map(s=>s[0]).join('')}</button></div></header><div className="admin-content">{activeNav==='Settings'?<SettingsPage {...{profile,setProfile,notify}}/>:activeNav==='Projects'?<ProjectsPage {...{products,filtered,tab,setTab,query,setQuery,openEditor,removeProduct}}/>:<Overview {...{products,profile,setActiveNav,openEditor}}/>}</div></main></div>;
-}
-function Overview({products,profile,setActiveNav,openEditor}) { const live=products.filter(p=>p.status==='Live').length; const featured=products.filter(p=>p.featured).length; const firstName = profile?.name ? profile.name.split(' ')[0] : 'there'; return <><div className="admin-greeting"><div><div className="eyebrow">YOUR SPACE, YOUR PACE</div><h1>Good morning, {firstName}<span>.</span></h1><p>Your little corner of the internet is looking good. Keep it growing.</p></div><button className="button-primary" onClick={()=>openEditor(null)}><Plus size={16}/> New project</button></div><div className="stats-grid"><Stat icon={<Monitor size={17}/>} label="TOTAL PROJECTS" value={String(products.length).padStart(2,'0')} tag="IN YOUR STUDIO" tone="lilac"/><Stat icon={<Globe2 size={17}/>} label="LIVE ON THE WEB" value={String(live).padStart(2,'0')} tag="READY FOR THE WORLD" tone="mint"/><Stat icon={<Heart size={17}/>} label="FEATURED WORK" value={String(featured).padStart(2,'0')} tag="ON YOUR PORTFOLIO" tone="peach"/></div><div className="admin-section-head"><div><h2>Recently updated</h2><p>A quick look at what you’ve been working on.</p></div><button className="text-button" onClick={()=>setActiveNav('Projects')}>All projects <ArrowRight size={15}/></button></div><div className="recent-table"><div className="table-heading"><span>PROJECT</span><span>STATUS</span><span>LAST UPDATED</span><span></span></div>{products.slice(0,4).map((p,i)=><div className="table-row" key={p.id}><div className="table-project"><span className={`project-thumb ${p.accent}`}><img src={p.image} alt=""/></span><span><strong>{p.name}</strong><small>{p.category}</small></span></div><span className={`status-pill ${p.status==='Live'?'live':'draft'}`}><i/>{p.status}</span><span className="updated-time">{i===0?'Just now':`${i*2} days ago`}</span><button className="icon-button" onClick={()=>openEditor(p)} aria-label={`Edit ${p.name}`}><Pencil size={15}/></button></div>)}</div><div className="admin-tip"><span className="tip-icon"><Sparkles size={17}/></span><div><strong>A little nudge</strong><p>Good work gets better with a second look. Add a fresh project or update an old favorite.</p></div><button onClick={()=>openEditor(null)}>Add a project <ArrowRight size={14}/></button></div></>; }
-function Stat({icon,label,value,tag,tone}) { return <div className="stat-card"><div className={`stat-icon ${tone}`}>{icon}</div><span className="stat-label">{label}</span><div className="stat-number">{value}</div><div className="stat-tag"><span/> {tag}</div><div className="stat-sparkline"><svg viewBox="0 0 115 39" preserveAspectRatio="none"><path d="M0 30 C 17 26, 21 32, 36 23 S 55 22, 67 27 S 84 10, 97 15 S 108 9, 115 3" fill="none" stroke="currentColor" strokeWidth="1.5"/><path d="M0 30 C 17 26, 21 32, 36 23 S 55 22, 67 27 S 84 10, 97 15 S 108 9, 115 3 V39 H0Z" fill="currentColor" opacity=".08"/></svg></div></div>; }
-function ProjectsPage({products,filtered,tab,setTab,query,setQuery,openEditor,removeProduct}) {return <><div className="admin-greeting projects-greeting"><div><div className="eyebrow">THE THINGS YOU’VE PUT OUT THERE</div><h1>Your projects<span>.</span></h1><p>A home for every idea you’ve brought to life.</p></div><button className="button-primary" onClick={()=>openEditor(null)}><Plus size={16}/> New project</button></div><div className="projects-toolbar"><div className="project-tabs">{['All projects','Live','In progress'].map(t=><button className={tab===t?'active':''} onClick={()=>setTab(t)} key={t}>{t}<span>{t==='All projects'?products.length:products.filter(p=>p.status===t).length}</span></button>)}</div><label className="admin-search"><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search projects"/></label></div><div className="manage-grid">{filtered.map(p=><article className="manage-card" key={p.id}><div className={`manage-image ${p.accent}`}><img src={p.image} alt=""/><span className={`status-pill ${p.status==='Live'?'live':'draft'}`}><i/>{p.status}</span><button className="manage-more" onClick={()=>openEditor(p)} aria-label={`Edit ${p.name}`}><MoreHorizontal size={17}/></button></div><div className="manage-info"><div className="manage-category">{p.category}<span>·</span>{p.year}</div><h3>{p.name}</h3><p>{p.description}</p><div className="manage-actions"><a href={/^https?:\/\//.test(p.url)?p.url:`https://${p.url}`} target="_blank" rel="noreferrer">Open site <ExternalLink size={13}/></a><span><button onClick={()=>openEditor(p)} aria-label="Edit"><Pencil size={15}/></button><button onClick={()=>removeProduct(p.id)} aria-label="Delete"><Trash2 size={15}/></button></span></div></div></article>)}</div>{filtered.length===0&&<div className="admin-empty">Nothing here just yet. Create a project to get started.</div>}<div className="projects-count">Showing {filtered.length} of {products.length} projects<span>All caught up <Check size={13}/></span></div></>;}
-function SettingsPage({profile,setProfile,notify}) {const update=(k,v)=>setProfile(p=>({...p,[k]:v}));const updateSocial=(k,v)=>setProfile(p=>({...p,socials:{...p.socials,[k]:v}}));return <><div className="admin-greeting"><div><div className="eyebrow">MAKE IT YOURS</div><h1>A little housekeeping<span>.</span></h1><p>Small details that make your portfolio feel like you.</p></div><button className="button-primary" onClick={()=>{localStorage.setItem('portfolio-profile',JSON.stringify(profile));localStorage.setItem('am-profile',JSON.stringify(profile));notify('Your profile is saved');}}><Check size={16}/> Save changes</button></div><div className="settings-grid"><div className="settings-card"><div className="settings-heading"><span className="settings-icon"><LayoutDashboard size={17}/></span><div><h3>Your introduction</h3><p>Give visitors a sense of who you are.</p></div></div><label className="form-label">YOUR NAME<input value={profile.name} onChange={e=>update('name',e.target.value)}/></label><label className="form-label">YOUR TITLE<input value={profile.title} onChange={e=>update('title',e.target.value)}/></label><label className="form-label">LOCATION<input value={profile.location} onChange={e=>update('location',e.target.value)}/></label><label className="form-label">A FEW WORDS ABOUT YOU<textarea rows="4" value={profile.intro} onChange={e=>update('intro',e.target.value)}/></label></div><div className="settings-card"><div className="settings-heading"><span className="settings-icon coral"><Mail size={17}/></span><div><h3>Find you around the web</h3><p>Where curious people can say hello.</p></div></div><label className="form-label">EMAIL ADDRESS<input value={profile.email} onChange={e=>update('email',e.target.value)}/></label><label className="form-label">GITHUB PROFILE<input value={profile.socials.github} onChange={e=>updateSocial('github',e.target.value)}/></label><label className="form-label">LINKEDIN PROFILE<input value={profile.socials.linkedin} onChange={e=>updateSocial('linkedin',e.target.value)}/></label><div className="settings-note"><Sparkles size={15}/> Your portfolio updates as soon as you save.</div></div></div></>}
-function ProductModal({item,onClose,onSave}) {const [form,setForm]=useState(item);const set=(k,v)=>setForm(f=>({...f,[k]:v}));const submit=e=>{e.preventDefault();onSave({...form,name:form.name.trim(),description:form.description.trim(),url:form.url.trim(),image:form.image.trim()});};return <div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)onClose();}}><form className="product-modal" onSubmit={submit}><div className="modal-top"><div><div className="eyebrow">YOUR PORTFOLIO, YOUR RULES</div><h2>{item.name?'Edit project':'Add a project'}</h2><p>A little something you’ve made for the internet.</p></div><button className="modal-close" type="button" onClick={onClose}><X size={18}/></button></div><div className="modal-fields"><label className="form-label">PROJECT NAME<input autoFocus required value={form.name} onChange={e=>set('name',e.target.value)} placeholder="A good name goes a long way"/></label><label className="form-label">WEBSITE URL<input required value={form.url} onChange={e=>set('url',e.target.value)} placeholder="yourwebsite.com"/></label><label className="form-label">SHORT DESCRIPTION<textarea required rows="3" maxLength="180" value={form.description} onChange={e=>set('description',e.target.value)} placeholder="What did you make, and why does it matter?"/></label><div className="form-row"><label className="form-label">CATEGORY<select value={form.category} onChange={e=>set('category',e.target.value)}>{['PRODUCTIVITY','E-COMMERCE','LIFESTYLE','FINANCE','DEVELOPER TOOLS','COMMUNITY','EDUCATION','OTHER'].map(c=><option key={c}>{c}</option>)}</select></label><label className="form-label">STATUS<select value={form.status} onChange={e=>set('status',e.target.value)}><option>Live</option><option>In progress</option></select></label></div><label className="form-label">PREVIEW IMAGE URL<input value={form.image} onChange={e=>set('image',e.target.value)} placeholder="https://…"/></label><div className="modal-extras"><label className="feature-toggle"><input type="checkbox" checked={form.featured} onChange={e=>set('featured',e.target.checked)}/><span className="custom-check"><Check size={12}/></span><span><strong>Feature on my portfolio</strong><small>Give this project a place in the spotlight.</small></span></label><span className="char-count">{form.description.length}/180</span></div></div><div className="modal-footer"><button type="button" className="button-cancel" onClick={onClose}>Cancel</button><button type="submit" className="button-primary"><Check size={15}/> Save project</button></div></form></div>; }
+function StudioDashboard({
+  products,
+  profile,
+  setProfile,
+  setView,
+  activeNav,
+  setActiveNav,
+  openEditor,
+  removeProduct,
+  showToast,
+  theme,
+  toggleTheme
+}) {
+  const liveCount = products.filter(p => p.status === 'Live').length;
+  const featuredCount = products.filter(p => p.featured).length;
 
-createRoot(document.getElementById('root')).render(<App/>);
+  return (
+    <div className="studio-layout">
+      <aside className="studio-sidebar">
+        <div className="studio-sidebar-brand">
+          <div className="brand-monogram" style={{ width: '32px', height: '32px', fontSize: '14px' }}>
+            {profile.name.slice(0, 2).toUpperCase()}
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 700 }}>Studio Control</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{profile.domain}</div>
+          </div>
+        </div>
+
+        <div style={{ fontSize: '10px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '8px' }}>
+          NAVIGATION
+        </div>
+
+        <nav className="studio-nav-list">
+          <button
+            className={`studio-nav-item ${activeNav === 'Overview' ? 'active' : ''}`}
+            onClick={() => setActiveNav('Overview')}
+          >
+            <Monitor size={16} /> Overview
+          </button>
+          <button
+            className={`studio-nav-item ${activeNav === 'Projects' ? 'active' : ''}`}
+            onClick={() => setActiveNav('Projects')}
+          >
+            <Laptop size={16} /> Projects ({products.length})
+          </button>
+          <button
+            className={`studio-nav-item ${activeNav === 'Settings' ? 'active' : ''}`}
+            onClick={() => setActiveNav('Settings')}
+          >
+            <Settings size={16} /> Profile &amp; Domain
+          </button>
+        </nav>
+
+        <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button
+            className="btn-secondary-glass"
+            style={{ width: '100%', justifyContent: 'center', fontSize: '12px' }}
+            onClick={toggleTheme}
+          >
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />} {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          </button>
+
+          <button
+            className="btn-primary-glow"
+            style={{ width: '100%', justifyContent: 'center', fontSize: '12px', padding: '10px' }}
+            onClick={() => setView('home')}
+          >
+            <LogOut size={14} /> Back to Portfolio
+          </button>
+        </div>
+      </aside>
+
+      <main className="studio-main-panel">
+        <div className="studio-topbar">
+          <div>
+            <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', marginBottom: '4px' }}>
+              STUDIO &gt; {activeNav.toUpperCase()}
+            </div>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '26px', fontWeight: 700 }}>
+              {activeNav === 'Overview'
+                ? `Welcome back, ${profile.name.split(' ')[0]}`
+                : activeNav === 'Projects'
+                ? 'Manage Portfolio Projects'
+                : 'Profile & Portfolio Settings'}
+            </h1>
+          </div>
+
+          <button className="btn-primary-glow" onClick={() => openEditor(null)}>
+            <Plus size={16} /> Add New Project
+          </button>
+        </div>
+
+        {activeNav === 'Overview' && (
+          <>
+            <div className="studio-stats-grid">
+              <div className="studio-stat-box">
+                <div className="studio-stat-label">Total Projects</div>
+                <div className="studio-stat-num">{String(products.length).padStart(2, '0')}</div>
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Registered in catalog</div>
+              </div>
+              <div className="studio-stat-box">
+                <div className="studio-stat-label">Live on Web</div>
+                <div className="studio-stat-num">{String(liveCount).padStart(2, '0')}</div>
+                <div style={{ fontSize: '12px', color: 'var(--accent-emerald)' }}>Production ready</div>
+              </div>
+              <div className="studio-stat-box">
+                <div className="studio-stat-label">Featured Work</div>
+                <div className="studio-stat-num">{String(featuredCount).padStart(2, '0')}</div>
+                <div style={{ fontSize: '12px', color: 'var(--accent-secondary)' }}>Showcased on main page</div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700 }}>
+                Recent Portfolio Projects
+              </h2>
+              <button
+                style={{ fontSize: '12px', color: 'var(--accent-primary)', fontWeight: 600 }}
+                onClick={() => setActiveNav('Projects')}
+              >
+                View all projects ({products.length}) &rarr;
+              </button>
+            </div>
+
+            <div className="studio-table-card">
+              {products.slice(0, 5).map(p => (
+                <div key={p.id} className="studio-table-row">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      style={{ width: '42px', height: '42px', borderRadius: '6px', objectFit: 'cover' }}
+                    />
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '14px' }}>{p.name}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{p.category}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <span className={`card-overlay-badge ${p.status === 'Live' ? 'badge-live' : 'badge-draft'}`} style={{ position: 'static' }}>
+                      {p.status}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{p.url}</div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => openEditor(p)} className="btn-icon-round" style={{ width: '32px', height: '32px' }} title="Edit">
+                      <Pencil size={13} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {activeNav === 'Projects' && (
+          <div className="studio-table-card">
+            {products.map(p => (
+              <div key={p.id} className="studio-table-row">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    style={{ width: '48px', height: '48px', borderRadius: '6px', objectFit: 'cover' }}
+                  />
+                  <div>
+                    <div style={{ fontWeight: 600, fontSize: '15px' }}>{p.name}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', maxWidth: '340px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {p.description}
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <span className={`card-overlay-badge ${p.status === 'Live' ? 'badge-live' : 'badge-draft'}`} style={{ position: 'static' }}>
+                    {p.status}
+                  </span>
+                </div>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{p.url}</div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => openEditor(p)} className="btn-icon-round" style={{ width: '32px', height: '32px' }} title="Edit">
+                    <Pencil size={13} />
+                  </button>
+                  <button onClick={() => removeProduct(p.id)} className="btn-icon-round" style={{ width: '32px', height: '32px' }} title="Delete">
+                    <Trash2 size={13} style={{ color: 'var(--accent-rose)' }} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeNav === 'Settings' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
+            <div className="studio-stat-box" style={{ padding: '28px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, marginBottom: '20px' }}>
+                Profile Identity
+              </h3>
+              <div className="form-group">
+                <label className="form-label">Full Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profile.name}
+                  onChange={e => setProfile(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Professional Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profile.title}
+                  onChange={e => setProfile(prev => ({ ...prev, title: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Domain Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profile.domain || 'tomesphere.in'}
+                  onChange={e => setProfile(prev => ({ ...prev, domain: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Location</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profile.location}
+                  onChange={e => setProfile(prev => ({ ...prev, location: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="studio-stat-box" style={{ padding: '28px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, marginBottom: '20px' }}>
+                Contact &amp; Social Links
+              </h3>
+              <div className="form-group">
+                <label className="form-label">Contact Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  value={profile.email}
+                  onChange={e => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">GitHub URL</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profile.socials.github}
+                  onChange={e =>
+                    setProfile(prev => ({
+                      ...prev,
+                      socials: { ...prev.socials, github: e.target.value }
+                    }))
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">LinkedIn URL</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={profile.socials.linkedin}
+                  onChange={e =>
+                    setProfile(prev => ({
+                      ...prev,
+                      socials: { ...prev.socials, linkedin: e.target.value }
+                    }))
+                  }
+                />
+              </div>
+              <button
+                className="btn-primary-glow"
+                style={{ width: '100%', justifyContent: 'center', marginTop: '14px' }}
+                onClick={() => showToast('Profile details updated and saved')}
+              >
+                <Check size={16} /> Save Changes
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
+
+function ProductModal({ item, onClose, onSave }) {
+  const [form, setForm] = useState(item);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave({
+      ...form,
+      name: form.name.trim(),
+      description: form.description.trim(),
+      url: form.url.trim(),
+      image: form.image.trim() || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85'
+    });
+  };
+
+  return (
+    <div
+      className="modal-overlay"
+      onMouseDown={e => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="modal-dialog">
+        <div className="modal-title-row">
+          <h2 className="modal-title">{item.name ? 'Edit Project' : 'Add New Project'}</h2>
+          <button className="btn-icon-round" onClick={onClose}>
+            <X size={18} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Project Name</label>
+            <input
+              type="text"
+              required
+              className="form-control"
+              value={form.name}
+              onChange={e => setForm({ ...form, name: e.target.value })}
+              placeholder="e.g. TomeSphere"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Website URL or Domain</label>
+            <input
+              type="text"
+              required
+              className="form-control"
+              value={form.url}
+              onChange={e => setForm({ ...form, url: e.target.value })}
+              placeholder="e.g. tomesphere.in"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Category</label>
+            <select
+              className="form-control"
+              value={form.category}
+              onChange={e => setForm({ ...form, category: e.target.value })}
+            >
+              <option value="WEB APPS">WEB APPS</option>
+              <option value="PRODUCTIVITY">PRODUCTIVITY</option>
+              <option value="DEVELOPER TOOLS">DEVELOPER TOOLS</option>
+              <option value="FINANCE">FINANCE</option>
+              <option value="COMMUNITY">COMMUNITY</option>
+              <option value="OTHER">OTHER</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Status</label>
+            <select
+              className="form-control"
+              value={form.status}
+              onChange={e => setForm({ ...form, status: e.target.value })}
+            >
+              <option value="Live">Live</option>
+              <option value="In progress">In progress</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Short Description</label>
+            <textarea
+              required
+              rows="3"
+              className="form-control"
+              value={form.description}
+              onChange={e => setForm({ ...form, description: e.target.value })}
+              placeholder="What makes this project compelling?"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Preview Image URL</label>
+            <input
+              type="text"
+              className="form-control"
+              value={form.image}
+              onChange={e => setForm({ ...form, image: e.target.value })}
+              placeholder="https://..."
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
+            <button type="button" className="btn-secondary-glass" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" className="btn-primary-glow">
+              <Check size={16} /> Save Project
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
