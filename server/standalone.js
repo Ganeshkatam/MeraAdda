@@ -7,7 +7,7 @@ import { guestbookService } from './services/guestbook.service.js';
 import { contactService } from './services/contact.service.js';
 import { skillService } from './services/skill.service.js';
 import { ApiError } from './errors/api-error.js';
-import { supabase } from '../lib/supabase.js';
+import { supabase } from './config/supabase.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;

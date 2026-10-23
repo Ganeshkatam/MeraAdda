@@ -1,8 +1,6 @@
 'use server';
 
-import { contactService } from '@/server/services/contact.service.js';
-import { guestbookService } from '@/server/services/guestbook.service.js';
-import { projectService } from '@/server/services/project.service.js';
+import { apiClient } from '@/lib/api-client.js';
 
 export async function submitContactMessage(prevState, formData) {
   try {
@@ -12,10 +10,10 @@ export async function submitContactMessage(prevState, formData) {
       message: formData.get('message')
     };
 
-    const result = await contactService.processInquiry(raw);
+    const result = await apiClient.contact.send(raw);
     return {
       success: true,
-      message: result.confirmation
+      message: result.confirmation || 'Message received successfully.'
     };
   } catch (error) {
     return {
@@ -31,7 +29,7 @@ export async function submitGuestbookEntry(prevState, formData) {
       message: formData.get('message')
     };
 
-    const entry = await guestbookService.addEntry(raw);
+    const entry = await apiClient.guestbook.create(raw);
     return {
       success: true,
       entry
@@ -44,5 +42,5 @@ export async function submitGuestbookEntry(prevState, formData) {
 }
 
 export async function getInitialProjects() {
-  return projectService.listProjects();
+  return apiClient.projects.list();
 }

@@ -4,9 +4,41 @@ This is the standalone Node.js REST API server for TomeSphere (`tomesphere.in`).
 
 ---
 
-## 1. Quick Start on Any Machine
+## 1. Deploy on Render (Recommended)
 
-### Option A: Direct Node.js (v18+)
+Render runs this backend server as a decoupled Web Service:
+
+### Option A: Via Blueprint (`render.yaml`)
+1. Go to [dashboard.render.com](https://dashboard.render.com).
+2. Click **New +** -> **Blueprint**.
+3. Connect your repository `Ganeshkatam/MeraAdda`.
+4. Render detects `render.yaml` automatically and configures:
+   - **Name**: `tomesphere-backend`
+   - **Build Command**: `npm install --omit=dev`
+   - **Start Command**: `npm run server`
+   - **Health Check**: `/health`
+5. Click **Apply**. Render will deploy your service and give you a public URL (e.g., `https://tomesphere-backend.onrender.com`).
+
+### Option B: Manual Web Service on Render
+1. Click **New +** -> **Web Service**.
+2. Connect `Ganeshkatam/MeraAdda`.
+3. Configure:
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install --omit=dev`
+   - **Start Command**: `npm run server`
+   - **Health Check Path**: `/health`
+4. In **Environment Variables**, add:
+   - `NODE_ENV`: `production`
+   - `HOST`: `0.0.0.0`
+   - `SUPABASE_URL`: `https://ibuaiktnkhvqoqxrqnrz.supabase.co`
+   - `SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlidWFpa3Rua2h2cW9xeHJxbnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3NjI1MTYsImV4cCI6MjEwODMzODUxNn0.KTfcNZ_uh693CDWo6QUoh7RY6EbKnOW-rPSbDHVlKjk`
+   - `CORS_ORIGIN`: `https://tomesphere.in,https://www.tomesphere.in,http://localhost:3000`
+
+---
+
+## 2. Quick Start on Any Other Machine
+
+### Option C: Direct Node.js (v18+)
 
 ```bash
 # 1. Clone repository or copy server files

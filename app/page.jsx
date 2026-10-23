@@ -1,25 +1,36 @@
 import PortfolioClient from '../components/PortfolioClient';
-import { getInitialProjects } from './actions.js';
-import { profileService } from '@/server/services/profile.service.js';
-import { guestbookService } from '@/server/services/guestbook.service.js';
-import { skillService } from '@/server/services/skill.service.js';
+import { apiClient } from '../lib/api-client.js';
 
 export const revalidate = 1800; // revalidate every 30 minutes
 
 export default async function Page() {
-  const [projects, profile, guestbook, skills] = await Promise.all([
-    getInitialProjects(),
-    profileService.getProfile(),
-    guestbookService.getEntries({ limit: 20 }),
-    skillService.listSkills()
-  ]);
+  let projects = [];
+  let profile = null;
+  let guestbook = [];
+  let skills = [];
+
+  try {
+    const [p, prof, gb, sk] = await Promise.all([
+      apiClient.projects.list().catch(() => []),
+      apiClient.profile.get().catch(() => null),
+      apiClient.guestbook.list(20).catch(() => []),
+      apiClient.skills.list().catch(() => [])
+    ]);
+
+    projects = p || [];
+    profile = prof || null;
+    guestbook = gb || [];
+    skills = Array.isArray(sk) ? sk.map(s => s.name) : [];
+  } catch (err) {
+    console.error('[Frontend SSR]: Failed to retrieve initial data from backend server:', err.message);
+  }
 
   return (
     <PortfolioClient
       initialProjects={projects}
       initialProfile={profile}
       initialGuestbook={guestbook}
-      initialSkills={skills.map(s => s.name)}
+      initialSkills={skills}
     />
   );
 }

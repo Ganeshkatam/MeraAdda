@@ -72,19 +72,26 @@ All API error responses adhere to a stable structured contract:
 }
 ```
 
-## Database Schema (Supabase Postgres)
+## Architecture & Authority Boundaries
 
-The backend connects to a dedicated Supabase PostgreSQL database (`MyPortfolio`) with Row Level Security (RLS) policies:
+The application enforces strict separation of concerns and database access boundaries:
 
-- **`projects`**: Real software products with catalog tags, live URLs, repository links, categories, and showcase flags (`proj_bookgarden`, `proj_streetcraft`, `proj_cowatch`, `proj_fitmirror`, `proj_mystays`, `proj_gk_cli`, `proj_calclens`).
-- **`profile`**: Authenticated developer identity, contact information, domain routing, and social metadata.
-- **`guestbook`**: Visitor entries signed in real time.
-- **`contacts`**: Contact inquiries submitted through the portfolio interface.
+- **Server (Sole Database Authority)**: The standalone Node.js server (`server/standalone.js`) is the sole authority for all database operations. It securely connects to Supabase PostgreSQL using server-only environment variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`).
+- **Frontend (Server Calls Only)**: The frontend (browser / Vercel Next.js) has zero database access. It communicates exclusively with the backend server via HTTP endpoints (`NEXT_PUBLIC_API_URL` or `/api/v1/*`). No database credentials or client drivers exist in the frontend bundle.
 
-Environment configuration:
+### Server Environment (External Host / Machine)
 ```sh
-NEXT_PUBLIC_SUPABASE_URL=https://ibuaiktnkhvqoqxrqnrz.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+PORT=5000
+HOST=0.0.0.0
+SUPABASE_URL=https://ibuaiktnkhvqoqxrqnrz.supabase.co
+SUPABASE_ANON_KEY=...
+CORS_ORIGIN=https://tomesphere.in,https://www.tomesphere.in,http://localhost:3000
+```
+
+### Frontend Environment (Vercel / Edge)
+```sh
+NEXT_PUBLIC_API_URL=https://api.tomesphere.in
+BACKEND_API_URL=http://YOUR_EXTERNAL_SERVER_IP:5000
 ```
 
 

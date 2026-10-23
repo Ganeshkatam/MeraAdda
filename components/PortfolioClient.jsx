@@ -173,8 +173,8 @@ export default function PortfolioClient({
   initialSkills = techStack
 }) {
   const [theme, setTheme] = useState('dark');
-  const [products, setProducts] = useState(initialProjects);
-  const [profile, setProfile] = useState(initialProfile);
+  const [products, setProducts] = useState(initialProjects && initialProjects.length > 0 ? initialProjects : defaultProjects);
+  const [profile, setProfile] = useState(initialProfile || defaultProfile);
   const [skillsList] = useState(initialSkills && initialSkills.length > 0 ? initialSkills : techStack);
   const [view, setView] = useState('home');
   const [activeFilter, setActiveFilter] = useState('ALL');
@@ -315,7 +315,7 @@ export default function PortfolioClient({
     setTerminalInput('');
   };
 
-  const monogram = profile.name
+  const monogram = (profile?.name || 'Katam Ganesh Reddy')
     .split(' ')
     .filter(Boolean)
     .map(w => w[0])
