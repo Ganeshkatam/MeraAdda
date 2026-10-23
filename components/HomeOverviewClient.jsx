@@ -38,151 +38,50 @@ export default function HomeOverviewClient({
 
   return (
     <div>
-      {/* Hero Section */}
-      <section
-        className="hero-section"
-        onMouseMove={handleHeroMouseMove}
-        style={{
-          '--mouse-x': heroMouse.x,
-          '--mouse-y': heroMouse.y
-        }}
-      >
-        <div className="hero-cosmic-glow" aria-hidden="true">
-          <div className="hero-cursor-spotlight" />
-          <div className="cosmic-orb orb-1" />
-          <div className="cosmic-orb orb-2" />
-          <div className="hero-grid-mesh" />
+      {/* Dark cinematic hero */}
+      <section className="ts-cinematic-hero">
+        <div className="ts-hero-atmosphere" aria-hidden="true">
+          <div className="ts-hero-glow ts-hero-glow-one" />
+          <div className="ts-hero-glow ts-hero-glow-two" />
+          <div className="ts-hero-orbit ts-hero-orbit-one" />
+          <div className="ts-hero-orbit ts-hero-orbit-two" />
+          <div className="ts-hero-grain" />
         </div>
-
-        <div className="hero-container-centered">
-          <div className="hero-kicker hero-fade-in-1">
-            <span className="hero-kicker-dot" aria-hidden="true" />
-            INDEPENDENT DIGITAL PRODUCT STUDIO
-          </div>
-          <h1 className="hero-title-centered hero-fade-in-1">
-            Software products engineered for{' '}
-            <span className="hero-gradient-text hero-shimmer-text">
-              utility, performance &amp; craft.
-            </span>
-          </h1>
-
-          <p className="hero-description-centered hero-fade-in-2">
-            Welcome to <strong>TomeSphere</strong> — an independent digital product place building production web platforms, business growth engines, real-time collaboration tools, and developer utilities.
-          </p>
-
-          <div className="hero-cta-group-centered hero-fade-in-3">
-            <Link href="/products" className="btn-primary-glow hero-btn-magnetic">
-              Explore All Products <ArrowRight size={16} />
-            </Link>
-            <Link href="/about" className="btn-secondary-glass">
-              <Compass size={15} /> About Studio
-            </Link>
-          </div>
-
-          {/* Product focus strip — describe the portfolio, not unverified SLAs */}
-          <div className="product-metrics-strip hero-fade-in-4" aria-label="TomeSphere product focus">
-            <div className="metric-item">
-              <span className="metric-value">{String(projects.length || 7).padStart(2, '0')}</span>
-              <span className="metric-label">Products in the catalog</span>
+        <div className="ts-hero-layout">
+          <div className="ts-hero-copy">
+            <div className="ts-hero-kicker"><span className="ts-hero-kicker-dot" /> INDEPENDENT DIGITAL STUDIO</div>
+            <h1 className="ts-hero-title">
+              Useful ideas.<br />
+              <span>Beautifully</span><br />
+              engineered.
+            </h1>
+            <p className="ts-hero-description">
+              TomeSphere builds focused digital products, thoughtful web experiences, and tools that make everyday work feel simpler.
+            </p>
+            <div className="ts-hero-actions">
+              <Link href="/products" className="ts-hero-primary">Explore products <ArrowRight size={16} /></Link>
+              <Link href="/about" className="ts-hero-secondary">Meet the studio <ArrowUpRight size={16} /></Link>
             </div>
-            <div className="metric-item">
-              <span className="metric-value">Web apps</span>
-              <span className="metric-label">Purpose-built platforms</span>
-            </div>
-            <div className="metric-item">
-              <span className="metric-value">Dev tools</span>
-              <span className="metric-label">Utilities for makers</span>
-            </div>
-            <div className="metric-item">
-              <span className="metric-value">Real-time</span>
-              <span className="metric-label">Connected experiences</span>
-            </div>
+            <div className="ts-hero-footnote"><span className="ts-hero-footnote-line" /> Independent by design. Useful by default.</div>
           </div>
-
-          {/* Bento Portals to Core Sections */}
-          <div className="hero-bento-grid hero-fade-in-5">
-            <Link href="/products" className="hero-bento-card">
-              <div className="bento-card-header">
-                <div className="bento-icon-box bento-icon-emerald">
-                  <Globe size={18} />
-                </div>
-                <span className="bento-badge-pill bento-pill-live">
-                  <span className="sat-dot sat-emerald" /> {String(projects.length || 7).padStart(2, '0')} Deployed
-                </span>
-              </div>
-              <div className="bento-card-body">
-                <h3 className="bento-card-title">Product Catalog</h3>
-                <div className="bento-card-sub">Web Apps, DevTools &amp; Platforms</div>
-                <p className="bento-card-desc">
-                  Browse all active digital products with live links, release updates, and capability guides.
-                </p>
-              </div>
-              <div className="bento-card-footer">
-                <span className="bento-action-link">
-                  Open Catalog <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
-
-            <Link href="/about" className="hero-bento-card">
-              <div className="bento-card-header">
-                <div className="bento-icon-box bento-icon-lavender">
-                  <Compass size={18} />
-                </div>
-                <span className="bento-badge-pill">Studio</span>
-              </div>
-              <div className="bento-card-body">
-                <h3 className="bento-card-title">About TomeSphere</h3>
-                <div className="bento-card-sub">Product Craft &amp; Philosophy</div>
-                <p className="bento-card-desc">
-                  Learn how TomeSphere conceptualizes, refines, and ships purposeful digital platforms and tools.
-                </p>
-              </div>
-              <div className="bento-card-footer">
-                <span className="bento-action-link">
-                  About Studio <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
-
-            <Link href="/guestbook" className="hero-bento-card">
-              <div className="bento-card-header">
-                <div className="bento-icon-box bento-icon-cyan">
-                  <Sparkles size={18} />
-                </div>
-                <span className="bento-badge-pill">Community</span>
-              </div>
-              <div className="bento-card-body">
-                <h3 className="bento-card-title">Community Feedback</h3>
-                <div className="bento-card-sub">Real-Time Notes &amp; Thoughts</div>
-                <p className="bento-card-desc">
-                  Share product suggestions, ask questions, or leave a greeting for the TomeSphere team.
-                </p>
-              </div>
-              <div className="bento-card-footer">
-                <span className="bento-action-link">
-                  Sign Guestbook <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
+          <div className="ts-hero-art" aria-label="Abstract visual representing the TomeSphere digital product studio">
+            <div className="ts-art-orbit ts-art-orbit-back" />
+            <div className="ts-art-orbit ts-art-orbit-front" />
+            <div className="ts-art-core">
+              <div className="ts-art-core-inner"><span>TS</span><i /></div>
+            </div>
+            <div className="ts-art-label ts-art-label-top"><span className="ts-art-label-dot" /> PRODUCT STUDIO <span>01 / 03</span></div>
+            <div className="ts-art-label ts-art-label-bottom"><span className="ts-art-label-mark">✳</span><div><strong>Built with intent</strong><small>From first idea to useful product</small></div></div>
+            <div className="ts-art-cross ts-art-cross-one">+</div>
+            <div className="ts-art-cross ts-art-cross-two">+</div>
           </div>
+        </div>
+        <div className="ts-hero-bottom">
+          <span>DESIGN · ENGINEERING · PRODUCT</span>
+          <span className="ts-hero-bottom-center">A small studio for useful software</span>
+          <Link href="/products">Discover what we're building <ArrowRight size={13} /></Link>
         </div>
       </section>
-
-      {/* Tech Ecosystem Marquee */}
-      {skills.length > 0 && (
-        <section className="tech-marquee-wrapper">
-          <div className="tech-marquee-label">TomeSphere Engineering Stack</div>
-          <div className="tech-chips-grid">
-            {skills.map(tech => (
-              <span key={tech} className="tech-chip">
-                <span className="chip-dot" />
-                {tech}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Featured Products Grid */}
       <section className="section-wrapper">
