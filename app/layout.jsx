@@ -57,6 +57,7 @@ export default async function RootLayout({ children }) {
 
   return (
     <html
+      data-theme="light"
       lang="en"
       className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
