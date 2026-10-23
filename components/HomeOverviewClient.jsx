@@ -21,8 +21,7 @@ import {
 
 export default function HomeOverviewClient({
   profile,
-  projects = [],
-  skills = []
+  projects = []
 }) {
   const [heroMouse, setHeroMouse] = useState({ x: '50%', y: '25%' });
 
@@ -165,20 +164,6 @@ export default function HomeOverviewClient({
         </div>
       </section>
 
-      {/* Tech Ecosystem Marquee */}
-      {skills.length > 0 && (
-        <section className="tech-marquee-wrapper">
-          <div className="tech-marquee-label">TomeSphere Engineering Stack</div>
-          <div className="tech-chips-grid">
-            {skills.map(tech => (
-              <span key={tech} className="tech-chip">
-                <span className="chip-dot" />
-                {tech}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Featured Products Grid */}
       <section className="section-wrapper">
