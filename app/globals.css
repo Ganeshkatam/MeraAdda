@@ -2520,6 +2520,26 @@ a:focus-visible {
   .search-input-wrapper, .search-field { width: 100%; }
 }
 
+@media (max-width: 360px) {
+  .product-metrics-strip {
+    grid-template-columns: 1fr;
+    padding: 14px 16px;
+  }
+  .site-header {
+    padding: 8px 12px;
+  }
+  .brand-monogram {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+  .contact-cta-section,
+  .guestbook-form-card,
+  .studio-founder-card {
+    padding: 18px 14px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
