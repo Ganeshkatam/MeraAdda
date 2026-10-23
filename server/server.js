@@ -46,9 +46,16 @@ app.use((req, res, next) => {
 
 // Server Health Check Endpoint (Liveness probe - independent of external services)
 const healthHandler = (req, res) => {
+  const commit = process.env.RENDER_GIT_COMMIT
+    ? process.env.RENDER_GIT_COMMIT.substring(0, 7)
+    : process.env.GITHUB_SHA
+      ? process.env.GITHUB_SHA.substring(0, 7)
+      : 'production';
+
   res.status(200).json({
     status: 'ok',
-    uptime: Math.floor(process.uptime()),
+    service: 'TomeSphere REST API Server',
+    commit,
     timestamp: new Date().toISOString()
   });
 };
@@ -214,7 +221,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     error: {
       code: 'INTERNAL_SERVER_ERROR',
-      message: err.message || 'An unexpected error occurred.'
+      message: 'An unexpected internal error occurred. Please try again later.'
     }
   });
 });
