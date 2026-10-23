@@ -6,12 +6,12 @@ INSERT INTO public.profile (id, name, title, domain, location, email, bio, intro
 VALUES (
   'primary',
   'Katam Ganesh Reddy',
-  'Full-Stack Developer & Independent Builder',
+  'Founder & Systems Architect — TomeSphere',
   'tomesphere.in',
   'India',
   'katamganesh61@gmail.com',
-  'Founder and full-stack engineer building distributed digital products, real-time collaboration engines, and the TomeSphere ecosystem at tomesphere.in.',
-  'I design and build dynamic full-stack systems, modern reading sanctuaries like BookGarden (bookgarden.tomesphere.in), and developer tools.',
+  'Systems architect and independent software builder creating the TomeSphere product ecosystem, distributed web applications, developer tooling, and real-time collaboration engines.',
+  'Welcome to TomeSphere — an independent digital product place building production web platforms, business growth engines, real-time collaboration tools, and developer utilities.',
   '{"github": "github.com/Ganeshkatam", "linkedin": "linkedin.com/in/ganeshkatam", "twitter": "x.com/ganeshkatam"}'::jsonb,
   true
 )
@@ -184,14 +184,3 @@ ON CONFLICT (name) DO UPDATE SET
   category = EXCLUDED.category,
   proficiency = EXCLUDED.proficiency,
   display_order = EXCLUDED.display_order;
-
--- 4. Initial Welcoming Guestbook Entry
-INSERT INTO public.guestbook (id, author, message, timestamp, status)
-VALUES (
-  'gb_welcome',
-  'Katam Ganesh Reddy',
-  'Welcome to TomeSphere (tomesphere.in)! Explore my real products, architecture, or visit BookGarden at bookgarden.tomesphere.in. Leave a note below!',
-  'Oct 23, 2026',
-  'approved'
-)
-ON CONFLICT (id) DO NOTHING;
