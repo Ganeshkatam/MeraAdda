@@ -502,14 +502,8 @@ export default function PortfolioClient({
           </div>
 
           <div className="hero-container-centered">
-            {/* Status Beacon */}
-            <div className="badge-beacon hero-fade-in-1">
-              <span className="beacon-dot" />
-              <span>Available for Full-Stack Engineering &amp; Collaborations</span>
-            </div>
-
             {/* Headline */}
-            <h1 className="hero-title-centered hero-fade-in-2">
+            <h1 className="hero-title-centered hero-fade-in-1">
               Crafting digital products at the intersection of{' '}
               <span className="hero-gradient-text hero-shimmer-text">
                 systems, architecture &amp; craft.
