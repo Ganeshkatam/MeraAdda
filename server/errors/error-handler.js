@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ApiError } from './api-error';
+import { ApiError } from './api-error.js';
 
 export function handleApiError(error) {
   if (error instanceof ApiError) {
@@ -29,4 +29,3 @@ export function handleApiError(error) {
 }
 
 export const formatErrorResponse = handleApiError;
-

@@ -1,5 +1,5 @@
-import { guestbookRepository } from '../repositories/guestbook.repository';
-import { validateGuestbookPayload } from '../validators/guestbook.validator';
+import { guestbookRepository } from '../repositories/guestbook.repository.js';
+import { validateGuestbookPayload } from '../validators/guestbook.validator.js';
 
 export class GuestbookService {
   async getEntries(options = {}) {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useActionState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowDown,
   ArrowRight,
@@ -32,7 +32,6 @@ import {
   Trash2,
   X
 } from 'lucide-react';
-import { submitContactMessage, submitGuestbookEntry } from '../app/actions';
 import { apiClient } from '../lib/api-client';
 
 const defaultProjects = [
@@ -106,7 +105,7 @@ const defaultProjects = [
     name: 'gk-dev-cli',
     category: 'DEVELOPER TOOLS',
     description: 'Manifest-driven developer CLI for project discovery, task orchestration, workspace management, and plugin-powered workflow automation.',
-    url: 'github.com/Ganeshkatam/gk-dev-cli',
+    url: 'tomesphere.in/gk-dev-cli',
     image: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1100&q=85',
     accent: 'rose',
     featured: false,
@@ -119,7 +118,7 @@ const defaultProjects = [
     name: 'CalcLens',
     category: 'OTHER',
     description: 'Mobile visual calculation and OCR camera assistant designed for instantaneous mathematical recognition and equation resolution.',
-    url: 'github.com/Ganeshkatam/CalcLens',
+    url: 'tomesphere.in/calclens',
     image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1100&q=85',
     accent: 'lavender',
     featured: false,
@@ -186,8 +185,53 @@ export default function PortfolioClient({
   const [activeNav, setActiveNav] = useState('Overview');
   const [guestbook, setGuestbook] = useState(initialGb);
 
-  const [contactState, contactAction, contactPending] = useActionState(submitContactMessage, null);
-  const [gbState, gbAction, gbPending] = useActionState(submitGuestbookEntry, null);
+  const [contactState, setContactState] = useState(null);
+  const [contactPending, setContactPending] = useState(false);
+  const [gbState, setGbState] = useState(null);
+  const [gbPending, setGbPending] = useState(false);
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactPending(true);
+    setContactState(null);
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      name: fd.get('name'),
+      email: fd.get('email'),
+      message: fd.get('message')
+    };
+    try {
+      const res = await apiClient.contact.send(payload);
+      setContactState({ success: true, message: res.confirmation || 'Thank you! Your message has been received.' });
+      e.target.reset();
+    } catch (err) {
+      setContactState({ error: err.message || 'Failed to submit contact message.' });
+    } finally {
+      setContactPending(false);
+    }
+  };
+
+  const handleGuestbookSubmit = async (e) => {
+    e.preventDefault();
+    setGbPending(true);
+    setGbState(null);
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      author: fd.get('author'),
+      message: fd.get('message')
+    };
+    try {
+      const res = await apiClient.guestbook.create(payload);
+      setGbState({ success: true, entry: res });
+      setGuestbook(prev => [res, ...prev]);
+      showToast('Guestbook entry posted successfully!');
+      e.target.reset();
+    } catch (err) {
+      setGbState({ error: err.message || 'Failed to post guestbook entry.' });
+    } finally {
+      setGbPending(false);
+    }
+  };
 
   const [terminalHistory, setTerminalHistory] = useState([
     { cmd: 'whoami', output: 'Katam Ganesh Reddy — Full-Stack Developer & Independent Builder' },
@@ -738,7 +782,7 @@ export default function PortfolioClient({
                 </div>
               )}
 
-              <form action={gbAction}>
+              <form onSubmit={handleGuestbookSubmit}>
                 <div className="form-group">
                   <label className="form-label">Your Name or Handle</label>
                   <input
@@ -894,7 +938,7 @@ export default function PortfolioClient({
                 </div>
               )}
 
-              <form action={contactAction}>
+              <form onSubmit={handleContactSubmit}>
                 <div className="form-group">
                   <label className="form-label">Name</label>
                   <input

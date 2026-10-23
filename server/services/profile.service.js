@@ -1,4 +1,4 @@
-import { profileRepository } from '../repositories/profile.repository';
+import { profileRepository } from '../repositories/profile.repository.js';
 
 export class ProfileService {
   async getProfile() {

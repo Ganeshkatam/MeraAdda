@@ -1,5 +1,5 @@
-import { ValidationError } from '../errors/api-error';
-import { ALLOWED_CATEGORIES, ALLOWED_STATUSES } from '../config/constants';
+import { ValidationError } from '../errors/api-error.js';
+import { ALLOWED_CATEGORIES, ALLOWED_STATUSES } from '../config/constants.js';
 
 export function validateProjectPayload(data, isUpdate = false) {
   const errors = [];

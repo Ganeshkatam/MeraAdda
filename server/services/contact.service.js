@@ -1,5 +1,5 @@
-import { contactRepository } from '../repositories/contact.repository';
-import { validateContactPayload } from '../validators/contact.validator';
+import { contactRepository } from '../repositories/contact.repository.js';
+import { validateContactPayload } from '../validators/contact.validator.js';
 
 export class ContactService {
   async processInquiry(rawData) {

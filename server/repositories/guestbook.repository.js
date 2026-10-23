@@ -1,28 +1,24 @@
-import { supabase } from '@/lib/supabase';
-import { store } from './memory-store';
+import { supabase } from '../../lib/supabase.js';
+import { ApiError } from '../errors/api-error.js';
 
 export class GuestbookRepository {
   async findAll({ limit = 50 } = {}) {
-    try {
-      const { data, error } = await supabase
-        .from('guestbook')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(limit);
+    const { data, error } = await supabase
+      .from('guestbook')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit);
 
-      if (!error && Array.isArray(data) && data.length > 0) {
-        return data.map(entry => ({
-          id: entry.id,
-          author: entry.author,
-          message: entry.message,
-          timestamp: entry.timestamp
-        }));
-      }
-    } catch (e) {
-      console.warn('Supabase guestbook fetch failed, using fallback:', e.message);
+    if (error) {
+      throw new ApiError(`Database error fetching guestbook entries: ${error.message}`, 500, 'DATABASE_ERROR');
     }
 
-    return [...store.guestbook].slice(0, limit);
+    return (data || []).map(entry => ({
+      id: entry.id,
+      author: entry.author,
+      message: entry.message,
+      timestamp: entry.timestamp
+    }));
   }
 
   async create({ author, message }) {
@@ -37,28 +33,27 @@ export class GuestbookRepository {
       })
     };
 
-    try {
-      const { data, error } = await supabase
-        .from('guestbook')
-        .insert({
-          id: entry.id,
-          author: entry.author,
-          message: entry.message,
-          timestamp: entry.timestamp
-        })
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from('guestbook')
+      .insert({
+        id: entry.id,
+        author: entry.author,
+        message: entry.message,
+        timestamp: entry.timestamp
+      })
+      .select()
+      .single();
 
-      if (!error && data) {
-        store.guestbook.unshift(data);
-        return data;
-      }
-    } catch (e) {
-      console.warn('Supabase guestbook insert failed:', e.message);
+    if (error || !data) {
+      throw new ApiError(`Database error creating guestbook entry: ${error?.message || 'Insert failed'}`, 500, 'DATABASE_ERROR');
     }
 
-    store.guestbook.unshift(entry);
-    return entry;
+    return {
+      id: data.id,
+      author: data.author,
+      message: data.message,
+      timestamp: data.timestamp
+    };
   }
 }
 

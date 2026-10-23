@@ -1,8 +1,8 @@
 'use server';
 
-import { contactService } from '@/server/services/contact.service';
-import { guestbookService } from '@/server/services/guestbook.service';
-import { projectService } from '@/server/services/project.service';
+import { contactService } from '@/server/services/contact.service.js';
+import { guestbookService } from '@/server/services/guestbook.service.js';
+import { projectService } from '@/server/services/project.service.js';
 
 export async function submitContactMessage(prevState, formData) {
   try {

@@ -1,4 +1,4 @@
-import { skillRepository } from '../repositories/skill.repository';
+import { skillRepository } from '../repositories/skill.repository.js';
 
 export class SkillService {
   constructor(repo = skillRepository) {

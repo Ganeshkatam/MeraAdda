@@ -1,4 +1,4 @@
-import { ValidationError } from '../errors/api-error';
+import { ValidationError } from '../errors/api-error.js';
 
 export function validateContactPayload(data) {
   const errors = [];

@@ -1,6 +1,6 @@
-import { projectRepository } from '../repositories/project.repository';
-import { validateProjectPayload } from '../validators/project.validator';
-import { NotFoundError } from '../errors/api-error';
+import { projectRepository } from '../repositories/project.repository.js';
+import { validateProjectPayload } from '../validators/project.validator.js';
+import { NotFoundError } from '../errors/api-error.js';
 
 export class ProjectService {
   async listProjects(filters = {}) {

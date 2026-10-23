@@ -1,5 +1,5 @@
-import { supabase } from '@/lib/supabase';
-import { store } from './memory-store';
+import { supabase } from '../../lib/supabase.js';
+import { ApiError } from '../errors/api-error.js';
 
 export class ContactRepository {
   async saveMessage({ name, email, message }) {
@@ -11,44 +11,41 @@ export class ContactRepository {
       receivedAt: new Date().toISOString()
     };
 
-    try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .insert({
-          id: entry.id,
-          name: entry.name,
-          email: entry.email,
-          message: entry.message
-        })
-        .select()
-        .single();
+    const { data, error } = await supabase
+      .from('contacts')
+      .insert({
+        id: entry.id,
+        name: entry.name,
+        email: entry.email,
+        message: entry.message
+      })
+      .select()
+      .single();
 
-      if (!error && data) {
-        store.contactMessages.unshift(entry);
-        return entry;
-      }
-    } catch (e) {
-      console.warn('Supabase contact insert failed:', e.message);
+    if (error || !data) {
+      throw new ApiError(`Database error saving contact message: ${error?.message || 'Insert failed'}`, 500, 'DATABASE_ERROR');
     }
 
-    store.contactMessages.unshift(entry);
-    return entry;
+    return {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      receivedAt: data.created_at || entry.receivedAt
+    };
   }
 
   async getAllMessages() {
-    try {
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('contacts')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-      if (!error && data) {
-        return data;
-      }
-    } catch (e) {
-      // fallback
+    if (error) {
+      throw new ApiError(`Database error fetching contact messages: ${error.message}`, 500, 'DATABASE_ERROR');
     }
-    return [...store.contactMessages];
+
+    return data || [];
   }
 }
 
