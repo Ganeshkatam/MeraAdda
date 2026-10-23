@@ -72,6 +72,22 @@ All API error responses adhere to a stable structured contract:
 }
 ```
 
+## Database Schema (Supabase Postgres)
+
+The backend connects to a dedicated Supabase PostgreSQL database (`MyPortfolio`) with Row Level Security (RLS) policies:
+
+- **`projects`**: Real software products with catalog tags, live URLs, repository links, categories, and showcase flags (`proj_bookgarden`, `proj_streetcraft`, `proj_cowatch`, `proj_fitmirror`, `proj_mystays`, `proj_gk_cli`, `proj_calclens`).
+- **`profile`**: Authenticated developer identity, contact information, domain routing, and social metadata.
+- **`guestbook`**: Visitor entries signed in real time.
+- **`contacts`**: Contact inquiries submitted through the portfolio interface.
+
+Environment configuration:
+```sh
+NEXT_PUBLIC_SUPABASE_URL=https://ibuaiktnkhvqoqxrqnrz.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+
 ## Run Locally
 
 ```sh

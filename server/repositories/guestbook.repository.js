@@ -1,7 +1,27 @@
+import { supabase } from '@/lib/supabase';
 import { store } from './memory-store';
 
 export class GuestbookRepository {
   async findAll({ limit = 50 } = {}) {
+    try {
+      const { data, error } = await supabase
+        .from('guestbook')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        return data.map(entry => ({
+          id: entry.id,
+          author: entry.author,
+          message: entry.message,
+          timestamp: entry.timestamp
+        }));
+      }
+    } catch (e) {
+      console.warn('Supabase guestbook fetch failed, using fallback:', e.message);
+    }
+
     return [...store.guestbook].slice(0, limit);
   }
 
@@ -14,9 +34,29 @@ export class GuestbookRepository {
         month: 'short',
         day: 'numeric',
         year: 'numeric'
-      }),
-      createdAt: new Date().toISOString()
+      })
     };
+
+    try {
+      const { data, error } = await supabase
+        .from('guestbook')
+        .insert({
+          id: entry.id,
+          author: entry.author,
+          message: entry.message,
+          timestamp: entry.timestamp
+        })
+        .select()
+        .single();
+
+      if (!error && data) {
+        store.guestbook.unshift(data);
+        return data;
+      }
+    } catch (e) {
+      console.warn('Supabase guestbook insert failed:', e.message);
+    }
+
     store.guestbook.unshift(entry);
     return entry;
   }
