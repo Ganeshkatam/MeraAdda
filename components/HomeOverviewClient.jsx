@@ -81,16 +81,16 @@ export default function HomeOverviewClient({
               <span className="metric-label">Production Products</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">99.9%</span>
-              <span className="metric-label">Platform Availability</span>
+              <span className="metric-value">Independent</span>
+              <span className="metric-label">Product studio</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">Global</span>
-              <span className="metric-label">Edge Network</span>
+              <span className="metric-value">Useful</span>
+              <span className="metric-label">Purpose-built software</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">&lt;100ms</span>
-              <span className="metric-label">Sub-Second Delivery</span>
+              <span className="metric-value">Thoughtful</span>
+              <span className="metric-label">Designed with care</span>
             </div>
           </div>
 
