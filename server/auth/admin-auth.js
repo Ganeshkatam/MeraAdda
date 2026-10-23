@@ -29,7 +29,7 @@ export function verifyAdminAuth(headers) {
 }
 
 /**
- * Express middleware for standalone server
+ * Express middleware for REST API server
  */
 export function requireAdminMiddleware(req, res, next) {
   try {
