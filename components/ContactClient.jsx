@@ -67,37 +67,42 @@ export default function ContactClient({ profile }) {
             Direct Message
           </h3>
 
-          {contactState?.error && <div className="form-alert-error">{contactState.error}</div>}
+          {contactState?.error && <div className="form-alert-error" role="alert">{contactState.error}</div>}
           {contactState?.success && (
-            <div className="form-alert-success">
+            <div className="form-alert-success" role="status" aria-live="polite">
               <Check size={14} /> {contactState.message}
             </div>
           )}
 
           <form onSubmit={handleContactSubmit}>
             <div className="form-group">
-              <label className="form-label">Name</label>
+              <label className="form-label" htmlFor="contact-name">Name</label>
               <input
                 type="text"
+                id="contact-name"
                 name="name"
+                autoComplete="name"
                 required
                 className="form-control"
                 placeholder="Your name"
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Email</label>
+              <label className="form-label" htmlFor="contact-email">Email</label>
               <input
                 type="email"
+                id="contact-email"
                 name="email"
+                autoComplete="email"
                 required
                 className="form-control"
                 placeholder="your.email@example.com"
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Message</label>
+              <label className="form-label" htmlFor="contact-message">Message</label>
               <textarea
+                id="contact-message"
                 name="message"
                 rows="4"
                 required
@@ -108,6 +113,7 @@ export default function ContactClient({ profile }) {
             <button
               type="submit"
               disabled={contactPending}
+              aria-busy={contactPending}
               className="btn-primary-glow"
               style={{ width: '100%', justifyContent: 'center' }}
             >
