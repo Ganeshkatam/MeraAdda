@@ -476,7 +476,6 @@ export default function PortfolioClient({
 
         <nav className="nav-desktop">
           <a href="#work" className="nav-link">Work</a>
-          <a href="#flagship" className="nav-link">TomeSphere</a>
           <a href="#terminal" className="nav-link">Terminal</a>
           <a href="#guestbook" className="nav-link">Guestbook</a>
           <a href="#contact" className="nav-link">Contact</a>
