@@ -9,15 +9,14 @@ import { skillService } from './services/skill.service.js';
 import { ApiError } from './errors/api-error.js';
 import { supabase } from './config/supabase.js';
 import { requireAdminMiddleware } from './auth/admin-auth.js';
+import { PORT, HOST, SERVER_CONFIG } from './config/server.config.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || '0.0.0.0';
 
 // Global CORS - allows requests from frontend machine / Vercel domain
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map(s => s.trim())
-  : '*';
+  : SERVER_CONFIG.corsOrigins;
 
 app.use(cors({
   origin: allowedOrigins,

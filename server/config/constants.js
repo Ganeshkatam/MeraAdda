@@ -1,8 +1,12 @@
+import { SERVER_CONFIG } from './server.config.js';
+
 export const DOMAIN_CONFIG = {
   mainDomain: 'tomesphere.in',
   libraryDomain: 'bookgarden.tomesphere.in',
   apiUrl: '/api/v1'
 };
+
+export { SERVER_CONFIG };
 
 export const ALLOWED_CATEGORIES = [
   'WEB APPS',
