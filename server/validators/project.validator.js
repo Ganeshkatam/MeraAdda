@@ -62,7 +62,7 @@ export function validateProjectPayload(data, isUpdate = false) {
     description,
     category,
     status,
-    image: image || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85',
+    image: image || null,
     year,
     featured,
     tags

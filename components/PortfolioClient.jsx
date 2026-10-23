@@ -8,11 +8,13 @@ import {
   BookOpen,
   Check,
   Code2,
+  Compass,
   Copy,
   Cpu,
   ExternalLink,
   Github,
   Globe,
+  Layers,
   Linkedin,
   Mail,
   Menu,
@@ -24,6 +26,8 @@ import {
   Sparkles,
   Sun,
   Terminal,
+  TrendingUp,
+  Video,
   X,
   Zap
 } from 'lucide-react';
@@ -37,7 +41,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'TomeSphere digital reading platform and knowledge archive. Engineered with clean architecture, domain-driven design, distraction-free reading, progress tracking, and personal bookshelves.',
     url: 'bookgarden.tomesphere.in',
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85',
     accent: 'lavender',
     featured: true,
     status: 'Live',
@@ -50,7 +53,6 @@ const defaultProjects = [
     category: 'DEVELOPER TOOLS',
     description: 'Physical business growth engine turning commercial opportunities into everything customers need to see across Google, Instagram, WhatsApp, and counter print.',
     url: 'streetcraft.tomesphere.in',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1100&q=85',
     accent: 'peach',
     featured: true,
     status: 'Live',
@@ -63,7 +65,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'Real-time synchronized watch party platform for movies, videos, and live streams with virtual browsers, WebSockets, interactive chat, and room orchestration.',
     url: 'cowatch.tomesphere.in',
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1100&q=85',
     accent: 'blue',
     featured: true,
     status: 'Live',
@@ -76,7 +77,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'Fashion eCommerce platform featuring an immersive 3D virtual try-on experience paired with the FitSeller merchant analytics and order fulfillment portal.',
     url: 'fitmirror.tomesphere.in',
-    image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1100&q=85',
     accent: 'mint',
     featured: false,
     status: 'Live',
@@ -89,7 +89,6 @@ const defaultProjects = [
     category: 'WEB APPS',
     description: 'Long-term accommodation discovery and residential housing platform connecting seekers with PGs, private apartments, and verified shared rooms.',
     url: 'mystays.tomesphere.in',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1100&q=85',
     accent: 'yellow',
     featured: false,
     status: 'Live',
@@ -102,7 +101,6 @@ const defaultProjects = [
     category: 'DEVELOPER TOOLS',
     description: 'Manifest-driven developer CLI for project discovery, task orchestration, workspace management, and plugin-powered workflow automation.',
     url: 'tomesphere.in/gk-dev-cli',
-    image: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?auto=format&fit=crop&w=1100&q=85',
     accent: 'rose',
     featured: false,
     status: 'Live',
@@ -115,7 +113,6 @@ const defaultProjects = [
     category: 'OTHER',
     description: 'Mobile visual calculation and OCR camera assistant designed for instantaneous mathematical recognition and equation resolution.',
     url: 'tomesphere.in/calclens',
-    image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1100&q=85',
     accent: 'lavender',
     featured: false,
     status: 'In progress',
@@ -161,6 +158,140 @@ const techStack = [
   'REST & GraphQL',
   'Git'
 ];
+
+function ProjectCardVisual({ project }) {
+  const getProjectAccentGradient = (accent) => {
+    switch (accent) {
+      case 'lavender':
+        return 'linear-gradient(135deg, rgba(167, 139, 250, 0.22) 0%, rgba(99, 102, 241, 0.12) 100%)';
+      case 'peach':
+        return 'linear-gradient(135deg, rgba(251, 146, 60, 0.22) 0%, rgba(244, 63, 94, 0.12) 100%)';
+      case 'blue':
+        return 'linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(59, 130, 246, 0.12) 100%)';
+      case 'mint':
+        return 'linear-gradient(135deg, rgba(52, 211, 153, 0.22) 0%, rgba(16, 185, 129, 0.12) 100%)';
+      case 'yellow':
+        return 'linear-gradient(135deg, rgba(251, 191, 36, 0.22) 0%, rgba(245, 158, 11, 0.12) 100%)';
+      case 'rose':
+        return 'linear-gradient(135deg, rgba(244, 63, 94, 0.22) 0%, rgba(225, 29, 72, 0.12) 100%)';
+      default:
+        return 'linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(139, 92, 246, 0.12) 100%)';
+    }
+  };
+
+  const renderVisualContent = () => {
+    switch (project.id) {
+      case 'proj_bookgarden':
+        return (
+          <div className="preview-stage-bookgarden">
+            <div className="preview-chip"><BookOpen size={13} /> TomeSphere Sanctuary</div>
+            <div className="preview-reading-title">Resilient Architecture Handbook</div>
+            <div className="preview-reading-bar">
+              <span style={{ width: '92%' }} />
+            </div>
+            <div className="preview-reading-stats">92% Finished &bull; Chapter 04</div>
+          </div>
+        );
+      case 'proj_streetcraft':
+        return (
+          <div className="preview-stage-streetcraft">
+            <div className="preview-chip"><TrendingUp size={13} /> Growth Engine</div>
+            <div className="preview-growth-stat">+148% Reach Velocity</div>
+            <div className="preview-growth-channels">
+              <span>Google Maps</span>
+              <span>Instagram</span>
+              <span>WhatsApp</span>
+            </div>
+          </div>
+        );
+      case 'proj_cowatch':
+        return (
+          <div className="preview-stage-cowatch">
+            <div className="preview-chip"><Video size={13} /> Real-Time Sync</div>
+            <div className="preview-wave-row">
+              <span className="wave-bar wb-1" />
+              <span className="wave-bar wb-2" />
+              <span className="wave-bar wb-3" />
+              <span className="wave-bar wb-4" />
+              <span className="wave-bar wb-5" />
+            </div>
+            <div className="preview-room-status">WebSockets &bull; Ultra-low Latency</div>
+          </div>
+        );
+      case 'proj_fitmirror':
+        return (
+          <div className="preview-stage-fitmirror">
+            <div className="preview-chip"><Layers size={13} /> 3D Virtual Try-On</div>
+            <div className="preview-3d-wireframe">
+              <div className="wireframe-box" />
+            </div>
+            <div className="preview-room-status">FitSeller Analytics &bull; WebGL</div>
+          </div>
+        );
+      case 'proj_mystays':
+        return (
+          <div className="preview-stage-mystays">
+            <div className="preview-chip"><Compass size={13} /> Residential Search</div>
+            <div className="preview-housing-grid">
+              <span className="house-pill">Private Flats</span>
+              <span className="house-pill">Verified PGs</span>
+              <span className="house-pill">Shared Stays</span>
+            </div>
+          </div>
+        );
+      case 'proj_gk_cli':
+        return (
+          <div className="preview-stage-cli">
+            <div className="preview-chip"><Terminal size={13} /> Developer CLI</div>
+            <div className="preview-terminal-line">$ gk run deploy --production</div>
+            <div className="preview-terminal-output">[ok] All manifests synced</div>
+          </div>
+        );
+      case 'proj_calclens':
+        return (
+          <div className="preview-stage-calclens">
+            <div className="preview-chip"><Cpu size={13} /> Vision OCR</div>
+            <div className="preview-formula">f(x) = &int; 2x dx = x&sup2; + C</div>
+            <div className="preview-room-status">Instant Equation Resolution</div>
+          </div>
+        );
+      default:
+        return (
+          <div className="preview-stage-generic">
+            <div className="preview-chip"><Code2 size={13} /> {project.category}</div>
+            <div className="preview-generic-title">{project.name}</div>
+            <div className="preview-generic-tags">
+              {(project.tags || []).slice(0, 3).map((t, idx) => (
+                <span key={idx}>{t}</span>
+              ))}
+            </div>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div
+      className="project-mockup-wrapper"
+      style={{ background: getProjectAccentGradient(project.accent) }}
+    >
+      <div className="mockup-header-bar">
+        <div className="mockup-dots">
+          <span className="m-dot dot-red" />
+          <span className="m-dot dot-yellow" />
+          <span className="m-dot dot-green" />
+        </div>
+        <div className="mockup-url-pill">
+          <Globe size={10} />
+          <span>{project.url}</span>
+        </div>
+      </div>
+      <div className="mockup-body-stage">
+        {renderVisualContent()}
+      </div>
+    </div>
+  );
+}
 
 export default function PortfolioClient({
   initialProjects = defaultProjects,
@@ -597,11 +728,62 @@ export default function PortfolioClient({
             </div>
 
             <div className="flagship-visual">
-              <img
-                src={flagshipProject.image || 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85'}
-                alt="BookGarden Digital Sanctuary"
-                loading="lazy"
-              />
+              <div className="flagship-browser-bar">
+                <div className="mockup-dots">
+                  <span className="m-dot dot-red" />
+                  <span className="m-dot dot-yellow" />
+                  <span className="m-dot dot-green" />
+                </div>
+                <div className="flagship-url-display">
+                  <Globe size={11} />
+                  <span>bookgarden.tomesphere.in</span>
+                </div>
+                <span className="flagship-live-indicator">LIVE APPLICATION</span>
+              </div>
+
+              <div className="flagship-sanctuary-canvas">
+                <div className="sanctuary-reader-card">
+                  <div className="sanctuary-badge">
+                    <BookOpen size={13} />
+                    <span>TomeSphere Digital Library</span>
+                  </div>
+                  <h4 className="sanctuary-reader-title">
+                    The Architecture of Autonomous Systems
+                  </h4>
+                  <p className="sanctuary-reader-excerpt">
+                    Domain-driven models, fault-isolated micro-engines, and real-time synchrony...
+                  </p>
+                  <div className="sanctuary-progress-block">
+                    <div className="sanctuary-progress-labels">
+                      <span>Reading Progress</span>
+                      <span>92% Complete</span>
+                    </div>
+                    <div className="sanctuary-progress-track">
+                      <div className="sanctuary-progress-fill" style={{ width: '92%' }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sanctuary-shelf-sidebar">
+                  <div className="shelf-label">Digital Bookshelf</div>
+                  <div className="shelf-item shelf-purple">
+                    <BookOpen size={11} />
+                    <span>System Design</span>
+                  </div>
+                  <div className="shelf-item shelf-emerald">
+                    <BookOpen size={11} />
+                    <span>Distributed Systems</span>
+                  </div>
+                  <div className="shelf-item shelf-sky">
+                    <BookOpen size={11} />
+                    <span>TypeScript Internals</span>
+                  </div>
+                  <div className="shelf-item shelf-amber">
+                    <BookOpen size={11} />
+                    <span>Clean Architecture</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -648,7 +830,7 @@ export default function PortfolioClient({
             {visibleProjects.map(project => (
               <article key={project.id} className="project-card-modern">
                 <div className="card-media-wrapper">
-                  <img src={project.image} alt={project.name} loading="lazy" />
+                  <ProjectCardVisual project={project} />
                   <span className={`card-overlay-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
                     {project.status}
                   </span>
