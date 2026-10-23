@@ -1,4 +1,4 @@
-# TomeSphere — Katam Ganesh Reddy Product Studio & Portfolio
+Katam Ganesh Reddy Product Studio & Portfolio
 
 The central digital hub and product showcase for **Katam Ganesh Reddy**, accessible at [tomesphere.in](https://tomesphere.in).
 
