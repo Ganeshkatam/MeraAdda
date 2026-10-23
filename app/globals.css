@@ -2268,7 +2268,7 @@ body {
   background: rgba(255,255,255,.12);
 }
 
-.product-metrics-strip {
+.hero-section .product-metrics-strip {
   max-width: var(--content-width);
   margin-top: clamp(44px, 6vw, 72px);
   margin-bottom: 36px;
@@ -2527,4 +2527,14 @@ a:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+.catalog-results {
+  color: var(--text-muted);
+  font-size: .85rem;
+  margin: -12px 0 18px;
+}
+
+@media (max-width: 768px) {
+  .catalog-results { margin-top: -6px; }
 }
