@@ -38,27 +38,30 @@ export default function GuestbookClient({ initialEntries = [] }) {
           Sign the Guestbook
         </h3>
 
-        {gbState?.error && <div className="form-alert-error">{gbState.error}</div>}
+        {gbState?.error && <div className="form-alert-error" role="alert">{gbState.error}</div>}
         {gbState?.success && (
-          <div className="form-alert-success">
-            <Check size={14} /> Thank you! Your note has been submitted successfully.
+          <div className="form-alert-success" role="status" aria-live="polite">
+            <Check size={14} /> Thank you! Your note has been submitted for review and will appear after approval.
           </div>
         )}
 
         <form onSubmit={handleGuestbookSubmit}>
           <div className="form-group">
-            <label className="form-label">Your Name or Handle</label>
+            <label className="form-label" htmlFor="guestbook-author">Your Name or Handle</label>
             <input
               type="text"
+              id="guestbook-author"
               name="author"
+              autoComplete="nickname"
               className="form-control"
               placeholder="e.g. Alex"
               required
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Message</label>
+            <label className="form-label" htmlFor="guestbook-message">Message</label>
             <textarea
+              id="guestbook-message"
               name="message"
               rows="3"
               className="form-control"
@@ -69,6 +72,7 @@ export default function GuestbookClient({ initialEntries = [] }) {
           <button
             type="submit"
             disabled={gbPending}
+            aria-busy={gbPending}
             className="btn-primary-glow"
             style={{ width: '100%', justifyContent: 'center' }}
           >

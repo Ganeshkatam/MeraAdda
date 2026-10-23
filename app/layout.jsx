@@ -47,7 +47,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: '#07080d',
+  themeColor: '#f8fafc',
   width: 'device-width',
   initialScale: 1,
 };
@@ -57,6 +57,7 @@ export default async function RootLayout({ children }) {
 
   return (
     <html
+      data-theme="light"
       lang="en"
       className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning

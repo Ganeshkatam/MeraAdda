@@ -37,17 +37,23 @@ export default function WorkCatalogClient({ initialProjects = [] }) {
           ))}
         </div>
 
-        <div className="search-input-wrapper">
-          <Search size={14} />
+        <label className="search-input-wrapper">
+          <Search size={14} aria-hidden="true" />
           <input
             type="text"
             className="search-field"
-            placeholder="Search projects or tags..."
+            aria-label="Search products by name, category, description, or tag"
+            placeholder="Search products or tags…"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
-        </div>
+        </label>
       </div>
+
+      <p className="catalog-results" aria-live="polite">
+        {visibleProjects.length} {visibleProjects.length === 1 ? 'product' : 'products'} shown
+        {searchQuery ? ` for “${searchQuery}”` : ''}
+      </p>
 
       <div className="projects-masonry">
         {visibleProjects.map(project => (
@@ -98,7 +104,10 @@ export default function WorkCatalogClient({ initialProjects = [] }) {
 
       {visibleProjects.length === 0 && (
         <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
-          No projects found matching that filter or search term.
+          <p>No products match those filters.</p>
+          <button type="button" className="btn-secondary-glass" onClick={() => { setActiveFilter('ALL'); setSearchQuery(''); }}>
+            Clear search and filters
+          </button>
         </div>
       )}
     </div>

@@ -16,7 +16,7 @@ export default function Footer({ profile }) {
         </Link>
         <div>
           <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>TomeSphere</div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Digital Product Place · tomesphere.in</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Independent digital studio · tomesphere.in</div>
         </div>
       </div>
 

@@ -16,9 +16,9 @@ export default async function ProductsPage() {
     <div className="page-wrapper">
       <div className="page-head">
         <div className="page-eyebrow">Digital Products &amp; Platforms</div>
-        <h1 className="page-title">Production Systems ({projects.length})</h1>
+        <h1 className="page-title">Explore Products ({projects.length})</h1>
         <p className="page-subtitle">
-          Web applications, developer tools, real-time collaboration platforms, and distributed systems.
+          Practical web applications, developer tools, and collaborative software—built for real work.
         </p>
       </div>
 

@@ -62,7 +62,7 @@ export default function HomeOverviewClient({
           </h1>
 
           <p className="hero-description-centered hero-fade-in-2">
-            Welcome to <strong>TomeSphere</strong> — an independent digital product place building production web platforms, business growth engines, real-time collaboration tools, and developer utilities.
+            Welcome to <strong>TomeSphere</strong> — an independent digital product studio building practical web applications, developer utilities, and collaborative tools.
           </p>
 
           <div className="hero-cta-group-centered hero-fade-in-3">
@@ -77,20 +77,20 @@ export default function HomeOverviewClient({
           {/* Product Metrics Strip */}
           <div className="product-metrics-strip hero-fade-in-4">
             <div className="metric-item">
-              <span className="metric-value">{String(projects.length || 7).padStart(2, '0')}</span>
+              <span className="metric-value">{String(projects.length).padStart(2, '0')}</span>
               <span className="metric-label">Production Products</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">99.9%</span>
-              <span className="metric-label">Platform Availability</span>
+              <span className="metric-value">Independent</span>
+              <span className="metric-label">Product studio</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">Global</span>
-              <span className="metric-label">Edge Network</span>
+              <span className="metric-value">Useful</span>
+              <span className="metric-label">Purpose-built software</span>
             </div>
             <div className="metric-item">
-              <span className="metric-value">&lt;100ms</span>
-              <span className="metric-label">Sub-Second Delivery</span>
+              <span className="metric-value">Thoughtful</span>
+              <span className="metric-label">Designed with care</span>
             </div>
           </div>
 
@@ -170,8 +170,8 @@ export default function HomeOverviewClient({
         <div className="section-head">
           <div>
             <div className="page-eyebrow">Digital Products &amp; Platforms</div>
-            <h2 className="section-title">Production Systems Showcase</h2>
-            <p className="section-subtitle">Active software products built and maintained under the TomeSphere umbrella.</p>
+            <h2 className="section-title">Products built to be useful</h2>
+            <p className="section-subtitle">Explore practical software built and maintained by the TomeSphere studio.</p>
           </div>
           <Link href="/products" className="btn-secondary-glass" style={{ alignSelf: 'flex-start' }}>
             View All ({projects.length}) <ArrowRight size={14} />
