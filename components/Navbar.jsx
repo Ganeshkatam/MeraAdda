@@ -15,11 +15,11 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('site-theme') || 'dark';
+    const savedTheme = localStorage.getItem('site-theme') || 'light';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
@@ -76,7 +76,7 @@ export default function Navbar() {
             type="button"
             className="btn-icon-round btn-menu-mobile"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}\n            aria-expanded={mobileMenuOpen}\n            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -85,7 +85,7 @@ export default function Navbar() {
 
       {mobileMenuOpen && (
         <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)}>
-          <div className="mobile-nav-drawer" onClick={e => e.stopPropagation()}>
+          <div id="mobile-navigation" className="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Mobile navigation" onClick={e => e.stopPropagation()}>
             <div className="mobile-nav-header">
               <div>
                 <span className="brand-name">TomeSphere</span>
