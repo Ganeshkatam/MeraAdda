@@ -2290,20 +2290,20 @@ body {
   gap: 16px;
 }
 
-.hero-bento-card {
+.hero-section .hero-bento-card {
   background: rgba(255,255,255,.055);
   border-color: rgba(255,255,255,.12);
   box-shadow: none;
 }
 
-.hero-bento-card:hover {
+.hero-section .hero-bento-card:hover {
   background: rgba(255,255,255,.09);
   border-color: rgba(165,180,252,.55);
   box-shadow: 0 16px 32px rgba(0,0,0,.18);
   transform: translateY(-3px);
 }
 
-.hero-bento-card .bento-card-desc {
+.hero-section .hero-bento-card .bento-card-desc {
   color: #b9c4d6;
 }
 
