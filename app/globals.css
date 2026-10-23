@@ -179,13 +179,14 @@ a {
   }
 }
 
-/* Site Container */
+/* Site Container - Full Viewport Dynamic Layout */
 .site-layout {
   position: relative;
   z-index: 1;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 28px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 clamp(18px, 3.2vw, 56px);
 }
 
 /* Navbar */
@@ -406,13 +407,14 @@ a {
 .hero-container-centered {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 24px;
+  padding: 0;
 }
 
 .badge-beacon {
@@ -462,12 +464,13 @@ a {
 
 .hero-title-centered {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5.2vw, 68px);
+  font-size: clamp(38px, 4.8vw, 76px);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -2px;
   margin: 0 auto 24px;
-  max-width: 960px;
+  max-width: min(1400px, 94vw);
+  width: 100%;
   color: var(--text-primary);
 }
 
@@ -499,10 +502,11 @@ a {
 }
 
 .hero-description-centered {
-  font-size: clamp(16px, 1.4vw, 19px);
+  font-size: clamp(16px, 1.4vw, 20px);
   line-height: 1.7;
   color: var(--text-secondary);
-  max-width: 740px;
+  max-width: min(1080px, 92vw);
+  width: 100%;
   margin: 0 auto 36px;
 }
 
@@ -593,7 +597,7 @@ a {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
-  max-width: 1140px;
+  max-width: 100%;
   margin: 0 auto;
   text-align: left;
 }
@@ -898,7 +902,7 @@ a {
 .section-subtitle {
   font-size: 15px;
   color: var(--text-secondary);
-  max-width: 500px;
+  max-width: min(840px, 90vw);
   margin-top: 6px;
 }
 
@@ -1630,7 +1634,7 @@ a {
 .contact-cta-subtitle {
   font-size: 16px;
   color: var(--text-secondary);
-  max-width: 520px;
+  max-width: min(720px, 90vw);
 }
 
 .contact-actions-row {
@@ -1748,7 +1752,7 @@ a {
 .page-subtitle {
   font-size: clamp(15px, 1.3vw, 17px);
   color: var(--text-secondary);
-  max-width: 660px;
+  max-width: min(920px, 90vw);
   margin: 0 auto;
   line-height: 1.65;
 }
@@ -2059,7 +2063,7 @@ a {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   width: 100%;
-  max-width: 1140px;
+  max-width: 100%;
   margin: 0 auto 52px;
   padding: 22px 28px;
   border-radius: var(--radius-lg);
