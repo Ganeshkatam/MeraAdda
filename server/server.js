@@ -179,7 +179,7 @@ app.post('/api/v1/contact', async (req, res, next) => {
   }
 });
 
-app.get('/api/v1/contact', async (req, res, next) => {
+app.get('/api/v1/contact', requireAdminMiddleware, async (req, res, next) => {
   try {
     const inquiries = await contactService.listInquiries();
     res.json({ success: true, count: inquiries.length, data: inquiries });

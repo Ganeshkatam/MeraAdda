@@ -6,14 +6,20 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
--- 2. Trigger Function for updated_at
+-- 2. Trigger Function for updated_at (Secure Search Path & Permissions)
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
+
+REVOKE EXECUTE ON FUNCTION public.handle_updated_at() FROM public, anon, authenticated;
 
 -- 3. Developer Profile Table
 CREATE TABLE IF NOT EXISTS public.profile (
@@ -104,52 +110,78 @@ CREATE TRIGGER trigger_profile_updated_at
   BEFORE UPDATE ON public.profile
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
--- 10. Row Level Security & Policies
+-- 10. Row Level Security & Explicit Least-Privilege Policies
 ALTER TABLE public.profile ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.guestbook ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
 
+-- Revoke dangerous table privileges from public/anon/authenticated
+REVOKE INSERT, UPDATE, DELETE ON public.projects FROM anon, authenticated;
+REVOKE INSERT, UPDATE, DELETE ON public.profile FROM anon, authenticated;
+REVOKE INSERT, UPDATE, DELETE ON public.skills FROM anon, authenticated;
+REVOKE SELECT, UPDATE, DELETE ON public.contacts FROM anon, authenticated;
+REVOKE UPDATE, DELETE ON public.guestbook FROM anon, authenticated;
+
+-- Grant minimal necessary privileges
+GRANT SELECT ON public.projects TO anon, authenticated;
+GRANT SELECT ON public.profile TO anon, authenticated;
+GRANT SELECT ON public.skills TO anon, authenticated;
+GRANT SELECT, INSERT ON public.guestbook TO anon, authenticated;
+GRANT INSERT ON public.contacts TO anon, authenticated;
+
+-- Public RLS Policies (Read-only for public catalog, strictly validated inserts)
 DO $$
 BEGIN
-  -- Profile policies
+  -- Projects: Only live products accessible to public
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'projects' AND policyname = 'Public read published projects') THEN
+    CREATE POLICY "Public read published projects" ON public.projects
+      FOR SELECT TO anon, authenticated
+      USING (status = 'Live');
+  END IF;
+
+  -- Profile: Read-only for public
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profile' AND policyname = 'Public read profile') THEN
-    CREATE POLICY "Public read profile" ON public.profile FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'profile' AND policyname = 'Public manage profile') THEN
-    CREATE POLICY "Public manage profile" ON public.profile FOR ALL USING (true) WITH CHECK (true);
-  END IF;
-
-  -- Projects policies
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'projects' AND policyname = 'Public read projects') THEN
-    CREATE POLICY "Public read projects" ON public.projects FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'projects' AND policyname = 'Public manage projects') THEN
-    CREATE POLICY "Public manage projects" ON public.projects FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Public read profile" ON public.profile
+      FOR SELECT TO anon, authenticated
+      USING (true);
   END IF;
 
-  -- Skills policies
+  -- Skills: Read-only for public
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'skills' AND policyname = 'Public read skills') THEN
-    CREATE POLICY "Public read skills" ON public.skills FOR SELECT USING (true);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'skills' AND policyname = 'Public manage skills') THEN
-    CREATE POLICY "Public manage skills" ON public.skills FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Public read skills" ON public.skills
+      FOR SELECT TO anon, authenticated
+      USING (true);
   END IF;
 
-  -- Guestbook policies
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'guestbook' AND policyname = 'Public read guestbook') THEN
-    CREATE POLICY "Public read guestbook" ON public.guestbook FOR SELECT USING (status = 'approved');
+  -- Guestbook: Only approved entries readable publicly
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'guestbook' AND policyname = 'Public read approved guestbook') THEN
+    CREATE POLICY "Public read approved guestbook" ON public.guestbook
+      FOR SELECT TO anon, authenticated
+      USING (status = 'approved');
   END IF;
+
+  -- Guestbook: Strictly bounded user inserts
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'guestbook' AND policyname = 'Public insert guestbook') THEN
-    CREATE POLICY "Public insert guestbook" ON public.guestbook FOR INSERT WITH CHECK (char_length(message) >= 3);
+    CREATE POLICY "Public insert guestbook" ON public.guestbook
+      FOR INSERT TO anon, authenticated
+      WITH CHECK (
+        char_length(author) BETWEEN 2 AND 60
+        AND char_length(message) BETWEEN 3 AND 500
+        AND (status IS NULL OR status = 'approved')
+      );
   END IF;
 
-  -- Contacts policies
+  -- Contacts: Insert only, zero public read access
   IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'contacts' AND policyname = 'Public insert contacts') THEN
-    CREATE POLICY "Public insert contacts" ON public.contacts FOR INSERT WITH CHECK (char_length(email) >= 5 AND char_length(message) >= 5);
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'contacts' AND policyname = 'Public select contacts') THEN
-    CREATE POLICY "Public select contacts" ON public.contacts FOR SELECT USING (true);
+    CREATE POLICY "Public insert contacts" ON public.contacts
+      FOR INSERT TO anon, authenticated
+      WITH CHECK (
+        char_length(name) BETWEEN 2 AND 100
+        AND char_length(email) BETWEEN 5 AND 120
+        AND char_length(message) BETWEEN 5 AND 2000
+        AND (status IS NULL OR status = 'unread')
+      );
   END IF;
 END $$;

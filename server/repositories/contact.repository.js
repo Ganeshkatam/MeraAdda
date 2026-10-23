@@ -1,10 +1,11 @@
+import { randomUUID } from 'node:crypto';
 import { supabase } from '../config/supabase.js';
 import { ApiError } from '../errors/api-error.js';
 
 export class ContactRepository {
   async saveMessage({ name, email, message }) {
     const entry = {
-      id: `msg_${Date.now()}`,
+      id: `msg_${randomUUID().replace(/-/g, '').slice(0, 16)}`,
       name,
       email,
       message,
@@ -23,7 +24,8 @@ export class ContactRepository {
       .single();
 
     if (error || !data) {
-      throw new ApiError(`Database error saving contact message: ${error?.message || 'Insert failed'}`, 500, 'DATABASE_ERROR');
+      console.error('[ContactRepository.saveMessage]: Insert error:', error?.message);
+      throw new ApiError('Unable to submit inquiry at this time.', 500, 'DATABASE_ERROR');
     }
 
     return {
@@ -38,11 +40,12 @@ export class ContactRepository {
   async getAllMessages() {
     const { data, error } = await supabase
       .from('contacts')
-      .select('*')
+      .select('id, name, email, message, status, created_at')
       .order('created_at', { ascending: false });
 
     if (error) {
-      throw new ApiError(`Database error fetching contact messages: ${error.message}`, 500, 'DATABASE_ERROR');
+      console.error('[ContactRepository.getAllMessages]: Fetch error:', error.message);
+      throw new ApiError('Unable to fetch contact inquiries.', 500, 'DATABASE_ERROR');
     }
 
     return data || [];
