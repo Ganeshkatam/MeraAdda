@@ -250,6 +250,50 @@ test('Security: Live Supabase RLS & Role Privileges', async (t) => {
     const deleteRes = await anonClient.from('guestbook').delete().eq('id', 'gb_test');
     assert.ok(deleteRes.error, 'Expected error when anonymous user attempts to delete guestbook');
   });
+
+  await t.test('anonymous client cannot insert, update, or delete updates (mutation revoked & RLS enforced)', async () => {
+    const insertRes = await anonClient.from('updates').insert({
+      id: 'unauthorized_hack_update',
+      slug: 'unauthorized-hack-update',
+      project_id: 'proj_bookgarden',
+      title: 'Hacked Announcement',
+      summary: 'Malicious payload injection attempt.',
+      content: 'Should be rejected by database privileges.',
+      update_type: 'Launch',
+      status: 'Published'
+    });
+    assert.ok(insertRes.error, 'Expected error on unauthorized insert to updates');
+
+    const updateRes = await anonClient.from('updates').update({ title: 'Defaced' }).eq('id', 'upd_test');
+    assert.ok(updateRes.error, 'Expected error on unauthorized update to updates');
+
+    const deleteRes = await anonClient.from('updates').delete().eq('id', 'upd_test');
+    assert.ok(deleteRes.error, 'Expected error on unauthorized delete to updates');
+  });
+
+  await t.test('anonymous client cannot insert, update, or delete offers (mutation revoked & RLS enforced)', async () => {
+    const now = new Date();
+    const insertRes = await anonClient.from('offers').insert({
+      id: 'unauthorized_hack_offer',
+      slug: 'unauthorized-hack-offer',
+      project_id: 'proj_bookgarden',
+      title: 'Hacked Offer',
+      description: 'Malicious offer injection attempt.',
+      benefit: 'Free access',
+      eligibility: 'Everyone',
+      url: 'https://malicious.com',
+      start_date: now.toISOString(),
+      end_date: new Date(now.getTime() + 86400000).toISOString(),
+      status: 'Published'
+    });
+    assert.ok(insertRes.error, 'Expected error on unauthorized insert to offers');
+
+    const updateRes = await anonClient.from('offers').update({ title: 'Defaced' }).eq('id', 'off_test');
+    assert.ok(updateRes.error, 'Expected error on unauthorized update to offers');
+
+    const deleteRes = await anonClient.from('offers').delete().eq('id', 'off_test');
+    assert.ok(deleteRes.error, 'Expected error on unauthorized delete to offers');
+  });
 });
 
 test('Deployment Hygiene: Vercel Preview Deployment Prevention', async (t) => {
