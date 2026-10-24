@@ -69,20 +69,47 @@ class MemoryRateLimiter {
   }
 }
 
+/**
+ * MemoryRateLimiter: In-memory sliding-window limiter for single-node / containerized runtimes.
+ * For horizontally auto-scaled multi-instance topologies, replace defaultLimiter with a Redis
+ * or Upstash store implementing the same consume(key, windowMs, max) contract.
+ */
 export const defaultLimiter = new MemoryRateLimiter();
 
 export function getClientIp(req) {
-  // Support both Express req and Next.js Web Request
-  if (req.headers && typeof req.headers.get === 'function') {
-    const forwarded = req.headers.get('x-forwarded-for');
-    if (forwarded) return forwarded.split(',')[0].trim();
-    return req.headers.get('x-real-ip') || '127.0.0.1';
+  // 1. In Express with app.set('trust proxy', 1), req.ip uses the trusted proxy hop
+  if (req && typeof req.ip === 'string' && req.ip) {
+    return req.ip;
   }
 
-  if (req.headers) {
+  // 2. Next.js Web Request (Edge / Vercel runtime)
+  if (req && req.headers && typeof req.headers.get === 'function') {
+    // Cloudflare / Vercel edge-injected trusted headers
+    const cfIp = req.headers.get('cf-connecting-ip');
+    if (cfIp) return cfIp.trim();
+
+    const vercelIp = req.headers.get('x-vercel-forwarded-for');
+    if (vercelIp) return vercelIp.split(',')[0].trim();
+
+    const realIp = req.headers.get('x-real-ip');
+    if (realIp) return realIp.trim();
+
+    const forwarded = req.headers.get('x-forwarded-for');
+    if (forwarded) return forwarded.split(',')[0].trim();
+  }
+
+  // 3. Node.js IncomingMessage fallback
+  if (req && req.headers) {
+    const cfIp = req.headers['cf-connecting-ip'];
+    if (typeof cfIp === 'string') return cfIp.trim();
+
+    const realIp = req.headers['x-real-ip'];
+    if (typeof realIp === 'string') return realIp.trim();
+
     const forwarded = req.headers['x-forwarded-for'];
     if (typeof forwarded === 'string') return forwarded.split(',')[0].trim();
-    return req.headers['x-real-ip'] || req.socket?.remoteAddress || '127.0.0.1';
+
+    return req.socket?.remoteAddress || '127.0.0.1';
   }
 
   return '127.0.0.1';

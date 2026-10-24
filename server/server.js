@@ -15,12 +15,17 @@ import { profileService } from './services/profile.service.js';
 import { guestbookService } from './services/guestbook.service.js';
 import { contactService } from './services/contact.service.js';
 import { skillService } from './services/skill.service.js';
+import { updateService } from './services/update.service.js';
+import { offerService } from './services/offer.service.js';
 import { ApiError } from './errors/api-error.js';
 import { requireAdminMiddleware } from './auth/admin-auth.js';
 import { rateLimitMiddleware } from './middleware/rate-limiter.js';
 import { PORT, HOST, SERVER_CONFIG } from './config/server.config.js';
 
 const app = express();
+
+// Trust first proxy hop (Render / Cloudflare / Vercel load balancers)
+app.set('trust proxy', 1);
 
 // Global CORS - allows requests from frontend machine / Vercel domain
 const allowedOrigins = process.env.CORS_ORIGIN
@@ -77,7 +82,9 @@ app.get('/', (req, res) => {
       profile: '/api/v1/profile',
       skills: '/api/v1/skills',
       guestbook: '/api/v1/guestbook',
-      contact: '/api/v1/contact'
+      contact: '/api/v1/contact',
+      updates: '/api/v1/updates',
+      offers: '/api/v1/offers'
     }
   });
 });
@@ -208,6 +215,113 @@ app.get('/api/v1/contact', requireAdminMiddleware, async (req, res, next) => {
   try {
     const inquiries = await contactService.listInquiries();
     res.json({ success: true, count: inquiries.length, data: inquiries });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Updates & Changelogs Endpoints
+app.get('/api/v1/updates', async (req, res, next) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 50;
+    const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    const updates = await updateService.listUpdates({
+      project_id: req.query.project_id,
+      status: req.query.status || 'Published',
+      limit,
+      offset
+    });
+    res.json({ success: true, count: updates.length, data: updates });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/v1/updates/slug/:slug', async (req, res, next) => {
+  try {
+    const update = await updateService.getUpdateBySlug(req.params.slug);
+    res.json({ success: true, data: update });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/v1/updates', requireAdminMiddleware, async (req, res, next) => {
+  try {
+    const created = await updateService.createUpdate(req.body);
+    res.status(201).json({ success: true, data: created });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/api/v1/updates/:id', requireAdminMiddleware, async (req, res, next) => {
+  try {
+    const updated = await updateService.updateUpdate(req.params.id, req.body);
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/v1/updates/:id', requireAdminMiddleware, async (req, res, next) => {
+  try {
+    const result = await updateService.deleteUpdate(req.params.id);
+    res.json({ success: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Offers & Promotions Endpoints
+app.get('/api/v1/offers', async (req, res, next) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit, 10) : 50;
+    const offset = req.query.offset ? parseInt(req.query.offset, 10) : 0;
+    const offers = await offerService.listOffers({
+      project_id: req.query.project_id,
+      status: req.query.status || 'Published',
+      onlyActive: req.query.onlyActive !== 'false',
+      limit,
+      offset
+    });
+    res.json({ success: true, count: offers.length, data: offers });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/v1/offers/slug/:slug', async (req, res, next) => {
+  try {
+    const offer = await offerService.getOfferBySlug(req.params.slug);
+    res.json({ success: true, data: offer });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post('/api/v1/offers', requireAdminMiddleware, async (req, res, next) => {
+  try {
+    const created = await offerService.createOffer(req.body);
+    res.status(201).json({ success: true, data: created });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.put('/api/v1/offers/:id', requireAdminMiddleware, async (req, res, next) => {
+  try {
+    const updated = await offerService.updateOffer(req.params.id, req.body);
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.delete('/api/v1/offers/:id', requireAdminMiddleware, async (req, res, next) => {
+  try {
+    const result = await offerService.deleteOffer(req.params.id);
+    res.json({ success: true, data: result });
   } catch (err) {
     next(err);
   }

@@ -477,3 +477,121 @@ test('Phase B: Production Readiness, Abuse Resistance & Profile Security', async
   });
 });
 
+test('Phase C: Updates & Offers Data Contracts, Expiry & Validation', async (t) => {
+  const { validateUpdatePayload, ALLOWED_UPDATE_TYPES } = await import('../server/validators/update.validator.js');
+  const { validateOfferPayload, ALLOWED_OFFER_STATUSES } = await import('../server/validators/offer.validator.js');
+  const { updateService } = await import('../server/services/update.service.js');
+  const { offerService } = await import('../server/services/offer.service.js');
+
+  await t.test('updates validator strictly enforces required fields, update types and generates slugs', () => {
+    const valid = validateUpdatePayload({
+      project_id: 'proj_bookgarden',
+      title: 'BookGarden v2.0 Architecture Rewrite',
+      summary: 'Complete migration to decoupled REST API and Clean Architecture.',
+      content: 'Detailed changelog content describing the release and fixes.',
+      version: 'v2.0.0',
+      update_type: 'Launch'
+    });
+
+    assert.equal(valid.project_id, 'proj_bookgarden');
+    assert.equal(valid.slug, 'bookgarden-v2-0-architecture-rewrite');
+    assert.equal(valid.update_type, 'Launch');
+    assert.equal(valid.status, 'Draft');
+
+    assert.throws(
+      () => validateUpdatePayload({
+        project_id: 'proj_bookgarden',
+        title: 'Valid Title',
+        summary: 'Valid summary text.',
+        content: 'Valid content.',
+        update_type: 'INVALID_TYPE'
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        return true;
+      }
+    );
+  });
+
+  await t.test('offers validator enforces date bounds, benefit statements and valid launch URLs', () => {
+    const now = Date.now();
+    const valid = validateOfferPayload({
+      project_id: 'proj_bookgarden',
+      title: 'Early Adopter Lifetime Pro',
+      description: 'Exclusive benefit for founding users of BookGarden archive.',
+      benefit: 'Lifetime Pro access without monthly renewal',
+      eligibility: 'New accounts registered in Q4 2026',
+      url: 'https://bookgarden.tomesphere.in/pro',
+      start_date: new Date(now).toISOString(),
+      end_date: new Date(now + 86400000 * 30).toISOString(),
+      status: 'Published'
+    });
+
+    assert.equal(valid.project_id, 'proj_bookgarden');
+    assert.equal(valid.slug, 'early-adopter-lifetime-pro');
+    assert.equal(valid.status, 'Published');
+
+    // Throws when end_date <= start_date
+    assert.throws(
+      () => validateOfferPayload({
+        project_id: 'proj_bookgarden',
+        title: 'Invalid Date Range Offer',
+        description: 'Testing backwards date interval.',
+        benefit: 'Free access',
+        eligibility: 'Everyone',
+        url: 'https://bookgarden.tomesphere.in',
+        start_date: new Date(now + 86400000).toISOString(),
+        end_date: new Date(now).toISOString()
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        assert.ok(err.details?.some(d => /end_date must be strictly after start_date/.test(d.message)));
+        return true;
+      }
+    );
+
+    // Throws on malicious URL scheme (e.g. javascript:)
+    assert.throws(
+      () => validateOfferPayload({
+        project_id: 'proj_bookgarden',
+        title: 'Malicious URL Offer',
+        description: 'Testing URL validation.',
+        benefit: 'Free access',
+        eligibility: 'Everyone',
+        url: 'javascript:alert(document.cookie)',
+        start_date: new Date(now).toISOString(),
+        end_date: new Date(now + 86400000).toISOString()
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        return true;
+      }
+    );
+  });
+
+  await t.test('services throw NotFoundError on missing update or offer slugs', async () => {
+    await assert.rejects(
+      async () => {
+        await updateService.getUpdateBySlug('missing-nonexistent-update-slug');
+      },
+      (err) => {
+        assert.equal(err.code, 'NOT_FOUND');
+        assert.equal(err.statusCode, 404);
+        return true;
+      }
+    );
+
+    await assert.rejects(
+      async () => {
+        await offerService.getOfferBySlug('missing-nonexistent-offer-slug');
+      },
+      (err) => {
+        assert.equal(err.code, 'NOT_FOUND');
+        assert.equal(err.statusCode, 404);
+        return true;
+      }
+    );
+  });
+});
+
+
