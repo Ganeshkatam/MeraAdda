@@ -5,7 +5,7 @@ export class ProfileRepository {
   async getProfile() {
     const { data, error } = await supabase
       .from('profile')
-      .select('*')
+      .select('name, title, domain, location, email, bio, intro, socials, is_available')
       .eq('id', 'primary')
       .single();
 
@@ -19,9 +19,10 @@ export class ProfileRepository {
       domain: data.domain,
       location: data.location || 'India',
       email: data.email,
-      bio: data.bio,
-      intro: data.intro,
-      socials: data.socials || {}
+      bio: data.bio || '',
+      intro: data.intro || '',
+      socials: data.socials || {},
+      is_available: Boolean(data.is_available)
     };
   }
 
@@ -33,7 +34,7 @@ export class ProfileRepository {
         ...updates,
         updated_at: new Date().toISOString()
       })
-      .select()
+      .select('name, title, domain, location, email, bio, intro, socials, is_available')
       .single();
 
     if (error || !data) {
@@ -46,9 +47,10 @@ export class ProfileRepository {
       domain: data.domain,
       location: data.location || 'India',
       email: data.email,
-      bio: data.bio,
-      intro: data.intro,
-      socials: data.socials || {}
+      bio: data.bio || '',
+      intro: data.intro || '',
+      socials: data.socials || {},
+      is_available: Boolean(data.is_available)
     };
   }
 }

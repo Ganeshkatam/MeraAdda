@@ -342,3 +342,138 @@ test('Phase 1 & A: Product Slug Resolution & Contract Safety', async (t) => {
     );
   });
 });
+
+test('Phase B: Production Readiness, Abuse Resistance & Profile Security', async (t) => {
+  const { rateLimitMiddleware, checkRateLimit, defaultLimiter } = await import('../server/middleware/rate-limiter.js');
+  const { TooManyRequestsError, ApiError } = await import('../server/errors/api-error.js');
+  const { validateProfileUpdatePayload } = await import('../server/validators/profile.validator.js');
+  const { validateContactPayload } = await import('../server/validators/contact.validator.js');
+  const { validateGuestbookPayload } = await import('../server/validators/guestbook.validator.js');
+  const { profileRepository } = await import('../server/repositories/profile.repository.js');
+
+  await t.test('honeypot bot detection flags spam submissions in contact and guestbook', () => {
+    assert.throws(
+      () => validateContactPayload({
+        name: 'Spam Bot',
+        email: 'spambot@example.com',
+        message: 'Buy cheap watches now!',
+        website: 'http://spamsite.xyz'
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        assert.match(err.message, /Automated bot submission detected/);
+        return true;
+      }
+    );
+
+    assert.throws(
+      () => validateGuestbookPayload({
+        author: 'Spam Bot',
+        message: 'Spam message',
+        honeypot: 'filled_by_bot'
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        assert.match(err.message, /Automated bot submission detected/);
+        return true;
+      }
+    );
+  });
+
+  await t.test('rate limiter enforces maximum attempts and sets 429 response headers', () => {
+    const testKey = 'test-ip-1234';
+    defaultLimiter.reset(testKey);
+
+    // Consume up to max 3
+    const r1 = defaultLimiter.consume(testKey, 10000, 3);
+    assert.equal(r1.allowed, true);
+    assert.equal(r1.remaining, 2);
+
+    const r2 = defaultLimiter.consume(testKey, 10000, 3);
+    assert.equal(r2.allowed, true);
+    assert.equal(r2.remaining, 1);
+
+    const r3 = defaultLimiter.consume(testKey, 10000, 3);
+    assert.equal(r3.allowed, true);
+    assert.equal(r3.remaining, 0);
+
+    // Exceed max
+    const r4 = defaultLimiter.consume(testKey, 10000, 3);
+    assert.equal(r4.allowed, false);
+    assert.equal(r4.remaining, 0);
+    assert.ok(r4.retryAfter > 0);
+
+    // Clean up
+    defaultLimiter.reset(testKey);
+  });
+
+  await t.test('Next.js checkRateLimit throws TooManyRequestsError on rate limit breach', () => {
+    const mockRequest = {
+      headers: {
+        get: (h) => (h === 'x-forwarded-for' ? '198.51.100.42' : null)
+      }
+    };
+
+    const options = { windowMs: 5000, max: 2, keyPrefix: 'test-next' };
+    const res1 = checkRateLimit(mockRequest, options);
+    assert.equal(res1.headers['X-RateLimit-Remaining'], '1');
+
+    const res2 = checkRateLimit(mockRequest, options);
+    assert.equal(res2.headers['X-RateLimit-Remaining'], '0');
+
+    assert.throws(
+      () => checkRateLimit(mockRequest, options),
+      (err) => {
+        assert.ok(err instanceof TooManyRequestsError);
+        assert.equal(err.statusCode, 429);
+        assert.equal(err.code, 'RATE_LIMIT_EXCEEDED');
+        assert.ok(err.retryAfter > 0);
+        return true;
+      }
+    );
+  });
+
+  await t.test('profile validator strictly whitelists fields and rejects column injection', () => {
+    const valid = validateProfileUpdatePayload({
+      name: 'Katam Ganesh Reddy',
+      title: 'Systems & Cloud Architect',
+      email: 'contact@tomesphere.in',
+      is_available: true
+    });
+    assert.equal(valid.name, 'Katam Ganesh Reddy');
+    assert.equal(valid.title, 'Systems & Cloud Architect');
+    assert.equal(valid.is_available, true);
+
+    assert.throws(
+      () => validateProfileUpdatePayload({
+        name: 'Hacker',
+        role: 'superadmin',
+        raw_sql_column: 'injection'
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        return true;
+      }
+    );
+  });
+
+  await t.test('profile repository getProfile projects only public non-sensitive attributes', async () => {
+    const profile = await profileRepository.getProfile();
+    assert.ok(profile, 'Profile should exist');
+    assert.ok(profile.name, 'Expected profile name');
+    assert.ok(profile.title, 'Expected profile title');
+    // Ensure internal database metadata is never exposed
+    assert.equal(profile.created_at, undefined);
+    assert.equal(profile.updated_at, undefined);
+  });
+
+  await t.test('distinguishes simulated API outage (500/503) from not-found (404)', () => {
+    const notFoundError = new ApiError('Not found', 404, 'NOT_FOUND');
+    const outageError = new ApiError('Service Unavailable', 503, 'SERVICE_UNAVAILABLE');
+
+    assert.equal(notFoundError.statusCode, 404);
+    assert.notEqual(outageError.statusCode, 404);
+    assert.equal(outageError.statusCode, 503);
+  });
+});
+

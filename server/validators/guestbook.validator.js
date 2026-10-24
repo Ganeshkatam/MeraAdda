@@ -7,6 +7,11 @@ export function validateGuestbookPayload(data) {
     throw new ValidationError('Request body must be a JSON object');
   }
 
+  // Honeypot bot protection: automated spam bots fill invisible fields
+  if (data.website || data._gotcha || data.honeypot) {
+    throw new ValidationError('Automated bot submission detected');
+  }
+
   const author = typeof data.author === 'string' ? data.author.trim() : 'Explorer';
   const message = typeof data.message === 'string' ? data.message.trim() : '';
 

@@ -43,3 +43,11 @@ export class MethodNotAllowedError extends ApiError {
     super(`HTTP Method ${method} not allowed`, 405, 'METHOD_NOT_ALLOWED');
   }
 }
+
+export class TooManyRequestsError extends ApiError {
+  constructor(message = 'Too many requests. Please wait before retrying.', retryAfter = 60) {
+    super(message, 429, 'RATE_LIMIT_EXCEEDED', { retryAfter });
+    this.retryAfter = retryAfter;
+  }
+}
+

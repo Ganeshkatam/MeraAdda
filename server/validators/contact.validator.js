@@ -7,6 +7,11 @@ export function validateContactPayload(data) {
     throw new ValidationError('Request body must be a JSON object');
   }
 
+  // Honeypot bot protection: automated spam bots fill invisible fields
+  if (data.website || data._gotcha || data.honeypot) {
+    throw new ValidationError('Automated bot submission detected');
+  }
+
   const name = typeof data.name === 'string' ? data.name.trim() : '';
   const email = typeof data.email === 'string' ? data.email.trim() : '';
   const message = typeof data.message === 'string' ? data.message.trim() : '';

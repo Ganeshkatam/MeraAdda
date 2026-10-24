@@ -17,6 +17,7 @@ import { contactService } from './services/contact.service.js';
 import { skillService } from './services/skill.service.js';
 import { ApiError } from './errors/api-error.js';
 import { requireAdminMiddleware } from './auth/admin-auth.js';
+import { rateLimitMiddleware } from './middleware/rate-limiter.js';
 import { PORT, HOST, SERVER_CONFIG } from './config/server.config.js';
 
 const app = express();
@@ -176,24 +177,32 @@ app.get('/api/v1/guestbook', async (req, res, next) => {
   }
 });
 
-app.post('/api/v1/guestbook', async (req, res, next) => {
-  try {
-    const entry = await guestbookService.addEntry(req.body);
-    res.status(201).json({ success: true, data: entry });
-  } catch (err) {
-    next(err);
+app.post(
+  '/api/v1/guestbook',
+  rateLimitMiddleware({ windowMs: 15 * 60 * 1000, max: 10, keyPrefix: 'guestbook' }),
+  async (req, res, next) => {
+    try {
+      const entry = await guestbookService.addEntry(req.body);
+      res.status(201).json({ success: true, data: entry });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 // Contact Endpoints
-app.post('/api/v1/contact', async (req, res, next) => {
-  try {
-    const response = await contactService.processInquiry(req.body);
-    res.status(201).json({ success: true, data: response });
-  } catch (err) {
-    next(err);
+app.post(
+  '/api/v1/contact',
+  rateLimitMiddleware({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'contact' }),
+  async (req, res, next) => {
+    try {
+      const response = await contactService.processInquiry(req.body);
+      res.status(201).json({ success: true, data: response });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 app.get('/api/v1/contact', requireAdminMiddleware, async (req, res, next) => {
   try {
@@ -217,6 +226,9 @@ app.use((req, res) => {
 // Central Error Handler Middleware
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {
+    if (err.statusCode === 429 && err.details?.retryAfter) {
+      res.setHeader('Retry-After', String(err.details.retryAfter));
+    }
     return res.status(err.statusCode).json({
       error: {
         code: err.code,

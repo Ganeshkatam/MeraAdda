@@ -24,6 +24,24 @@ export default function Navbar() {
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
@@ -91,7 +109,7 @@ export default function Navbar() {
             <div className="mobile-nav-header">
               <div>
                 <span className="brand-name">TomeSphere</span>
-                <div className="brand-tag">Product Place</div>
+                <div className="brand-tag">Product Discovery & Information Hub</div>
               </div>
               <button
                 type="button"

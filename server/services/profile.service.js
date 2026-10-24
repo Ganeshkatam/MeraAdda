@@ -1,4 +1,5 @@
 import { profileRepository } from '../repositories/profile.repository.js';
+import { validateProfileUpdatePayload } from '../validators/profile.validator.js';
 
 export class ProfileService {
   async getProfile() {
@@ -6,7 +7,8 @@ export class ProfileService {
   }
 
   async updateProfile(updates) {
-    return profileRepository.updateProfile(updates);
+    const validated = validateProfileUpdatePayload(updates);
+    return profileRepository.updateProfile(validated);
   }
 }
 

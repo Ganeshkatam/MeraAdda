@@ -3,7 +3,7 @@ import { ApiError } from './api-error.js';
 
 export function handleApiError(error) {
   if (error instanceof ApiError) {
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         error: {
           code: error.code,
@@ -13,9 +13,13 @@ export function handleApiError(error) {
       },
       { status: error.statusCode }
     );
+    if (error.statusCode === 429 && error.details?.retryAfter) {
+      response.headers.set('Retry-After', String(error.details.retryAfter));
+    }
+    return response;
   }
 
-  console.error('[API Unhandled Error]:', error);
+  console.error(error);
 
   return NextResponse.json(
     {
