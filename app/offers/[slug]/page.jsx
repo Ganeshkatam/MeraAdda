@@ -13,6 +13,7 @@ import {
   Tag
 } from 'lucide-react';
 import { apiClient } from '../../../lib/api-client.js';
+import { offerService } from '../../../server/services/offer.service.js';
 
 export const revalidate = 1800;
 
@@ -33,19 +34,26 @@ function formatDate(isoString) {
 async function getOffer(slug) {
   if (!slug || typeof slug !== 'string') return null;
   try {
-    return await apiClient.offers.getBySlug(slug);
-  } catch (err) {
-    if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'NOT_FOUND') {
+    return await offerService.getOfferBySlug(slug);
+  } catch (directErr) {
+    if (directErr?.name === 'NotFoundError' || directErr?.code === 'NOT_FOUND') {
       return null;
     }
-    console.error(`[OfferDetailPage]: Error fetching offer '${slug}':`, err.message);
-    throw err;
+    try {
+      return await apiClient.offers.getBySlug(slug);
+    } catch (err) {
+      if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'NOT_FOUND') {
+        return null;
+      }
+      console.error(`[OfferDetailPage]: Error fetching offer '${slug}':`, err.message);
+      throw err;
+    }
   }
 }
 
 export async function generateStaticParams() {
   try {
-    const offers = await apiClient.offers.list({ status: 'Published', onlyActive: false });
+    const offers = await offerService.listOffers({ status: 'Published', onlyActive: false }).catch(() => apiClient.offers.list({ status: 'Published', onlyActive: false }));
     return (offers || [])
       .filter((o) => o.slug)
       .map((o) => ({

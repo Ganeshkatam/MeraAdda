@@ -15,6 +15,7 @@ import {
   Clock
 } from 'lucide-react';
 import { apiClient } from '../../../lib/api-client.js';
+import { projectService } from '../../../server/services/project.service.js';
 
 export const revalidate = 1800;
 
@@ -36,21 +37,26 @@ function getSafeWebUrl(rawUrl) {
 async function getProduct(slug) {
   if (!slug || typeof slug !== 'string') return null;
   try {
-    return await apiClient.projects.getBySlug(slug);
-  } catch (err) {
-    // Only return null for confirmed 404/not found errors so notFound() is invoked
-    if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'PROJECT_NOT_FOUND') {
+    return await projectService.getProjectBySlug(slug);
+  } catch (directErr) {
+    if (directErr?.name === 'NotFoundError' || directErr?.code === 'NOT_FOUND') {
       return null;
     }
-    // Propagate infrastructure / 5xx / network errors to the error boundary
-    console.error(`[ProductDetailPage]: Infrastructure error fetching slug '${slug}':`, err.message);
-    throw err;
+    try {
+      return await apiClient.projects.getBySlug(slug);
+    } catch (err) {
+      if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'PROJECT_NOT_FOUND') {
+        return null;
+      }
+      console.error(`[ProductDetailPage]: Infrastructure error fetching slug '${slug}':`, err.message);
+      throw err;
+    }
   }
 }
 
 export async function generateStaticParams() {
   try {
-    const projects = await apiClient.projects.list();
+    const projects = await projectService.listProjects().catch(() => apiClient.projects.list());
     return (projects || [])
       .filter((p) => p.slug)
       .map((p) => ({

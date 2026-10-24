@@ -1,6 +1,7 @@
 import React from 'react';
 import UpdatesListClient from '../../components/UpdatesListClient';
 import { apiClient } from '../../lib/api-client';
+import { updateService } from '../../server/services/update.service';
 
 export const revalidate = 1800;
 
@@ -13,7 +14,7 @@ export const metadata = {
 };
 
 export default async function UpdatesPage() {
-  const updates = await apiClient.updates.list({ status: 'Published' }).catch(() => []);
+  const updates = await updateService.listUpdates({ status: 'Published' }).catch(() => apiClient.updates.list({ status: 'Published' }).catch(() => []));
 
   return (
     <div className="page-wrapper">

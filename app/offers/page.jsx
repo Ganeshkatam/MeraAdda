@@ -1,6 +1,7 @@
 import React from 'react';
 import OffersListClient from '../../components/OffersListClient';
 import { apiClient } from '../../lib/api-client';
+import { offerService } from '../../server/services/offer.service';
 
 export const revalidate = 1800;
 
@@ -13,7 +14,7 @@ export const metadata = {
 };
 
 export default async function OffersPage() {
-  const offers = await apiClient.offers.list({ status: 'Published', onlyActive: true }).catch(() => []);
+  const offers = await offerService.listOffers({ status: 'Published', onlyActive: true }).catch(() => apiClient.offers.list({ status: 'Published', onlyActive: true }).catch(() => []));
 
   return (
     <div className="page-wrapper">

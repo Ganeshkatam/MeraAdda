@@ -1,6 +1,7 @@
 import React from 'react';
 import WorkCatalogClient from '../../components/WorkCatalogClient';
 import { apiClient } from '../../lib/api-client';
+import { projectService } from '../../server/services/project.service';
 
 export const revalidate = 1800;
 
@@ -10,7 +11,7 @@ export const metadata = {
 };
 
 export default async function ProductsPage() {
-  const projects = await apiClient.projects.list().catch(() => []);
+  const projects = await projectService.listProjects().catch(() => apiClient.projects.list().catch(() => []));
 
   return (
     <div className="page-wrapper">

@@ -12,6 +12,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { apiClient } from '../../../lib/api-client.js';
+import { updateService } from '../../../server/services/update.service.js';
 
 export const revalidate = 1800;
 
@@ -32,19 +33,26 @@ function formatDate(isoString) {
 async function getUpdate(slug) {
   if (!slug || typeof slug !== 'string') return null;
   try {
-    return await apiClient.updates.getBySlug(slug);
-  } catch (err) {
-    if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'NOT_FOUND') {
+    return await updateService.getUpdateBySlug(slug);
+  } catch (directErr) {
+    if (directErr?.name === 'NotFoundError' || directErr?.code === 'NOT_FOUND') {
       return null;
     }
-    console.error(`[UpdateDetailPage]: Error fetching update '${slug}':`, err.message);
-    throw err;
+    try {
+      return await apiClient.updates.getBySlug(slug);
+    } catch (err) {
+      if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'NOT_FOUND') {
+        return null;
+      }
+      console.error(`[UpdateDetailPage]: Error fetching update '${slug}':`, err.message);
+      throw err;
+    }
   }
 }
 
 export async function generateStaticParams() {
   try {
-    const updates = await apiClient.updates.list({ status: 'Published' });
+    const updates = await updateService.listUpdates({ status: 'Published' }).catch(() => apiClient.updates.list({ status: 'Published' }));
     return (updates || [])
       .filter((u) => u.slug)
       .map((u) => ({
