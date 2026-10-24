@@ -55,11 +55,16 @@ npm test
 npm run build
 ```
 
-### 3.2 Database Migration Discipline
-1. Never modify production database schemas directly through ad-hoc web dashboards.
-2. Every schema adjustment must be documented in a new timestamped migration file in `supabase/migrations/` (e.g., `YYYYMMDD_description.sql`).
-3. Migrations must maintain backwards-compatibility with running application versions.
-4. Always enable Row Level Security (RLS) on newly created tables and explicitly define policies for both `anon` and `service_role`.
+### 3.2 Database Migration Discipline & SQL Completion Policy
+Every SQL change (migrations, schema modifications, RLS policies, triggers, indexes, seed data, or data migrations) must adhere to the **TomeSphere SQL Completion Policy**:
+
+1. **Create the Script**: Document the schema change in a versioned, timestamped migration file in `supabase/migrations/` (e.g., `YYYYMMDD_description.sql`).
+2. **Safety Review**: Inspect for security, data integrity, explicit permissions, idempotent definitions (`IF NOT EXISTS`, conditional policies), and verify zero destructive operations (`DROP`, `TRUNCATE`).
+3. **Environment Verification**: Strictly identify and verify the target environment before execution. Staging fixtures or unverified migrations must **never** be executed against production environments.
+4. **Targeted Application**: Apply the migration to the intended database using approved migration workflows or controlled database console execution.
+5. **Direct State Verification**: Verify the actual database state through direct queries (table creation, foreign keys, triggers, role privileges) and execute positive and negative access tests (e.g., verifying anonymous clients can read published records but are strictly blocked from draft/expired records).
+6. **Auditable Record**: Record the execution output, SQL verification results, and environment identification in the release readiness plan and commit log.
+7. **Strict Invariant**: No SQL migration, policy, trigger, or seed script may be marked as complete if application or direct database verification fails or remains unexecuted. Creating a file or pushing it to Git does not satisfy completion.
 
 ### 3.3 Commit Message Guidelines
 All commits in this repository must follow the structured format:
