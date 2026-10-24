@@ -51,7 +51,8 @@ The application enforces a strictly decoupled layered architecture:
 | `/api/v1/contact` | POST | Dispatch contact message with strict boundary validation |
 | `/api/v1/profile` | GET | Retrieve public profile and metadata |
 | `/api/v1/profile` | PUT | Update profile configuration (requires admin authentication) |
-| `/api/v1/skills` | GET | Retrieve verified technology competencies |
+| `/api/v1/updates` | GET | Retrieve published product updates and changelogs |
+| `/api/v1/offers` | GET | Retrieve active product promotional offers |
 
 ### Standard Error Contract
 

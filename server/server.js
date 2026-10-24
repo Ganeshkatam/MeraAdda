@@ -14,7 +14,6 @@ import { projectService } from './services/project.service.js';
 import { profileService } from './services/profile.service.js';
 import { guestbookService } from './services/guestbook.service.js';
 import { contactService } from './services/contact.service.js';
-import { skillService } from './services/skill.service.js';
 import { updateService } from './services/update.service.js';
 import { offerService } from './services/offer.service.js';
 import { ApiError } from './errors/api-error.js';
@@ -80,7 +79,6 @@ app.get('/', (req, res) => {
       health: '/health',
       projects: '/api/v1/projects',
       profile: '/api/v1/profile',
-      skills: '/api/v1/skills',
       guestbook: '/api/v1/guestbook',
       contact: '/api/v1/contact',
       updates: '/api/v1/updates',
@@ -158,16 +156,6 @@ app.put('/api/v1/profile', requireAdminMiddleware, async (req, res, next) => {
   try {
     const profile = await profileService.updateProfile(req.body);
     res.json({ success: true, data: profile });
-  } catch (err) {
-    next(err);
-  }
-});
-
-// Skills Endpoints
-app.get('/api/v1/skills', async (req, res, next) => {
-  try {
-    const skills = await skillService.listSkills(req.query);
-    res.json({ success: true, count: skills.length, data: skills });
   } catch (err) {
     next(err);
   }

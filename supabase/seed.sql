@@ -166,21 +166,3 @@ ON CONFLICT (id) DO UPDATE SET
   display_order = EXCLUDED.display_order,
   updated_at = NOW();
 
--- 3. Skills
-INSERT INTO public.skills (name, category, proficiency, display_order) VALUES
-  ('Next.js 16', 'Frontend', 'Expert', 1),
-  ('React 19', 'Frontend', 'Expert', 2),
-  ('TypeScript', 'Languages', 'Expert', 3),
-  ('Node.js', 'Backend', 'Advanced', 4),
-  ('PostgreSQL', 'Database & Cloud', 'Advanced', 5),
-  ('Supabase', 'Database & Cloud', 'Advanced', 6),
-  ('WebSockets / Real-Time', 'Backend', 'Advanced', 7),
-  ('Clean Architecture', 'Architecture', 'Expert', 8),
-  ('Tailwind CSS', 'Frontend', 'Advanced', 9),
-  ('Docker', 'DevOps & Tooling', 'Proficient', 10),
-  ('Kotlin', 'Languages', 'Proficient', 11),
-  ('REST & GraphQL', 'Backend', 'Advanced', 12)
-ON CONFLICT (name) DO UPDATE SET
-  category = EXCLUDED.category,
-  proficiency = EXCLUDED.proficiency,
-  display_order = EXCLUDED.display_order;

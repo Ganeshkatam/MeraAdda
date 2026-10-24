@@ -107,7 +107,10 @@ pm2 startup
 | `DELETE` | `/api/v1/projects/:id` | Delete project by ID |
 | `GET` | `/api/v1/profile` | Get real builder profile (Katam Ganesh Reddy) |
 | `PUT` | `/api/v1/profile` | Update profile in Supabase |
-| `GET` | `/api/v1/skills` | List all verified skills |
+| `GET` | `/api/v1/updates` | List published product updates and changelogs |
+| `GET` | `/api/v1/updates/slug/:slug` | Retrieve update by permanent slug |
+| `GET` | `/api/v1/offers` | List active product promotions and benefits |
+| `GET` | `/api/v1/offers/slug/:slug` | Retrieve offer by permanent slug |
 | `GET` | `/api/v1/guestbook` | List visitor guestbook entries |
 | `POST` | `/api/v1/guestbook` | Submit a new guestbook note |
 | `POST` | `/api/v1/contact` | Submit contact inquiry to Supabase |
