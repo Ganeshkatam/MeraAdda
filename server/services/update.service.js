@@ -7,11 +7,11 @@ export class UpdateService {
     return updateRepository.findAll(options);
   }
 
-  async getUpdateBySlug(slug) {
+  async getUpdateBySlug(slug, options = {}) {
     if (!slug) {
       throw new NotFoundError('Update slug is required');
     }
-    const update = await updateRepository.findBySlug(slug);
+    const update = await updateRepository.findBySlug(slug, options);
     if (!update) {
       throw new NotFoundError(`Update with slug '${slug}' was not found`);
     }

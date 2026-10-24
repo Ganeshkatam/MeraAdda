@@ -13,6 +13,11 @@ export class UpdateRepository {
       query = query.eq('status', status);
     }
 
+    if (status === 'Published') {
+      const now = new Date().toISOString();
+      query = query.lte('published_at', now);
+    }
+
     if (project_id) {
       query = query.eq('project_id', project_id);
     }
@@ -28,17 +33,23 @@ export class UpdateRepository {
     return data || [];
   }
 
-  async findBySlug(slug) {
+  async findBySlug(slug, { publishedOnly = true } = {}) {
     if (!slug || typeof slug !== 'string') return null;
     const cleanSlug = slug.trim().toLowerCase();
     const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
     if (!slugRegex.test(cleanSlug)) return null;
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('updates')
       .select('*, projects:project_id(id, slug, name, category, url, accent)')
-      .eq('slug', cleanSlug)
-      .maybeSingle();
+      .eq('slug', cleanSlug);
+
+    if (publishedOnly) {
+      const now = new Date().toISOString();
+      query = query.eq('status', 'Published').lte('published_at', now);
+    }
+
+    const { data, error } = await query.maybeSingle();
 
     if (error) {
       if (error.code === '42P01' || error.code === 'PGRST205' || error.message?.includes('relation') || error.message?.includes('not find the table')) {

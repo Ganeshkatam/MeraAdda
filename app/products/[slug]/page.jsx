@@ -10,7 +10,9 @@ import {
   Layers,
   Sparkles,
   ShieldCheck,
-  ExternalLink
+  ExternalLink,
+  Gift,
+  Clock
 } from 'lucide-react';
 import { apiClient } from '../../../lib/api-client.js';
 
@@ -109,15 +111,27 @@ export default async function ProductDetailPage({ params }) {
   const githubHref = project.github_url ? getSafeWebUrl(project.github_url) : null;
   const displayUrl = launchHref ? launchHref.replace(/^https?:\/\//, '').replace(/\/$/, '') : (project.url || '');
 
-  // Get related products for ecosystem navigation
+  // Fetch related products, verified updates, and active offers in parallel
   let relatedProducts = [];
+  let productUpdates = [];
+  let productOffers = [];
+
   try {
-    const all = await apiClient.projects.list();
-    relatedProducts = (all || [])
+    const [allProjects, updatesRes, offersRes] = await Promise.all([
+      apiClient.projects.list().catch(() => []),
+      apiClient.updates.list({ project_id: project.id, status: 'Published', limit: 3 }).catch(() => []),
+      apiClient.offers.list({ project_id: project.id, status: 'Published', onlyActive: true, limit: 2 }).catch(() => [])
+    ]);
+
+    relatedProducts = (allProjects || [])
       .filter(p => (p.slug || p.id) !== (project.slug || project.id))
       .slice(0, 3);
+    productUpdates = updatesRes || [];
+    productOffers = offersRes || [];
   } catch {
     relatedProducts = [];
+    productUpdates = [];
+    productOffers = [];
   }
 
   return (
@@ -187,6 +201,44 @@ export default async function ProductDetailPage({ params }) {
                   <span key={tag} className="detail-tech-badge">
                     {tag}
                   </span>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Connected Changelog: Recent Product Updates */}
+          {productUpdates.length > 0 && (
+            <section className="detail-section" aria-label="Recent Product Updates">
+              <div className="section-head-inline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h2 className="detail-section-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Clock size={18} className="text-accent" /> Recent Updates &amp; Changelogs
+                </h2>
+                <Link href="/updates" className="btn-text-link" style={{ fontSize: '13px' }}>
+                  View All Updates <ArrowUpRight size={13} />
+                </Link>
+              </div>
+
+              <div className="product-updates-compact-list">
+                {productUpdates.map((u) => (
+                  <article key={u.id || u.slug} className="product-update-compact-card">
+                    <div className="compact-update-meta">
+                      <span className={`badge update-type-badge update-type-${u.update_type?.toLowerCase()}`}>
+                        {u.update_type}
+                      </span>
+                      {u.version && <span className="badge badge-mono">{u.version}</span>}
+                      {u.published_at && (
+                        <span className="text-secondary" style={{ fontSize: '12px' }}>
+                          {new Date(u.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="compact-update-title">
+                      <Link href={`/updates/${u.slug}`} className="update-title-link">
+                        {u.title}
+                      </Link>
+                    </h3>
+                    <p className="compact-update-summary">{u.summary}</p>
+                  </article>
                 ))}
               </div>
             </section>
@@ -269,6 +321,44 @@ export default async function ProductDetailPage({ params }) {
               <span>Verified TomeSphere Product</span>
             </div>
           </div>
+
+          {/* Connected Promotion: Active Product Offers */}
+          {productOffers.length > 0 && (
+            <div className="detail-offers-card" style={{ marginTop: '20px' }}>
+              <div className="launch-card-header">
+                <div className="launch-icon-container" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' }}>
+                  <Gift size={20} />
+                </div>
+                <div>
+                  <h3 className="launch-card-title">Active Promotion</h3>
+                  <span className="launch-card-sub" style={{ color: '#f59e0b' }}>{productOffers[0].benefit}</span>
+                </div>
+              </div>
+              <p className="launch-card-explanation" style={{ marginBottom: '14px' }}>
+                {productOffers[0].description}
+              </p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <Link
+                  href={`/offers/${productOffers[0].slug}`}
+                  className="btn btn-outline"
+                  style={{ flex: 1, justifyContent: 'center', fontSize: '13px' }}
+                >
+                  Offer Terms
+                </Link>
+                {productOffers[0].url && (
+                  <a
+                    href={productOffers[0].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ flex: 1, justifyContent: 'center', fontSize: '13px' }}
+                  >
+                    Redeem <ExternalLink size={13} />
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
         </aside>
       </div>
 

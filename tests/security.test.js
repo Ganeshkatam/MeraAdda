@@ -592,6 +592,93 @@ test('Phase C: Updates & Offers Data Contracts, Expiry & Validation', async (t) 
       }
     );
   });
+
+  await t.test('Next.js requireAdminRequest rejects unauthenticated and invalid mutation requests', async () => {
+    const { requireAdminRequest } = await import('../server/auth/admin-auth.js');
+    process.env.ADMIN_SECRET = 'ci-admin-secret-test';
+
+    const unauthenticatedReq = {
+      headers: {
+        get: () => null,
+        forEach: () => {}
+      }
+    };
+    assert.throws(() => requireAdminRequest(unauthenticatedReq), ForbiddenError);
+
+    const invalidReq = {
+      headers: {
+        get: (h) => (h === 'x-admin-key' ? 'incorrect-token' : null)
+      }
+    };
+    assert.throws(() => requireAdminRequest(invalidReq), ForbiddenError);
+
+    const validReq = {
+      headers: {
+        get: (h) => (h === 'x-admin-key' ? 'ci-admin-secret-test' : null)
+      }
+    };
+    assert.equal(requireAdminRequest(validReq), true);
+  });
+
+  await t.test('migration SQL contract strictly defines schema, check constraints, RLS and temporal publication policies', () => {
+    const migrationPath = resolve(process.cwd(), 'supabase/migrations/20261024_create_updates_and_offers.sql');
+    assert.ok(existsSync(migrationPath), 'Migration SQL must exist');
+    const sql = readFileSync(migrationPath, 'utf-8');
+
+    // Schema existence
+    assert.ok(sql.includes('CREATE TABLE IF NOT EXISTS public.updates'));
+    assert.ok(sql.includes('CREATE TABLE IF NOT EXISTS public.offers'));
+
+    // Check constraints
+    assert.ok(sql.includes("CONSTRAINT check_update_type CHECK (update_type IN ('Launch', 'Feature', 'Improvement', 'Bugfix', 'Maintenance'))"));
+    assert.ok(sql.includes("CONSTRAINT check_update_status CHECK (status IN ('Published', 'Draft', 'Archived'))"));
+    assert.ok(sql.includes('CONSTRAINT check_offer_dates CHECK (end_date > start_date)'));
+    assert.ok(sql.includes("CONSTRAINT check_offer_status CHECK (status IN ('Published', 'Draft', 'Expired'))"));
+
+    // RLS enabled and mutation revoked
+    assert.ok(sql.includes('ALTER TABLE public.updates ENABLE ROW LEVEL SECURITY;'));
+    assert.ok(sql.includes('ALTER TABLE public.offers ENABLE ROW LEVEL SECURITY;'));
+    assert.ok(sql.includes('REVOKE INSERT, UPDATE, DELETE ON public.updates FROM anon, authenticated;'));
+    assert.ok(sql.includes('REVOKE INSERT, UPDATE, DELETE ON public.offers FROM anon, authenticated;'));
+
+    // Temporal publication and expiry policies
+    assert.ok(sql.includes("status = 'Published' AND published_at <= NOW()"), 'Must enforce published_at <= NOW() on updates');
+    assert.ok(sql.includes("status = 'Published' AND start_date <= NOW() AND end_date >= NOW()"), 'Must enforce start_date <= NOW() AND end_date >= NOW() on offers');
+  });
+
+  await t.test('publication and expiry rules: validates draft/archived status isolation and rejects offers with no expiry date', () => {
+    // Updates status validation: rejects arbitrary status
+    assert.throws(
+      () => validateUpdatePayload({
+        project_id: 'proj_bookgarden',
+        title: 'Valid Update Title',
+        summary: 'Valid summary text.',
+        content: 'Valid content.',
+        status: 'UnapprovedStatus'
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        return true;
+      }
+    );
+
+    // Offers without expiry end_date are strictly rejected
+    assert.throws(
+      () => validateOfferPayload({
+        project_id: 'proj_bookgarden',
+        title: 'Indefinite Offer With No Expiry',
+        description: 'Should fail because end_date is required.',
+        benefit: 'Free access',
+        eligibility: 'Everyone',
+        url: 'https://bookgarden.tomesphere.in'
+      }),
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        assert.ok(err.details?.some(d => /end_date is required/.test(d.message)));
+        return true;
+      }
+    );
+  });
 });
 
 
