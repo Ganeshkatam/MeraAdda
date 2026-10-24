@@ -8,6 +8,8 @@ import { Sun, Moon, Menu, X, Layers } from 'lucide-react';
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/products', label: 'Products' },
+  { href: '/updates', label: 'Updates' },
+  { href: '/offers', label: 'Offers' },
   { href: '/about', label: 'About' },
   { href: '/guestbook', label: 'Guestbook' },
   { href: '/contact', label: 'Contact' }
@@ -23,6 +25,24 @@ export default function Navbar() {
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
@@ -91,7 +111,7 @@ export default function Navbar() {
             <div className="mobile-nav-header">
               <div>
                 <span className="brand-name">TomeSphere</span>
-                <div className="brand-tag">Product Place</div>
+                <div className="brand-tag">Product Discovery & Information Hub</div>
               </div>
               <button
                 type="button"

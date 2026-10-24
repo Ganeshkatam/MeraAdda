@@ -33,6 +33,22 @@ export function validateProjectPayload(data, isUpdate = false) {
     }
   }
 
+  // Slug validation
+  if (data.slug !== undefined) {
+    if (data.slug === null || data.slug === '') {
+      result.slug = null;
+    } else if (typeof data.slug !== 'string') {
+      errors.push({ field: 'slug', message: 'Slug must be a string.' });
+    } else {
+      const slug = data.slug.trim().toLowerCase();
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length < 2 || slug.length > 80) {
+        errors.push({ field: 'slug', message: 'Slug must contain only lowercase letters, numbers, and single hyphens (2-80 chars).' });
+      } else {
+        result.slug = slug;
+      }
+    }
+  }
+
   // URL validation
   if (!isUpdate || data.url !== undefined) {
     if (typeof data.url !== 'string') {

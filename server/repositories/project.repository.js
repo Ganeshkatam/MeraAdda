@@ -43,8 +43,36 @@ export class ProjectRepository {
     return results;
   }
 
+  async findBySlug(slug) {
+    if (!slug || typeof slug !== 'string') return null;
+    const cleanSlug = slug.trim().toLowerCase();
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(cleanSlug)) {
+      return null;
+    }
+
+    const { data, error } = await supabase
+      .from('projects')
+      .select('id, slug, name, category, tagline, description, url, github_url, image, accent, featured, status, year, tags, display_order, metrics, created_at, updated_at')
+      .eq('slug', cleanSlug)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`[ProjectRepository.findBySlug ${cleanSlug}]: Database query error:`, error.message);
+      throw new ApiError('Unable to retrieve project details.', 500, 'DATABASE_ERROR');
+    }
+
+    if (!data) return null;
+    return {
+      ...data,
+      tags: Array.isArray(data.tags) ? data.tags : []
+    };
+  }
+
   async findById(id) {
-    const stringId = String(id);
+    if (!id || typeof id !== 'string') return null;
+    const stringId = id.trim();
+
+    // Query directly by ID first using parameterized filter
     const { data, error } = await supabase
       .from('projects')
       .select('id, slug, name, category, tagline, description, url, github_url, image, accent, featured, status, year, tags, display_order, metrics, created_at, updated_at')
@@ -52,12 +80,13 @@ export class ProjectRepository {
       .maybeSingle();
 
     if (error) {
-      console.error(`[ProjectRepository.findById ${id}]: Database query error:`, error.message);
+      console.error(`[ProjectRepository.findById ${stringId}]: Database query error:`, error.message);
       throw new ApiError('Unable to retrieve project details.', 500, 'DATABASE_ERROR');
     }
 
     if (!data) {
-      return null;
+      // Backward compatibility fallback: check slug if id didn't match
+      return this.findBySlug(stringId);
     }
 
     return {
@@ -67,8 +96,16 @@ export class ProjectRepository {
   }
 
   async create(projectData) {
+    const slug = projectData.slug
+      ? String(projectData.slug).trim().toLowerCase()
+      : projectData.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+
     const newProject = {
       id: projectData.id ? String(projectData.id) : `proj_${randomUUID().replace(/-/g, '').slice(0, 16)}`,
+      slug: slug || null,
       name: projectData.name,
       category: projectData.category,
       description: projectData.description,

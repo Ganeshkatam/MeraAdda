@@ -1,3 +1,8 @@
 export { validateContactPayload } from './contact.validator.js';
 export { validateProjectPayload } from './project.validator.js';
 export { validateGuestbookPayload } from './guestbook.validator.js';
+export { validateProfileUpdatePayload } from './profile.validator.js';
+export { validateUpdatePayload, ALLOWED_UPDATE_TYPES } from './update.validator.js';
+export { validateOfferPayload, ALLOWED_OFFER_STATUSES } from './offer.validator.js';
+
+

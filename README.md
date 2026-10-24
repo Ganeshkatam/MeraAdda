@@ -1,19 +1,21 @@
-# TomeSphere — Digital Product Studio & Platform
+# TomeSphere — Central Digital Product Hub & Discovery Platform
 
-The central digital hub and product platform accessible at [tomesphere.in](https://tomesphere.in) with its backend REST API at [api.tomesphere.in](https://api.tomesphere.in).
+The central digital hub and product discovery platform accessible at [tomesphere.in](https://tomesphere.in) with its backend REST API at [api.tomesphere.in](https://api.tomesphere.in).
 
 ## Ecosystem Architecture
 
-- **`tomesphere.in`**: Multi-Page Application (MPA) frontend built with Next.js 16 and React 19.
-- **`api.tomesphere.in`**: Standalone Express REST API backend serving data from Supabase PostgreSQL.
+- **`tomesphere.in`**: Frontend built with Next.js 16 and React 19 serving the public product discovery platform.
+- **`api.tomesphere.in`**: Standalone Express 5 REST API backend serving data from Supabase PostgreSQL.
+- **`docs/`**: Canonical 11-part product blueprint, architecture decision records (ADR-001 through ADR-006), and operating manual.
 
 ## Multi-Page Application Routes
 
-- **`/` (Overview)**: Central overview hub featuring architectural highlights, systems bento portals, and real-time tech marquee.
-- **`/products` (Products & Systems)**: Interactive catalog of all 7 production applications with real-time category filtering and live search.
-- **`/about` (Architecture & Pillars)**: Engineering philosophy, system design disciplines, and verified technical competencies.
-- **`/guestbook` (Community)**: Real-time visitor message board backed by Supabase.
-- **`/contact` (Direct Connection)**: Direct server message endpoint and communication channels.
+- **`/` (Overview)**: Central discovery dashboard featuring cinematic dark hero, featured applications spotlight, and ecosystem pulse.
+- **`/products` (Directory)**: Interactive catalog of production applications with real-time category filtering and search.
+- **`/products/[slug]` (Product Details)**: Canonical product detail pages with verified capabilities, technical specifications, and outbound launch links.
+- **`/about` (Architecture & Vision)**: Engineering philosophy, system design disciplines, and platform principles.
+- **`/guestbook` (Community)**: Visitor message board backed by Supabase with moderation workflow.
+- **`/contact` (Direct Connection)**: Direct inquiry endpoint with write-only database policies.
 
 ## Backend Architecture & REST API
 
@@ -21,11 +23,6 @@ The application enforces a strictly decoupled layered architecture:
 
 ```
 ├── app/api/v1/                   # Next.js Route Handlers (Proxy/SSR endpoints)
-│   ├── contact/route.js          # POST /api/v1/contact
-│   ├── github/activity/route.js  # GET /api/v1/github/activity
-│   ├── guestbook/route.js        # GET, POST /api/v1/guestbook
-│   ├── profile/route.js          # GET, PUT /api/v1/profile
-│   └── projects/                 # GET, POST /api/v1/projects
 ├── server/                       # Standalone Backend Module (api.tomesphere.in)
 │   ├── server.js                 # Standalone Express Server Entry Point
 │   ├── package.json              # Standalone Dependencies & Scripts
@@ -42,18 +39,20 @@ The application enforces a strictly decoupled layered architecture:
 
 | Endpoint | Method | Description |
 |---|---|---|
-| `/health` | GET | Service health check |
+| `/health` | GET | Service liveness health check |
 | `/api/v1/projects` | GET | List cataloged projects with status/category filters |
-| `/api/v1/projects` | POST | Create a new project (validated schema) |
-| `/api/v1/projects/:id` | GET | Retrieve project by ID |
-| `/api/v1/projects/:id` | PUT | Update project details |
-| `/api/v1/projects/:id` | DELETE | Remove project |
-| `/api/v1/guestbook` | GET | Fetch signed guestbook entries |
-| `/api/v1/guestbook` | POST | Submit guestbook entry (validated author, message) |
-| `/api/v1/contact` | POST | Dispatch contact message with email verification |
+| `/api/v1/projects` | POST | Create a new project (requires admin authentication) |
+| `/api/v1/projects/slug/:slug` | GET | Retrieve project by permanent URL slug |
+| `/api/v1/projects/:id` | GET | Retrieve project by ID (with fallback to slug) |
+| `/api/v1/projects/:id` | PUT | Update project details (requires admin authentication) |
+| `/api/v1/projects/:id` | DELETE | Remove project (requires admin authentication) |
+| `/api/v1/guestbook` | GET | Fetch approved guestbook entries |
+| `/api/v1/guestbook` | POST | Submit guestbook entry (defaults to pending moderation) |
+| `/api/v1/contact` | POST | Dispatch contact message with strict boundary validation |
 | `/api/v1/profile` | GET | Retrieve public profile and metadata |
-| `/api/v1/profile` | PUT | Update profile and social configurations |
-| `/api/v1/skills` | GET | Retrieve verified technology competencies |
+| `/api/v1/profile` | PUT | Update profile configuration (requires admin authentication) |
+| `/api/v1/updates` | GET | Retrieve published product updates and changelogs |
+| `/api/v1/offers` | GET | Retrieve active product promotional offers |
 
 ### Standard Error Contract
 
