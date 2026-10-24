@@ -16,29 +16,44 @@ import { apiClient } from '../../../lib/api-client.js';
 
 export const revalidate = 1800;
 
-async function getProduct(slug) {
-  if (!slug) return null;
+function getSafeWebUrl(rawUrl) {
+  if (!rawUrl || typeof rawUrl !== 'string') return null;
+  const trimmed = rawUrl.trim();
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
   try {
-    const project = await apiClient.projects.get(slug);
-    if (project) return project;
-  } catch {
-    // Fall back to server service directly if API client request fails
-  }
-
-  try {
-    const { projectService } = await import('../../../server/services/project.service.js');
-    return await projectService.getProjectById(slug);
+    const parsed = new URL(withProtocol);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.href;
+    }
+    return null;
   } catch {
     return null;
+  }
+}
+
+async function getProduct(slug) {
+  if (!slug || typeof slug !== 'string') return null;
+  try {
+    return await apiClient.projects.getBySlug(slug);
+  } catch (err) {
+    // Only return null for confirmed 404/not found errors so notFound() is invoked
+    if (err?.status === 404 || err?.code === 'RESOURCE_NOT_FOUND' || err?.code === 'PROJECT_NOT_FOUND') {
+      return null;
+    }
+    // Propagate infrastructure / 5xx / network errors to the error boundary
+    console.error(`[ProductDetailPage]: Infrastructure error fetching slug '${slug}':`, err.message);
+    throw err;
   }
 }
 
 export async function generateStaticParams() {
   try {
     const projects = await apiClient.projects.list();
-    return (projects || []).map((p) => ({
-      slug: p.slug || p.id,
-    }));
+    return (projects || [])
+      .filter((p) => p.slug)
+      .map((p) => ({
+        slug: p.slug,
+      }));
   } catch {
     return [];
   }
@@ -46,7 +61,14 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const project = await getProduct(slug);
+  let project = null;
+
+  try {
+    project = await getProduct(slug);
+  } catch {
+    // In metadata generation, fall back gracefully if API is temporarily unavailable
+    project = null;
+  }
 
   if (!project) {
     return {
@@ -57,14 +79,18 @@ export async function generateMetadata({ params }) {
 
   const title = `${project.name} — TomeSphere Digital Product`;
   const description = project.tagline || project.description || `Explore ${project.name} on the TomeSphere platform.`;
+  const canonicalUrl = `https://www.tomesphere.in/products/${project.slug || project.id}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalUrl
+    },
     openGraph: {
       title,
       description,
-      url: `https://www.tomesphere.in/products/${project.slug || project.id}`,
+      url: canonicalUrl,
       type: 'website'
     }
   };
@@ -78,9 +104,10 @@ export default async function ProductDetailPage({ params }) {
     notFound();
   }
 
-  // Format destination URL
-  const launchHref = project.url?.startsWith('http') ? project.url : `https://${project.url}`;
-  const displayUrl = project.url?.replace(/^https?:\/\//, '') || '';
+  // Format destination URL safely
+  const launchHref = getSafeWebUrl(project.url);
+  const githubHref = project.github_url ? getSafeWebUrl(project.github_url) : null;
+  const displayUrl = launchHref ? launchHref.replace(/^https?:\/\//, '').replace(/\/$/, '') : (project.url || '');
 
   // Get related products for ecosystem navigation
   let relatedProducts = [];
@@ -125,14 +152,18 @@ export default async function ProductDetailPage({ params }) {
         )}
 
         <div className="product-header-actions">
-          <a
-            href={launchHref}
-            target="_blank"
-            rel="noreferrer"
-            className="btn-primary-glow btn-launch-highlight"
-          >
-            Launch Application <ArrowUpRight size={16} />
-          </a>
+          {launchHref ? (
+            <a
+              href={launchHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary-glow btn-launch-highlight"
+            >
+              Launch Application <ArrowUpRight size={16} />
+            </a>
+          ) : (
+            <span className="btn-disabled-placeholder">Launch URL Not Available</span>
+          )}
           <Link href="/products" className="btn-secondary-glass">
             <ArrowLeft size={15} /> All Products
           </Link>
@@ -150,7 +181,7 @@ export default async function ProductDetailPage({ params }) {
 
           {project.tags && project.tags.length > 0 && (
             <section className="detail-panel">
-              <h2 className="detail-panel-title">Technologies &amp; Architecture</h2>
+              <h2 className="detail-panel-title">Tags &amp; Technologies</h2>
               <div className="detail-tags-wrap">
                 {project.tags.map((tag) => (
                   <span key={tag} className="detail-tech-badge">
@@ -172,21 +203,22 @@ export default async function ProductDetailPage({ params }) {
                 <dt className="spec-label">Canonical Identifier</dt>
                 <dd className="spec-value spec-mono">{project.slug || project.id}</dd>
               </div>
-              <div className="spec-item">
-                <dt className="spec-label">Operational Status</dt>
-                <dd className="spec-value">
-                  <span className={`card-status-badge ${project.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
-                    <span className="status-indicator-dot" />
-                    {project.status}
-                  </span>
-                </dd>
-              </div>
+              {project.year && (
+                <div className="spec-item">
+                  <dt className="spec-label">Release Year</dt>
+                  <dd className="spec-value">{project.year}</dd>
+                </div>
+              )}
               <div className="spec-item">
                 <dt className="spec-label">Target Domain</dt>
                 <dd className="spec-value">
-                  <a href={launchHref} target="_blank" rel="noreferrer" className="spec-link">
-                    <Globe size={13} /> {displayUrl}
-                  </a>
+                  {launchHref ? (
+                    <a href={launchHref} target="_blank" rel="noopener noreferrer" className="spec-link">
+                      <Globe size={13} /> {displayUrl}
+                    </a>
+                  ) : (
+                    <span>{displayUrl || 'Independent runtime'}</span>
+                  )}
                 </dd>
               </div>
             </dl>
@@ -210,20 +242,22 @@ export default async function ProductDetailPage({ params }) {
               This application is independently deployed and maintained within the TomeSphere product ecosystem. Launching will direct you to its production domain.
             </p>
 
-            <a
-              href={launchHref}
-              target="_blank"
-              rel="noreferrer"
-              className="btn-primary-glow launch-block-btn"
-            >
-              Launch {project.name} <ArrowUpRight size={15} />
-            </a>
-
-            {project.github_url && (
+            {launchHref && (
               <a
-                href={project.github_url}
+                href={launchHref}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
+                className="btn-primary-glow launch-block-btn"
+              >
+                Launch {project.name} <ArrowUpRight size={15} />
+              </a>
+            )}
+
+            {githubHref && (
+              <a
+                href={githubHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-secondary-glass launch-source-btn"
               >
                 <Github size={15} /> View Source Code
@@ -243,59 +277,51 @@ export default async function ProductDetailPage({ params }) {
         <section className="detail-related-section">
           <div className="section-head">
             <div>
-              <div className="page-eyebrow">TomeSphere Studio</div>
-              <h2 className="section-title">Explore Other Products</h2>
+              <div className="page-eyebrow">Ecosystem Discovery</div>
+              <h2 className="section-title">Explore Related Products</h2>
               <p className="section-subtitle">
                 Discover more purposeful software developed under the TomeSphere umbrella.
               </p>
             </div>
-            <Link href="/products" className="btn-secondary-glass">
-              All Products ({relatedProducts.length + 1}) <ArrowUpRight size={14} />
-            </Link>
           </div>
 
-          <div className="projects-masonry">
-            {relatedProducts.map((rel) => (
-              <article key={rel.id} className="project-card-modern">
-                <div className="project-card-header">
-                  <div className="project-badge-row">
-                    <span className={`card-status-badge ${rel.status === 'Live' ? 'badge-live' : 'badge-draft'}`}>
+          <div className="work-grid">
+            {relatedProducts.map((p) => {
+              const pSafeUrl = getSafeWebUrl(p.url);
+              return (
+                <div key={p.id} className="work-card">
+                  <div className="work-card-head">
+                    <span className="work-card-category">{p.category}</span>
+                    <span className="work-card-badge">
                       <span className="status-indicator-dot" />
-                      {rel.status}
+                      {p.status}
                     </span>
-                    <span className="card-category-badge">{rel.category}</span>
                   </div>
-                  <span className="card-year-label">{rel.year}</span>
-                </div>
 
-                <div className="card-content-area">
-                  <h3 className="card-title">
-                    <Link href={`/products/${rel.slug || rel.id}`} className="card-title-link">
-                      {rel.name}
-                    </Link>
-                  </h3>
-                  <div className="card-url-row">
-                    <Globe size={12} />
-                    <span>{rel.url}</span>
-                  </div>
-                  <p className="card-description">{rel.description}</p>
+                  <Link href={`/products/${p.slug || p.id}`} className="work-card-title-link">
+                    <h3 className="work-card-title">{p.name}</h3>
+                  </Link>
+                  {p.tagline && <p className="work-card-tagline">{p.tagline}</p>}
+                  <p className="work-card-description">{p.description}</p>
 
-                  <div className="card-dual-actions">
-                    <Link href={`/products/${rel.slug || rel.id}`} className="btn-detail-link">
-                      View Details
+                  <div className="work-card-actions">
+                    <Link href={`/products/${p.slug || p.id}`} className="btn-detail-link">
+                      View details
                     </Link>
-                    <a
-                      href={rel.url?.startsWith('http') ? rel.url : `https://${rel.url}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-launch-link"
-                    >
-                      Launch <ArrowUpRight size={13} />
-                    </a>
+                    {pSafeUrl && (
+                      <a
+                        href={pSafeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="work-card-link"
+                      >
+                        Launch <ArrowUpRight size={14} />
+                      </a>
+                    )}
                   </div>
                 </div>
-              </article>
-            ))}
+              );
+            })}
           </div>
         </section>
       )}

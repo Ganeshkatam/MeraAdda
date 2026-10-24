@@ -15,6 +15,17 @@ export class ProjectService {
     return project;
   }
 
+  async getProjectBySlug(slug) {
+    if (!slug) {
+      throw new NotFoundError('Project slug is required');
+    }
+    const project = await projectRepository.findBySlug(slug);
+    if (!project) {
+      throw new NotFoundError(`Project with slug '${slug}' not found`);
+    }
+    return project;
+  }
+
   async createProject(rawData) {
     const validated = validateProjectPayload(rawData, false);
     return projectRepository.create(validated);

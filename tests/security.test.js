@@ -280,3 +280,65 @@ test('Deployment Hygiene: Vercel Preview Deployment Prevention', async (t) => {
     assert.equal(prodRun.status, 1, 'Production deployments must return exit code 1 to proceed with build');
   });
 });
+
+test('Phase 1 & A: Product Slug Resolution & Contract Safety', async (t) => {
+  const { projectRepository } = await import('../server/repositories/project.repository.js');
+  const { validateProjectPayload } = await import('../server/validators/project.validator.js');
+  const { projectService } = await import('../server/services/project.service.js');
+
+  await t.test('finds projects by permanent slug in database repository', async () => {
+    const product = await projectRepository.findBySlug('bookgarden');
+    assert.ok(product, 'Expected to find BookGarden by slug');
+    assert.equal(product.slug, 'bookgarden');
+    assert.equal(product.name, 'BookGarden');
+  });
+
+  await t.test('returns null cleanly for nonexistent slugs or malformed input without database crash', async () => {
+    const nonexistent = await projectRepository.findBySlug('definitely-not-a-real-product-slug');
+    assert.equal(nonexistent, null);
+
+    const malformed = await projectRepository.findBySlug('bad(slug),or.injection,attempt');
+    assert.equal(malformed, null);
+  });
+
+  await t.test('projectService.getProjectBySlug throws NotFoundError on missing slug', async () => {
+    await assert.rejects(
+      async () => {
+        await projectService.getProjectBySlug('unknown-missing-slug');
+      },
+      (err) => {
+        assert.equal(err.code, 'NOT_FOUND');
+        assert.equal(err.statusCode, 404);
+        return true;
+      }
+    );
+  });
+
+  await t.test('validator validates slugs and supports all seed categories', () => {
+    const valid = validateProjectPayload({
+      name: 'Test Business Product',
+      category: 'BUSINESS TOOLS',
+      slug: 'test-business-tool',
+      description: 'A valid description for business tools.',
+      url: 'https://test.tomesphere.in'
+    });
+    assert.equal(valid.slug, 'test-business-tool');
+    assert.equal(valid.category, 'BUSINESS TOOLS');
+
+    assert.throws(
+      () => {
+        validateProjectPayload({
+          name: 'Invalid Slug Product',
+          category: 'WEB APPS',
+          slug: 'INVALID SLUG WITH SPACES',
+          description: 'A valid description.',
+          url: 'https://test.tomesphere.in'
+        });
+      },
+      (err) => {
+        assert.equal(err.code, 'VALIDATION_ERROR');
+        return true;
+      }
+    );
+  });
+});

@@ -91,6 +91,15 @@ app.get('/api/v1/projects', async (req, res, next) => {
   }
 });
 
+app.get('/api/v1/projects/slug/:slug', async (req, res, next) => {
+  try {
+    const project = await projectService.getProjectBySlug(req.params.slug);
+    res.json({ success: true, data: project });
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('/api/v1/projects/:id', async (req, res, next) => {
   try {
     const project = await projectService.getProjectById(req.params.id);
