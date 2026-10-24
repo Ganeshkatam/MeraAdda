@@ -1,7 +1,11 @@
--- Seed: supabase/seed_updates_and_offers.sql
--- Production & Staging seed data for Updates and Offers
+-- ==============================================================================
+-- STAGING TEST FIXTURES ONLY — DO NOT EXECUTE IN PRODUCTION
+-- ==============================================================================
+-- Purpose: Synthetic fixtures to verify both positive and negative database RLS
+-- policies in staging. Includes deliberately expired promotions and future drafts.
 -- Date: 2026-10-24
--- Scope: Phase C — Product Discovery & Information Hub
+-- Scope: Phase C — Product Discovery & Information Hub Staging Verification
+-- ==============================================================================
 
 -- 1. Updates & Changelogs Seed Data
 INSERT INTO public.updates (id, slug, project_id, title, summary, content, version, update_type, status, published_at)
